@@ -135,3 +135,9 @@ También se trabajó con clases, listas mutables, funciones, ciclos `for`, estru
 
 Finalmente, se implementó un carrito de compras funcional que permite registrar productos, calcular subtotal, IGV, total, descuentos y determinar el producto más caro. El proyecto fue compilado y probado correctamente en un dispositivo Android.
 
+##Capturas del promnt 
+<img width="952" height="891" alt="Captura-promnt1" src="https://github.com/user-attachments/assets/d5ab3783-db9f-4161-913a-39ed45f05b6b" />
+<img width="971" height="941" alt="Captura-promnt" src="https://github.com/user-attachments/assets/326b98da-0b06-407a-b671-7a85abb54f47" />
+
+
+
