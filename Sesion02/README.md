@@ -58,3 +58,8 @@ Si se intenta cambiar el precio después de crear un producto, Kotlin mostrará 
 ## Conclusión
 
 En este laboratorio se aplicaron conceptos fundamentales de Kotlin, como `data class`, variables `val` y `var`, listas mutables, funciones, ciclos `for`, estructuras `when`, funciones de colecciones como `maxByOrNull` y formato de salida mediante `String.format`.
+
+## Captura
+<img width="1903" height="978" alt="captura-consola png" src="https://github.com/user-attachments/assets/ff7876e7-7a58-4a3a-8314-4fc0df219583" />
+
+
