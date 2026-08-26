@@ -55,6 +55,7 @@ fun calcularDescuento(total: Double): Double {
 }
 
 fun main() {
+
     println("=========================================")
     println(" CARRITO DE COMPRAS - TIENDA TECSUP ")
     println("=========================================")
@@ -65,13 +66,50 @@ fun main() {
     println("Cliente: $nombreCliente")
     println()
 
+    // Productos iniciales solicitados
     carrito.add(Producto("Laptop HP", 2500.0, 1))
     carrito.add(Producto("Mouse Logitech", 45.5, 2))
     carrito.add(Producto("Teclado Mecánico", 180.0, 1))
     carrito.add(Producto("Audífonos Sony", 320.0, 3))
 
+    println("Productos registrados inicialmente:")
     for (producto in carrito) {
-        println("Producto agregado: ${producto.nombre}")
+        println("- ${producto.nombre}")
+    }
+
+    println()
+
+    // Ingreso de productos adicionales
+    println("¿Desea agregar otro producto? (s/n)")
+    val respuesta = readLine()?.lowercase()
+
+    if (respuesta == "s") {
+
+        print("Ingrese nombre del producto: ")
+        val nombre = readLine() ?: ""
+
+        print("Ingrese precio: ")
+        val precio = readLine()?.toDoubleOrNull() ?: 0.0
+
+        print("Ingrese cantidad: ")
+        val cantidad = readLine()?.toIntOrNull() ?: 0
+
+        if (nombre.isNotBlank() && precio > 0 && cantidad > 0) {
+
+            val nuevoProducto = Producto(
+                nombre,
+                precio,
+                cantidad
+            )
+
+            carrito.add(nuevoProducto)
+
+            println()
+            println("Producto agregado correctamente.")
+        } else {
+            println()
+            println("Datos inválidos. No se agregó el producto.")
+        }
     }
 
     println()
@@ -85,23 +123,51 @@ fun main() {
     val igv = calcularIGV(subtotal)
     val total = calcularTotal(subtotal, igv)
 
-    println(String.format("%-20s S/ %8.2f", "Subtotal:", subtotal))
-    println(String.format("%-20s S/ %8.2f", "IGV (18%):", igv))
-    println(String.format("%-20s S/ %8.2f", "TOTAL A PAGAR:", total))
+    println(
+        String.format(
+            "%-20s S/ %8.2f",
+            "Subtotal:",
+            subtotal
+        )
+    )
+
+    println(
+        String.format(
+            "%-20s S/ %8.2f",
+            "IGV (18%):",
+            igv
+        )
+    )
+
+    println(
+        String.format(
+            "%-20s S/ %8.2f",
+            "TOTAL A PAGAR:",
+            total
+        )
+    )
 
     val masCaro = carrito.maxByOrNull { it.precio }
 
     if (masCaro != null) {
         println(
             "Producto mas caro: ${masCaro.nombre} " +
-                    String.format("(S/ %.2f)", masCaro.precio)
+                    String.format(
+                        "(S/ %.2f)",
+                        masCaro.precio
+                    )
         )
     }
 
     val descuento = calcularDescuento(total)
 
     if (descuento > 0) {
-        println(String.format("Descuento aplicado: S/ %.2f", descuento))
+        println(
+            String.format(
+                "Descuento aplicado: S/ %.2f",
+                descuento
+            )
+        )
     } else {
         println("Descuento aplicado: S/ 0.00")
     }

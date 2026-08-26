@@ -1,4 +1,4 @@
-package com.example.lab02carritokotlin
+package com.garcia.lab02carritokotlin
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

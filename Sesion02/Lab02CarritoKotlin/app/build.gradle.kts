@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.lab02carritokotlin"
+    namespace = "com.garcia.lab02carritokotlin"
     compileSdk {
         version = release(37)
     }

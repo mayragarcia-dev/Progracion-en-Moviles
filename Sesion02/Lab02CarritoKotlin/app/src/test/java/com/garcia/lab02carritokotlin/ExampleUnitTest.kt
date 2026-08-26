@@ -1,4 +1,4 @@
-package com.example.lab02carritokotlin
+package com.garcia.lab02carritokotlin
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.example.lab02carritokotlin.ui.theme
+package com.garcia.lab02carritokotlin.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
