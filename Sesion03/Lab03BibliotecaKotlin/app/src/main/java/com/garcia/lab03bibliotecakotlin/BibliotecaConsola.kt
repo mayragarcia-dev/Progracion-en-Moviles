@@ -54,6 +54,10 @@ fun main() {
         pedirDato("Ingrese fecha de entrega (AAAA/MM/DD): "),
         formatoFecha
     )
+    if (fechaEntrega.isBefore(fechaPrestamo)) {
+        println("Error: la fecha de entrega no puede ser anterior a la fecha de préstamo.")
+        return
+    }
 
     val libro = Libro(
         titulo = titulo
