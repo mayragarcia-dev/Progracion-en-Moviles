@@ -14,6 +14,7 @@ fun main() {
     println("========================================")
     println("         SISTEMA DE BIBLIOTECA")
     println("========================================")
+    println("Registro de préstamo y cálculo de multas")
 
     val titulo = pedirDato("Ingrese titulo del libro: ")
 
