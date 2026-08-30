@@ -21,7 +21,21 @@ fun main() {
 
     val nombreUsuario = pedirDato("Ingrese nombre del usuario: ")
 
-    val tipoUsuario = pedirDato("Ingrese tipo de usuario (Alumno/Docente): ")
+    println()
+    println("Seleccione el tipo de usuario:")
+    println("1. Alumno")
+    println("2. Docente")
+
+    val opcionUsuario = pedirDato("Ingrese una opción (1 o 2): ")
+
+    val tipoUsuario = when (opcionUsuario) {
+        "1" -> "Alumno"
+        "2" -> "Docente"
+        else -> {
+            println("Opción no válida. Se registrará como Alumno.")
+            "Alumno"
+        }
+    }
 
     // Formato de fecha: AAAA/MM/DD
     val formatoFecha = DateTimeFormatter.ofPattern("yyyy/MM/dd")
