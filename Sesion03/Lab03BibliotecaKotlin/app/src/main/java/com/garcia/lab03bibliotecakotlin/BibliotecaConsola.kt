@@ -14,8 +14,8 @@ fun main() {
     println("========================================")
     println("         SISTEMA DE BIBLIOTECA")
     println("========================================")
-    println("Registro de préstamo y cálculo de multas")
-    println("Ingrese los datos solicitados para registrar el préstamo.")
+    println("Registro de prestamo y calculo de multas")
+    println("Ingrese los datos solicitados para registrar el prestamo.")
 
     val titulo = pedirDato("Ingrese titulo del libro: ")
 
@@ -26,32 +26,32 @@ fun main() {
     println("1. Alumno")
     println("2. Docente")
 
-    val opcionUsuario = pedirDato("Ingrese una opción (1 o 2): ")
+    val opcionUsuario = pedirDato("Ingrese una opcion (1 o 2): ")
 
     val tipoUsuario = when (opcionUsuario) {
         "1" -> "Alumno"
         "2" -> "Docente"
         else -> {
-            println("Opción no válida. Se registrará como Alumno.")
+            println("Opcion no valida. Se registrara como Alumno.")
             "Alumno"
         }
     }
 
     // Formato de fecha: AAAA/MM/DD
-    val formatoFecha = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+    val formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
     val fechaPrestamo = LocalDate.parse(
-        pedirDato("Ingrese fecha de prestamo (AAAA/MM/DD): "),
+        pedirDato("Ingrese fecha de prestamo (DD/MM/AAAA): "),
         formatoFecha
     )
 
     val fechaDevolucion = LocalDate.parse(
-        pedirDato("Ingrese fecha de devolucion (AAAA/MM/DD): "),
+        pedirDato("Ingrese fecha de devolucion (DD/MM/AAAA):"),
         formatoFecha
     )
 
     val fechaEntrega = LocalDate.parse(
-        pedirDato("Ingrese fecha de entrega (AAAA/MM/DD): "),
+        pedirDato("Ingrese fecha de entrega (DD/MM/AAAA): "),
         formatoFecha
     )
     if (fechaEntrega.isBefore(fechaPrestamo)) {
