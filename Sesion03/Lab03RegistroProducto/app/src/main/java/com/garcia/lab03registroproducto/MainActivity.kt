@@ -1,5 +1,5 @@
 package com.garcia.lab03registroproducto
-
+import androidx.compose.ui.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -118,7 +118,6 @@ fun RegistroProductoScreen() {
         Spacer(
             modifier = Modifier.height(16.dp)
         )
-
         Button(
             onClick = {
                 mostrarResumen = true
@@ -176,6 +175,15 @@ fun RegistroProductoScreen() {
                     )
                 }
             }
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+            Text(
+                text = "✓ Producto registrado correctamente",
+                color = Color(0xFF2E7D32)
+            )
         }
     }
 }
