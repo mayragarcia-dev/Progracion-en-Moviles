@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -47,6 +49,10 @@ fun RegistroProductoScreen() {
 
     var cantidad by remember {
         mutableStateOf("")
+    }
+
+    var mostrarResumen by remember {
+        mutableStateOf(false)
     }
 
     Column(
@@ -107,6 +113,69 @@ fun RegistroProductoScreen() {
                 },
                 modifier = Modifier.weight(1f)
             )
+        }
+
+        Spacer(
+            modifier = Modifier.height(16.dp)
+        )
+
+        Button(
+            onClick = {
+                mostrarResumen = true
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("AGREGAR PRODUCTO")
+        }
+
+        if (mostrarResumen) {
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+            val precioNumero = precio.toDoubleOrNull() ?: 0.0
+            val cantidadNumero = cantidad.toIntOrNull() ?: 0
+            val importe = precioNumero * cantidadNumero
+
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+
+                    Text(
+                        text = "Resumen del producto",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
+
+                    Text(
+                        text = "Producto: $nombreProducto"
+                    )
+
+                    Text(
+                        text = "Precio: S/ ${String.format("%.2f", precioNumero)}"
+                    )
+
+                    Text(
+                        text = "Cantidad: $cantidadNumero"
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
+
+                    Text(
+                        text = "Importe: S/ ${String.format("%.2f", importe)}",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
         }
     }
 }
