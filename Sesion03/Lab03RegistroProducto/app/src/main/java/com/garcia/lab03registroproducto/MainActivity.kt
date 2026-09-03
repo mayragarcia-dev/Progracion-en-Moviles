@@ -47,7 +47,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun RegistroProductoScreen() {
 
-    // Estados de los campos
     var nombreProducto by remember {
         mutableStateOf("")
     }
@@ -64,12 +63,13 @@ fun RegistroProductoScreen() {
         mutableStateOf(false)
     }
 
-    // Color azul para encabezado y botón
+    var mensajeError by remember {
+        mutableStateOf("")
+    }
+
     val azul = Color(0xFF3F51B5)
 
     Scaffold(
-
-        // ENCABEZADO SUPERIOR
         topBar = {
             TopAppBar(
                 title = {
@@ -83,7 +83,6 @@ fun RegistroProductoScreen() {
                 )
             )
         }
-
     ) { paddingValues ->
 
         Column(
@@ -93,7 +92,6 @@ fun RegistroProductoScreen() {
                 .padding(16.dp)
         ) {
 
-            // TÍTULO PRINCIPAL
             Text(
                 text = "Nuevo producto",
                 style = MaterialTheme.typography.headlineSmall,
@@ -104,7 +102,6 @@ fun RegistroProductoScreen() {
                 modifier = Modifier.height(8.dp)
             )
 
-            // SUBTÍTULO
             Text(
                 text = "Completa los datos y presiona Agregar"
             )
@@ -113,11 +110,11 @@ fun RegistroProductoScreen() {
                 modifier = Modifier.height(16.dp)
             )
 
-            // CAMPO NOMBRE
             OutlinedTextField(
                 value = nombreProducto,
                 onValueChange = {
                     nombreProducto = it
+                    mensajeError = ""
                 },
                 label = {
                     Text("Nombre del producto:")
@@ -129,7 +126,6 @@ fun RegistroProductoScreen() {
                 modifier = Modifier.height(16.dp)
             )
 
-            // PRECIO Y CANTIDAD
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -139,6 +135,7 @@ fun RegistroProductoScreen() {
                     value = precio,
                     onValueChange = {
                         precio = it
+                        mensajeError = ""
                     },
                     label = {
                         Text("Precio:")
@@ -150,6 +147,7 @@ fun RegistroProductoScreen() {
                     value = cantidad,
                     onValueChange = {
                         cantidad = it
+                        mensajeError = ""
                     },
                     label = {
                         Text("Cantidad:")
@@ -162,31 +160,79 @@ fun RegistroProductoScreen() {
                 modifier = Modifier.height(16.dp)
             )
 
-            // BOTÓN AGREGAR PRODUCTO
-            Button(
-                onClick = {
-                    mostrarResumen = true
-                },
-                modifier = Modifier.fillMaxWidth()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("AGREGAR PRODUCTO")
+
+                Button(
+                    onClick = {
+                        val precioNumero = precio.toDoubleOrNull()
+                        val cantidadNumero = cantidad.toIntOrNull()
+
+                        when {
+                            nombreProducto.isBlank() -> {
+                                mensajeError = "Ingresa el nombre del producto"
+                                mostrarResumen = false
+                            }
+
+                            precioNumero == null || precioNumero <= 0 -> {
+                                mensajeError = "Ingresa un precio válido mayor que 0"
+                                mostrarResumen = false
+                            }
+
+                            cantidadNumero == null || cantidadNumero <= 0 -> {
+                                mensajeError = "Ingresa una cantidad válida mayor que 0"
+                                mostrarResumen = false
+                            }
+
+                            else -> {
+                                mensajeError = ""
+                                mostrarResumen = true
+                            }
+                        }
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("AGREGAR PRODUCTO")
+                }
+
+                Button(
+                    onClick = {
+                        nombreProducto = ""
+                        precio = ""
+                        cantidad = ""
+                        mensajeError = ""
+                        mostrarResumen = false
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("LIMPIAR")
+                }
             }
 
-            // MOSTRAR RESUMEN
+            if (mensajeError.isNotEmpty()) {
+
+                Spacer(
+                    modifier = Modifier.height(16.dp)
+                )
+
+                Text(
+                    text = mensajeError,
+                    color = Color.Red
+                )
+            }
+
             if (mostrarResumen) {
 
                 Spacer(
                     modifier = Modifier.height(16.dp)
                 )
 
-                // Conversión segura de datos
                 val precioNumero = precio.toDoubleOrNull() ?: 0.0
                 val cantidadNumero = cantidad.toIntOrNull() ?: 0
-
-                // Cálculo del importe
                 val importe = precioNumero * cantidadNumero
 
-                // TARJETA DE RESUMEN
                 Card(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -241,7 +287,6 @@ fun RegistroProductoScreen() {
                     modifier = Modifier.height(16.dp)
                 )
 
-                // MENSAJE DE CONFIRMACIÓN
                 Text(
                     text = "✓ Producto registrado correctamente",
                     color = Color(0xFF2E7D32)
