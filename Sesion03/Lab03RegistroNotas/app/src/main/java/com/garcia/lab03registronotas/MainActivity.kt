@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,6 +48,8 @@ fun RegistroNotasScreen() {
     var notaPOO by remember { mutableFloatStateOf(0f) }
     var notaMoviles by remember { mutableFloatStateOf(0f) }
     var notaBaseDatos by remember { mutableFloatStateOf(0f) }
+
+    var redondearPromedio by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -93,6 +97,26 @@ fun RegistroNotasScreen() {
                 nota = notaBaseDatos,
                 onNotaChange = { notaBaseDatos = it }
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                Text(
+                    text = "Redondear promedio final"
+                )
+
+                Switch(
+                    checked = redondearPromedio,
+                    onCheckedChange = {
+                        redondearPromedio = it
+                    }
+                )
+            }
         }
     }
 }
@@ -150,5 +174,3 @@ fun NotaCurso(
         }
     }
 }
-
-
