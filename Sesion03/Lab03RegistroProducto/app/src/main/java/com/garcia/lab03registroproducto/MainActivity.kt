@@ -167,7 +167,7 @@ fun RegistroProductoScreen() {
 
                 Button(
                     onClick = {
-                        val precioNumero = precio.toDoubleOrNull()
+                        val precioNumero = precio.replace(",", ".").toDoubleOrNull()
                         val cantidadNumero = cantidad.toIntOrNull()
 
                         when {
@@ -229,7 +229,7 @@ fun RegistroProductoScreen() {
                     modifier = Modifier.height(16.dp)
                 )
 
-                val precioNumero = precio.toDoubleOrNull() ?: 0.0
+                val precioNumero = precio.replace(",", ".").toDoubleOrNull() ?: 0.0
                 val cantidadNumero = cantidad.toIntOrNull() ?: 0
                 val importe = precioNumero * cantidadNumero
 
