@@ -1,4 +1,4 @@
-# Laboratorio 03 - Registro de Notas
+# Laboratorio 03- Tarea - Registro de Notas
 
 Aplicación Android desarrollada con **Kotlin** y **Jetpack Compose** para registrar las notas de cuatro cursos y calcular el promedio ponderado del estudiante.
 
@@ -157,13 +157,8 @@ La aplicación cuenta con:
 
 ## Capturas de pantalla
 
-### Pantalla principal
-
-> Colocar aquí la captura de la pantalla principal de la aplicación.
-
-### Resultado del cálculo
-
-> Colocar aquí una captura mostrando el promedio calculado.
+### Pantalla principal y Resultado del cálculo
+<img width="1600" height="1600" alt="image" src="https://github.com/user-attachments/assets/c4452c62-d64e-4a12-ba87-e88b14540e55" />
 
 ---
 
