@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -51,8 +52,8 @@ fun RegistroNotasScreen() {
     var notaBaseDatos by remember { mutableFloatStateOf(0f) }
 
     var redondearPromedio by remember { mutableStateOf(false) }
-
     var notasConfirmadas by remember { mutableStateOf(false) }
+    var calcularPromedio by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -137,6 +138,29 @@ fun RegistroNotasScreen() {
 
                 Text(
                     text = "Confirmo que las notas son correctas"
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    calcularPromedio = true
+                },
+                enabled = notasConfirmadas,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "CALCULAR PROMEDIO"
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (!calcularPromedio) {
+                Text(
+                    text = "Asigna las notas y confirma para calcular",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
