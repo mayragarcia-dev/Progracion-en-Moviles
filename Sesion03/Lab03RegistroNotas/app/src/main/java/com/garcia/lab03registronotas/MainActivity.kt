@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -142,7 +143,14 @@ fun RegistroNotasScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF7F7F7))
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFF3E5F5),
+                            Color(0xFFF7F7F7)
+                        )
+                    )
+                )
                 .padding(innerPadding)
         ) {
 
@@ -413,6 +421,28 @@ fun RegistroNotasScreen() {
 
                 if (calcularPromedio) {
 
+                    // ==========================================
+                    // OBSERVACIÓN SEGÚN PROMEDIO FINAL
+                    // ==========================================
+
+                    val observacion = when {
+                        promedioFinal >= 17f -> "EXCELENTE"
+                        promedioFinal >= 13f -> "APROBADO"
+                        promedioFinal >= 10f -> "EN RECUPERACIÓN"
+                        else -> "DESAPROBADO"
+                    }
+
+                    // ==========================================
+                    // COLOR DEL CHIP
+                    // ==========================================
+
+                    val colorChip = when {
+                        promedioFinal >= 17f -> Color(0xFF1B5E20)
+                        promedioFinal >= 13f -> Color(0xFF2E7D32)
+                        promedioFinal >= 10f -> Color(0xFFFFB300)
+                        else -> Color(0xFFC62828)
+                    }
+
                     Card(
 
                         modifier = Modifier.fillMaxWidth(),
@@ -474,7 +504,7 @@ fun RegistroNotasScreen() {
                             if (redondearPromedio) {
 
                                 Text(
-                                    text = "Promedio final: %.0f"
+                                    text = "Promedio final: %.0f (redondeado)"
                                         .format(promedioFinal),
 
                                     style = MaterialTheme.typography.titleMedium,
@@ -482,18 +512,6 @@ fun RegistroNotasScreen() {
                                     fontWeight = FontWeight.Bold,
 
                                     color = Color(0xFF222222)
-                                )
-
-                                Spacer(
-                                    modifier = Modifier.height(4.dp)
-                                )
-
-                                Text(
-                                    text = "Resultado redondeado",
-
-                                    style = MaterialTheme.typography.bodySmall,
-
-                                    color = Color(0xFF666666)
                                 )
 
                             } else {
@@ -515,34 +533,21 @@ fun RegistroNotasScreen() {
                             )
 
                             // ----------------------------------
-                            // ESTADO
+                            // OBSERVACIÓN
                             // ----------------------------------
-
-                            val aprobado = promedioFinal >= 11f
 
                             Card(
 
                                 shape = RoundedCornerShape(20.dp),
 
                                 colors = CardDefaults.cardColors(
-
-                                    containerColor =
-                                        if (aprobado) {
-                                            Color(0xFFE8F5E9)
-                                        } else {
-                                            Color(0xFFFFEBEE)
-                                        }
+                                    containerColor = colorChip
                                 )
                             ) {
 
                                 Text(
 
-                                    text =
-                                        if (aprobado) {
-                                            "APROBADO"
-                                        } else {
-                                            "DESAPROBADO"
-                                        },
+                                    text = observacion,
 
                                     modifier = Modifier.padding(
                                         horizontal = 16.dp,
@@ -551,12 +556,7 @@ fun RegistroNotasScreen() {
 
                                     fontWeight = FontWeight.Bold,
 
-                                    color =
-                                        if (aprobado) {
-                                            Color(0xFF2E7D32)
-                                        } else {
-                                            Color(0xFFC62828)
-                                        }
+                                    color = Color.White
                                 )
                             }
                         }
@@ -593,7 +593,7 @@ fun RegistroNotasScreen() {
             // ==========================================
 
             Text(
-                text = "Desarrollado por: Mayra Garcia",
+                text = "Desarrollado por: Mayra Julisa Garcia Rojas",
 
                 modifier = Modifier
                     .fillMaxWidth()
