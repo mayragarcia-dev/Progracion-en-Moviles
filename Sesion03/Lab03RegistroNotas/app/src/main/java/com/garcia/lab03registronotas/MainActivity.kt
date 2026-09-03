@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,8 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.garcia.lab03registronotas.ui.theme.Lab03RegistroNotasTheme
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -53,7 +56,10 @@ fun RegistroNotasScreen() {
 
     var redondearPromedio by remember { mutableStateOf(false) }
     var notasConfirmadas by remember { mutableStateOf(false) }
+
     var calcularPromedio by remember { mutableStateOf(false) }
+    var promedioPonderado by remember { mutableFloatStateOf(0f) }
+    var promedioFinal by remember { mutableFloatStateOf(0f) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -78,28 +84,40 @@ fun RegistroNotasScreen() {
                 nombre = "Fundamentos de Programación",
                 peso = "20%",
                 nota = notaFundamentos,
-                onNotaChange = { notaFundamentos = it }
+                onNotaChange = {
+                    notaFundamentos = it
+                    calcularPromedio = false
+                }
             )
 
             NotaCurso(
                 nombre = "Programación Orientada a Objetos",
                 peso = "25%",
                 nota = notaPOO,
-                onNotaChange = { notaPOO = it }
+                onNotaChange = {
+                    notaPOO = it
+                    calcularPromedio = false
+                }
             )
 
             NotaCurso(
                 nombre = "Programación en Móviles",
                 peso = "30%",
                 nota = notaMoviles,
-                onNotaChange = { notaMoviles = it }
+                onNotaChange = {
+                    notaMoviles = it
+                    calcularPromedio = false
+                }
             )
 
             NotaCurso(
                 nombre = "Base de Datos",
                 peso = "25%",
                 nota = notaBaseDatos,
-                onNotaChange = { notaBaseDatos = it }
+                onNotaChange = {
+                    notaBaseDatos = it
+                    calcularPromedio = false
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -118,6 +136,7 @@ fun RegistroNotasScreen() {
                     checked = redondearPromedio,
                     onCheckedChange = {
                         redondearPromedio = it
+                        calcularPromedio = false
                     }
                 )
             }
@@ -133,6 +152,7 @@ fun RegistroNotasScreen() {
                     checked = notasConfirmadas,
                     onCheckedChange = {
                         notasConfirmadas = it
+                        calcularPromedio = false
                     }
                 )
 
@@ -145,6 +165,19 @@ fun RegistroNotasScreen() {
 
             Button(
                 onClick = {
+
+                    promedioPonderado =
+                        (notaFundamentos * 0.20f) +
+                                (notaPOO * 0.25f) +
+                                (notaMoviles * 0.30f) +
+                                (notaBaseDatos * 0.25f)
+
+                    promedioFinal = if (redondearPromedio) {
+                        promedioPonderado.roundToInt().toFloat()
+                    } else {
+                        promedioPonderado
+                    }
+
                     calcularPromedio = true
                 },
                 enabled = notasConfirmadas,
@@ -158,10 +191,44 @@ fun RegistroNotasScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             if (!calcularPromedio) {
+
                 Text(
                     text = "Asigna las notas y confirma para calcular",
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+
+            } else {
+
+                Card(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+
+                        Text(
+                            text = "Resultado",
+                            style = MaterialTheme.typography.titleLarge
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "Promedio ponderado: %.2f".format(promedioPonderado)
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = if (redondearPromedio) {
+                                "Promedio final: %.0f (redondeado)".format(promedioFinal)
+                            } else {
+                                "Promedio final: %.2f".format(promedioFinal)
+                            }
+                        )
+                    }
+                }
             }
         }
     }
