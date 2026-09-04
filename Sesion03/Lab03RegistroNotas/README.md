@@ -158,7 +158,7 @@ La aplicación cuenta con:
 ## Capturas de pantalla
 
 ### Pantalla principal y Resultado del cálculo
-<img width="1600" height="1600" alt="image" src="https://github.com/user-attachments/assets/3f30b20f-e3e4-48b5-b25b-3a24498f5024" />
+<img width="1600" height="1600" alt="image" src="https://github.com/user-attachments/assets/0936ad73-7e78-449d-8899-42ea8d65bbc9" />
 
 
 ---
