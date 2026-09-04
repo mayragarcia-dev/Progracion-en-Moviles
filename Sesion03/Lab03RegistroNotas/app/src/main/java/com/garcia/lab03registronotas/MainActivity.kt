@@ -487,8 +487,12 @@ fun NotaCurso(
 
             Slider(
                 value = nota,
-                onValueChange = {
-                    onNotaChange(it)
+                onValueChange = { nuevoValor ->
+                    val notaEntera = nuevoValor
+                        .roundToInt()
+                        .coerceIn(0, 20)
+
+                    onNotaChange(notaEntera.toFloat())
                 },
                 valueRange = 0f..20f,
                 steps = 19,
