@@ -25,7 +25,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -42,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroNotasScreen() {
 
@@ -125,7 +125,14 @@ fun RegistroNotasScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF9F5FA))
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFF9F5FA),
+                            Color(0xFFEFE4F5)
+                        )
+                    )
+                )
                 .padding(innerPadding)
         ) {
 
@@ -292,7 +299,7 @@ fun RegistroNotasScreen() {
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF6A1B9A),
-                        disabledContainerColor = Color(0xFFC8B9DC),
+                        disabledContainerColor = Color(0xFFBDBDBD),
                         disabledContentColor = Color.White
                     )
                 ) {
@@ -319,6 +326,20 @@ fun RegistroNotasScreen() {
                 }
 
                 if (calcularPromedio) {
+
+                    val observacion = when {
+                        promedioFinal >= 17f -> "EXCELENTE"
+                        promedioFinal >= 13f -> "APROBADO"
+                        promedioFinal >= 10f -> "EN RECUPERACIÓN"
+                        else -> "DESAPROBADO"
+                    }
+
+                    val colorChip = when {
+                        promedioFinal >= 17f -> Color(0xFF2E7D32)
+                        promedioFinal >= 13f -> Color(0xFF43A047)
+                        promedioFinal >= 10f -> Color(0xFFFFB300)
+                        else -> Color(0xFFC62828)
+                    }
 
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -371,25 +392,17 @@ fun RegistroNotasScreen() {
                             Card(
                                 shape = RoundedCornerShape(20.dp),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = Color(0xFFDDF2DF)
+                                    containerColor = colorChip
                                 )
                             ) {
 
                                 Text(
-                                    text = if (promedioFinal >= 13f) {
-                                        "APROBADO"
-                                    } else {
-                                        "DESAPROBADO"
-                                    },
+                                    text = observacion,
                                     modifier = Modifier.padding(
                                         horizontal = 14.dp,
                                         vertical = 6.dp
                                     ),
-                                    color = if (promedioFinal >= 13f) {
-                                        Color(0xFF2E7D32)
-                                    } else {
-                                        Color(0xFFC62828)
-                                    },
+                                    color = Color.White,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -424,7 +437,7 @@ fun RegistroNotasScreen() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun NotaCurso(
     nombre: String,
@@ -475,10 +488,10 @@ fun NotaCurso(
             Slider(
                 value = nota,
                 onValueChange = {
-                    onNotaChange(it.roundToInt().toFloat())
+                    onNotaChange(it)
                 },
                 valueRange = 0f..20f,
-                steps = 0,
+                steps = 19,
                 modifier = Modifier
                     .weight(1f)
                     .height(36.dp),
@@ -496,7 +509,7 @@ fun NotaCurso(
 
                     SliderDefaults.Track(
                         sliderState = sliderState,
-                        modifier = Modifier.height(4.dp),
+                        modifier = Modifier.height(3.dp),
                         colors = SliderDefaults.colors(
                             activeTrackColor = Color(0xFF6A1B9A),
                             inactiveTrackColor = Color(0xFFD8C9E8)
@@ -523,7 +536,7 @@ fun NotaCurso(
             ) {
 
                 Text(
-                    text = nota.roundToInt().toString(),
+                    text = nota.toInt().toString(),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF6A1B9A)
