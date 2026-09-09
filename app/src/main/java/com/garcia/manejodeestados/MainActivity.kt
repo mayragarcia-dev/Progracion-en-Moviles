@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ManejoDeEstadosTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ContadorSinRemember(modifier = Modifier.padding(innerPadding))
+                    Paso2MutableState(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -27,32 +27,62 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ContadorSinRemember(modifier: Modifier = Modifier) {
-    var contador = 0
+fun Paso2MutableState(modifier: Modifier = Modifier) {
+    // Estado observable para el texto del campo de entrada
+    var nombreInput by remember { mutableStateOf("") }
+
+    // Estado observable para el mensaje de saludo guardado
+    var mensajeSaludo by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Parte 1: Sin remember",
-            style = MaterialTheme.typography.titleLarge
+            text = "Paso 2: mutableStateOf",
+            style = MaterialTheme.typography.headlineSmall
         )
+
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Contador: $contador",
-            style = MaterialTheme.typography.headlineMedium
+
+        // El OutlinedTextField lee y actualiza el estado 'nombreInput' en tiempo real
+        OutlinedTextField(
+            value = nombreInput,
+            onValueChange = { nuevoTexto -> nombreInput = nuevoTexto },
+            label = { Text("Escribe tu nombre") },
+            modifier = Modifier.fillMaxWidth()
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = {
-                contador++
-            }
+                if (nombreInput.isNotBlank()) {
+                    mensajeSaludo = "¡Hola, $nombreInput! Bienvenido al Paso 2."
+                    nombreInput = "" // Limpiamos el campo de entrada
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Incrementar")
+            Text("Saludar")
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Este Text se recompone automáticamente cuando 'mensajeSaludo' cambia
+        if (mensajeSaludo.isNotEmpty()) {
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = mensajeSaludo,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
         }
     }
 }
