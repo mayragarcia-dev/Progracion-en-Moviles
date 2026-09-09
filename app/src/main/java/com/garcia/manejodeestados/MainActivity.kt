@@ -35,10 +35,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TemperatureDisplay(modifier: Modifier = Modifier) {
-    // Estado de la temperatura inicializado en 20
     var temperatura by remember { mutableStateOf(20) }
 
-    // Bonus: Colorea de rojo si > 30 y de azul si < 10
     val colorTexto = when {
         temperatura > 30 -> Color.Red
         temperatura < 10 -> Color.Blue
@@ -80,9 +78,6 @@ fun TemperatureDisplay(modifier: Modifier = Modifier) {
     }
 }
 
-// ----------------------------------------------------------------------------
-// PANTALLA PRINCIPAL DE TAREAS
-// ----------------------------------------------------------------------------
 @Composable
 fun PantallaTareas() {
     var textoTarea by remember { mutableStateOf("") }
@@ -94,7 +89,6 @@ fun PantallaTareas() {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Muestra el componente de la Tarea 1
         TemperatureDisplay()
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -140,11 +134,9 @@ fun PantallaTareas() {
             style = MaterialTheme.typography.titleMedium
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
+        LazyColumn {
             items(listaTareas, key = { it.id }) { tarea ->
                 ItemTarea(
                     tarea = tarea,
@@ -162,9 +154,7 @@ fun PantallaTareas() {
         }
     }
 }
-// ----------------------------------------------------------------------------
-// COMPOSABLE DE CADA TAREA (Según imagen de la guía)
-// ----------------------------------------------------------------------------
+
 @Composable
 fun ItemTarea(
     tarea: Tarea,
