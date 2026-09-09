@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-// Modelo de datos para las tareas
 data class Tarea(
     val id: Int,
     val nombre: String,
@@ -34,9 +33,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// ----------------------------------------------------------------------------
-// TAREA 1: Control de Temperatura (TemperatureDisplay)
-// ----------------------------------------------------------------------------
 @Composable
 fun TemperatureDisplay(modifier: Modifier = Modifier) {
     // Estado de la temperatura inicializado en 20
@@ -181,7 +177,7 @@ fun ItemTarea(
         ) {
             Row(
                 modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.CenterHorizontally
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
                     checked = tarea.completada,
