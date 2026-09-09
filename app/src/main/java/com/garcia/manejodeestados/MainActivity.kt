@@ -94,16 +94,22 @@ fun PantallaTareas() {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Incluimos la Tarea 1 en la parte superior
+        // Muestra el componente de la Tarea 1
         TemperatureDisplay()
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Entrada de texto y botón para agregar
+        Text(
+            text = "Lista de tareas",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         OutlinedTextField(
             value = textoTarea,
             onValueChange = { textoTarea = it },
-            label = { Text("Escribe una tarea") },
+            label = { Text("Ingrese una tarea") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -112,19 +118,23 @@ fun PantallaTareas() {
         Button(
             onClick = {
                 if (textoTarea.isNotBlank()) {
-                    listaTareas.add(Tarea(id = contadorId, nombre = textoTarea))
+                    listaTareas.add(
+                        Tarea(
+                            id = contadorId,
+                            nombre = textoTarea
+                        )
+                    )
                     contadorId++
                     textoTarea = ""
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Agregar Tarea")
+            Text("Agregar tarea")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Contador de tareas agregadas
         Text(
             text = "Total de tareas: ${listaTareas.size}",
             style = MaterialTheme.typography.titleMedium
@@ -132,7 +142,6 @@ fun PantallaTareas() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Lista dinámica de tareas
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -153,7 +162,6 @@ fun PantallaTareas() {
         }
     }
 }
-
 // ----------------------------------------------------------------------------
 // COMPOSABLE DE CADA TAREA (Según imagen de la guía)
 // ----------------------------------------------------------------------------
