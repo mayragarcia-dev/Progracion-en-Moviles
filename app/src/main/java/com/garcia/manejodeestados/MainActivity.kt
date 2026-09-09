@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        ContadorRoto()
+                        ContadorConRemember()
                     }
                 }
             }
@@ -34,11 +34,19 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ContadorRoto() {
-    var contador = 0 // ⚠ Se resetea a 0 en cada recomposición
-    Column {
-        Text("Contador: $contador")
-        Button(onClick = { contador++ }) { // No causa recomposición
+fun ContadorConRemember() {
+    var contador by remember { mutableStateOf(0) }
+
+    Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Contador: $contador",
+            style = MaterialTheme.typography.headlineMedium
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = { contador++ }) {
             Text("Incrementar")
         }
     }
