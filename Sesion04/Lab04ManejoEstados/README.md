@@ -211,11 +211,15 @@ Lab04ManejoEstados/
 ├── README.md
 └── build.gradle.kts
 ```
+## Promnt
+<img width="748" height="865" alt="image" src="https://github.com/user-attachments/assets/c9d160e6-b610-4a09-9399-25688502dbfb" />
 
 ## Repositorio
 
 Repositorio del proyecto:
 
 https://github.com/mayragarcia-dev/Progracion-en-Moviles.git
+
+
 
 
