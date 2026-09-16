@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Lab04ManejoEstadosTheme {
-                TemperatureDisplay()
+                PantallaTareas()
             }
         }
     }
@@ -135,6 +135,19 @@ fun PantallaTareas() {
         Text(
             text = "Lista de tareas",
             style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = textoTarea,
+            onValueChange = {
+                textoTarea = it
+            },
+            label = {
+                Text("Ingrese una tarea")
+            },
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
