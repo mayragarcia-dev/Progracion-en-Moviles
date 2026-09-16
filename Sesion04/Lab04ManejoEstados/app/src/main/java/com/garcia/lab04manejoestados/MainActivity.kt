@@ -149,5 +149,26 @@ fun PantallaTareas() {
             },
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = {
+                if (textoTarea.isNotBlank()) {
+                    listaTareas.add(
+                        Tarea(
+                            id = contadorId,
+                            nombre = textoTarea
+                        )
+                    )
+
+                    contadorId++
+                    textoTarea = ""
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Agregar tarea")
+        }
     }
 }
