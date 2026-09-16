@@ -1,11 +1,11 @@
 package com.tecsup.garcia
 
 import android.os.Bundle
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -37,6 +37,14 @@ fun PantallaCarrito() {
     val productos = remember {
         mutableStateListOf<Producto>()
     }
+
+    val subtotal = productos.sumOf {
+        it.precio * it.cantidad
+    }
+
+    val igv = subtotal * 0.18
+
+    val total = subtotal + igv
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -125,6 +133,28 @@ fun PantallaCarrito() {
                         onEliminar = {
                             productos.remove(producto)
                         }
+                    )
+                }
+            }
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "Subtotal: S/ %.2f".format(subtotal)
+                    )
+
+                    Text(
+                        text = "IGV (18%): S/ %.2f".format(igv)
+                    )
+
+                    Text(
+                        text = "Total: S/ %.2f".format(total)
                     )
                 }
             }
