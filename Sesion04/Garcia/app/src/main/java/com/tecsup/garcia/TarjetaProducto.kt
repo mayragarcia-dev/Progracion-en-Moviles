@@ -21,6 +21,12 @@ fun TarjetaProducto(producto: Producto) {
             Text(
                 text = "S/ ${producto.precio} x ${producto.cantidad}"
             )
+
+            Text(
+                text = "Importe: S/ %.2f".format(
+                    producto.precio * producto.cantidad
+                )
+            )
         }
     }
 }
