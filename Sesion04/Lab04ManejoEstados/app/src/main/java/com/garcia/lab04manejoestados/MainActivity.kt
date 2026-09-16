@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.garcia.lab04manejoestados.ui.theme.Lab04ManejoEstadosTheme
 
@@ -110,6 +111,11 @@ fun ItemTarea(
                 Text(
                     text = tarea.nombre,
                     style = MaterialTheme.typography.bodyLarge,
+                    textDecoration = if (tarea.completada) {
+                        TextDecoration.LineThrough
+                    } else {
+                        TextDecoration.None
+                    },
                     modifier = Modifier.padding(top = 12.dp)
                 )
             }
