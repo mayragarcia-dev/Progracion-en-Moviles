@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,12 +34,21 @@ class MainActivity : ComponentActivity() {
 fun TemperatureDisplay() {
     var temperatura by remember { mutableStateOf(20) }
 
+    val colorTemperatura = when {
+        temperatura > 30 -> Color.Red
+        temperatura < 10 -> Color.Blue
+        else -> Color.Black
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Temperatura: $temperatura °C")
+        Text(
+            text = "Temperatura: $temperatura °C",
+            color = colorTemperatura
+        )
 
         Button(
             onClick = {
