@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +29,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 @Composable
 fun TemperatureDisplay() {
     var temperatura by remember { mutableStateOf(20) }
@@ -70,6 +72,51 @@ fun TemperatureDisplay() {
             }
         ) {
             Text("Resetear")
+        }
+    }
+}
+
+@Composable
+fun ItemTarea(
+    tarea: Tarea,
+    onEliminar: () -> Unit,
+    onCambiarEstado: (Boolean) -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                modifier = Modifier.weight(1f)
+            ) {
+                Checkbox(
+                    checked = tarea.completada,
+                    onCheckedChange = {
+                        onCambiarEstado(it)
+                    }
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = tarea.nombre,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(top = 12.dp)
+                )
+            }
+
+            Button(
+                onClick = onEliminar
+            ) {
+                Text("Eliminar")
+            }
         }
     }
 }
