@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.Button
 import com.garcia.lab04manejoestados.ui.theme.Lab04ManejoEstadosTheme
 
 class MainActivity : ComponentActivity() {
@@ -38,5 +39,21 @@ fun TemperatureDisplay() {
         verticalArrangement = Arrangement.Center
     ) {
         Text("Temperatura: $temperatura °C")
+
+        Button(
+            onClick = {
+                temperatura++
+            }
+        ) {
+            Text("Subir")
+        }
+
+        Button(
+            onClick = {
+                temperatura--
+            }
+        ) {
+            Text("Bajar")
+        }
     }
 }
