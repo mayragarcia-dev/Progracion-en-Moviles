@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,29 +22,21 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Lab04ManejoEstadosTheme {
-                Contador()
+                TemperatureDisplay()
             }
         }
     }
 }
 
 @Composable
-fun Contador() {
-    var contador by remember { mutableStateOf(0) }
+fun TemperatureDisplay() {
+    var temperatura by remember { mutableStateOf(20) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Contador: $contador")
-
-        Button(
-            onClick = {
-                contador++
-            }
-        ) {
-            Text("Incrementar")
-        }
+        Text("Temperatura: $temperatura °C")
     }
 }
