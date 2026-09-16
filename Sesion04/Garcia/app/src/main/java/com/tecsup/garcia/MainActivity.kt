@@ -214,11 +214,14 @@ fun PantallaCarrito() {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Total"
+                            text = "TOTAL",
+                            style = MaterialTheme.typography.titleLarge
                         )
 
                         Text(
-                            text = "S/ %.2f".format(total)
+                            text = "S/ %.2f".format(total),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
