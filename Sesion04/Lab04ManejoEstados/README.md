@@ -176,6 +176,7 @@ El flujo principal de la aplicación es:
 8. Si no existen tareas, se muestra el mensaje correspondiente.
 
 ## Captura de pantalla
+<img width="720" height="1600" alt="image" src="https://github.com/user-attachments/assets/2bf5978c-5b45-45c1-b603-7c284b1c44e4" />
 
 ## Pruebas realizadas
 
