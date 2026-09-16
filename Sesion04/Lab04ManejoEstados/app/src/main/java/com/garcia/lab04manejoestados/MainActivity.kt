@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.garcia.lab04manejoestados.ui.theme.Lab04ManejoEstadosTheme
 
+// Modelo de datos para representar una tarea
 data class Tarea(
     val id: Int,
     val nombre: String,
@@ -97,11 +98,9 @@ fun ItemTarea(
             ) {
                 Checkbox(
                     checked = tarea.completada,
-                    onCheckedChange = {
-                        onCambiarEstado(it)
-                    },
+                    onCheckedChange = { onCambiarEstado(it) },
                     colors = CheckboxDefaults.colors(
-                        checkedColor = Color(0xFF5E4E9E),
+                        checkedColor = Color(0xFF1A237E),
                         uncheckedColor = Color.Gray
                     )
                 )
@@ -126,6 +125,7 @@ fun ItemTarea(
 
 @Composable
 fun PantallaTareas() {
+    // Estados básicos de la pantalla de tareas
     var textoTarea by remember { mutableStateOf("") }
     var contadorId by remember { mutableIntStateOf(1) }
     val listaTareas = remember { mutableStateListOf<Tarea>() }
@@ -138,26 +138,28 @@ fun PantallaTareas() {
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Título de la aplicación centrado y con color según la imagen
         Text(
             text = "Lista de tareas - Tecsup",
             style = MaterialTheme.typography.headlineMedium,
-            color = Color.Black,
-            fontWeight = FontWeight.Normal,
+            color = Color(0xFF1A237E),
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Left
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Campo de texto con el texto correspondiente de la imagen
         OutlinedTextField(
             value = textoTarea,
             onValueChange = { textoTarea = it },
-            label = { Text("Ingrese una tarea") },
+            label = { Text("¿Qué tarea tienes pendiente?") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(4.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Gray,
-                focusedLabelColor = Color.Gray,
+                focusedBorderColor = Color(0xFF1A237E),
+                focusedLabelColor = Color(0xFF1A237E),
                 unfocusedBorderColor = Color.LightGray,
                 unfocusedLabelColor = Color.Gray
             )
@@ -165,13 +167,14 @@ fun PantallaTareas() {
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // Botón para agregar tareas estilizado según la imagen
         Button(
             onClick = {
                 if (textoTarea.isNotBlank()) {
                     listaTareas.add(
                         Tarea(
                             id = contadorId,
-                            nombre = textoTarea
+                            nombre = textoTarea.trim()
                         )
                     )
                     contadorId++
@@ -181,30 +184,31 @@ fun PantallaTareas() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(44.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5E4E9E)),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1A237E)),
             shape = RoundedCornerShape(16.dp)
         ) {
             Text(
                 text = "Agregar tarea",
                 color = Color.White,
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Contador total de tareas centrado según la imagen
         Text(
             text = "Total de tareas: ${listaTareas.size}",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Black,
-            fontWeight = FontWeight.Bold,
+            color = Color.Gray,
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Left
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // Lista dinámica de tareas
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
         ) {
