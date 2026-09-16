@@ -3,20 +3,19 @@ package com.garcia.lab04manejoestados
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.ui.graphics.Color
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.material3.Button
+import androidx.compose.ui.graphics.Color
 import com.garcia.lab04manejoestados.ui.theme.Lab04ManejoEstadosTheme
+
+data class Tarea(
+    val id: Int,
+    val nombre: String,
+    val completada: Boolean = false
+)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +28,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @Composable
 fun TemperatureDisplay() {
     var temperatura by remember { mutableStateOf(20) }
