@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.garcia.lab04manejoestados.ui.theme.Lab04ManejoEstadosTheme
@@ -19,15 +23,15 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Lab04ManejoEstadosTheme {
-                ContadorRoto()
+                Contador()
             }
         }
     }
 }
 
 @Composable
-fun ContadorRoto() {
-    var contador = 0
+fun Contador() {
+    var contador by remember { mutableStateOf(0) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
