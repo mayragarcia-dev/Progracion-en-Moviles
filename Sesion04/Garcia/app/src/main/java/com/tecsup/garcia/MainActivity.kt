@@ -122,33 +122,35 @@ fun PantallaCarrito() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
+            if (productos.isEmpty()) {
 
-                if (productos.isEmpty()) {
-                    item {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "No hay productos en el carrito"
-                            )
-                        }
-                    }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No hay productos en el carrito"
+                    )
                 }
 
-                items(productos) { producto ->
-                    TarjetaProducto(
-                        producto = producto,
-                        onEliminar = {
-                            productos.remove(producto)
-                        }
-                    )
+            } else {
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(productos) { producto ->
+                        TarjetaProducto(
+                            producto = producto,
+                            onEliminar = {
+                                productos.remove(producto)
+                            }
+                        )
+                    }
                 }
             }
 
