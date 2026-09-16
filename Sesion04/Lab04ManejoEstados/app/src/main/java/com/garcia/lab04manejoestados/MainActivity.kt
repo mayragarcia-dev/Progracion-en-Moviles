@@ -5,11 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.garcia.lab04manejoestados.ui.theme.Lab04ManejoEstadosTheme
 
 data class Tarea(
@@ -118,5 +118,23 @@ fun ItemTarea(
                 Text("Eliminar")
             }
         }
+    }
+}
+
+@Composable
+fun PantallaTareas() {
+    var textoTarea by remember { mutableStateOf("") }
+    var contadorId by remember { mutableStateOf(1) }
+    val listaTareas = remember { mutableStateListOf<Tarea>() }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Lista de tareas",
+            style = MaterialTheme.typography.headlineMedium
+        )
     }
 }
