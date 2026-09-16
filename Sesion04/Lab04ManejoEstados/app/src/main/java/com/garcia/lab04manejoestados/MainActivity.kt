@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -169,6 +171,38 @@ fun PantallaTareas() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Agregar tarea")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Total de tareas: ${listaTareas.size}"
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn {
+            items(
+                listaTareas,
+                key = { it.id }
+            ) { tarea ->
+                ItemTarea(
+                    tarea = tarea,
+                    onEliminar = {
+                        listaTareas.remove(tarea)
+                    },
+                    onCambiarEstado = { completada ->
+                        val index = listaTareas.indexOf(tarea)
+
+                        if (index != -1) {
+                            listaTareas[index] =
+                                listaTareas[index].copy(
+                                    completada = completada
+                                )
+                        }
+                    }
+                )
+            }
         }
     }
 }
