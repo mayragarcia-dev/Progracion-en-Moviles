@@ -170,21 +170,57 @@ fun PantallaCarrito() {
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = "Productos: ${productos.size}"
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Productos"
+                        )
 
-                    Text(
-                        text = "Subtotal: S/ %.2f".format(subtotal)
-                    )
+                        Text(
+                            text = "${productos.size}"
+                        )
+                    }
 
-                    Text(
-                        text = "IGV (18%): S/ %.2f".format(igv)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Subtotal"
+                        )
 
-                    Text(
-                        text = "Total: S/ %.2f".format(total)
-                    )
+                        Text(
+                            text = "S/ %.2f".format(subtotal)
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "IGV (18%)"
+                        )
+
+                        Text(
+                            text = "S/ %.2f".format(igv)
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Total"
+                        )
+
+                        Text(
+                            text = "S/ %.2f".format(total)
+                        )
+                    }
                 }
             }
         }
