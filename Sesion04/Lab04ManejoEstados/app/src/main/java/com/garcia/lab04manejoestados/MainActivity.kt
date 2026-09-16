@@ -179,6 +179,10 @@ fun PantallaTareas() {
             text = "Total de tareas: ${listaTareas.size}"
         )
 
+        Text(
+            text = "Tareas completadas: ${listaTareas.count { it.completada }}"
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn {
