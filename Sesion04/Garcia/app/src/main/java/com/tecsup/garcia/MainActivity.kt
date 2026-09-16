@@ -171,6 +171,10 @@ fun PantallaCarrito() {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
+                        text = "Productos: ${productos.size}"
+                    )
+
+                    Text(
                         text = "Subtotal: S/ %.2f".format(subtotal)
                     )
 
