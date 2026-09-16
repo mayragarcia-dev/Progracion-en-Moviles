@@ -111,6 +111,11 @@ fun ItemTarea(
                 Text(
                     text = tarea.nombre,
                     style = MaterialTheme.typography.bodyLarge,
+                    color = if (tarea.completada) {
+                        Color.Gray
+                    } else {
+                        Color.Black
+                    },
                     textDecoration = if (tarea.completada) {
                         TextDecoration.LineThrough
                     } else {
