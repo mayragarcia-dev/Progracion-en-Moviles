@@ -120,7 +120,12 @@ fun PantallaCarrito() {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(productos) { producto ->
-                    TarjetaProducto(producto)
+                    TarjetaProducto(
+                        producto = producto,
+                        onEliminar = {
+                            productos.remove(producto)
+                        }
+                    )
                 }
             }
         }
