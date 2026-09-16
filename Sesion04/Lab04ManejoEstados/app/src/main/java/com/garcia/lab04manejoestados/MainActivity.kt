@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.garcia.lab04manejoestados.ui.theme.Lab04ManejoEstadosTheme
 
@@ -225,5 +226,13 @@ fun PantallaTareas() {
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewPantallaTareas() {
+    MaterialTheme {
+        PantallaTareas()
     }
 }
