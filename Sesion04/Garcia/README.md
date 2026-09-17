@@ -4,8 +4,8 @@
 **Descripción:** Aplicación de carrito de compras desarrollada en Jetpack Compose que permite agregar productos, visualizarlos en una lista, eliminarlos con confirmación y calcular subtotales, IGV y descuentos automáticos.
 
 ## Capturas de Pantalla
-> [!NOTE]
-> Aquí se deben adjuntar las capturas `vacio.png` y `con_productos.png` solicitadas en la entrega final.
+<img width="1538" height="1599" alt="image" src="https://github.com/user-attachments/assets/f2924647-34da-41ac-baf4-746d3fdcc9c9" />
+
 
 ## Respuestas Conceptuales
 
