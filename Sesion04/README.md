@@ -56,14 +56,7 @@ Los totales dependen de la lista `productos`. Cuando se agrega o elimina un prod
 En este proyecto se utiliza para separar los nombres de los valores del resumen de compra.
 
 ## Capturas de pantalla
-<img width="297" height="614" alt="Captura de pantalla 2026-09-16 a las 5 41 35 p  m" src="https://github.com/user-attachments/assets/5d523a65-8ce0-4276-84a0-84b9f210cfd0" />
+<img width="1538" height="1599" alt="image" src="https://github.com/user-attachments/assets/decd8b44-c8c6-4dd6-9e95-b77b5997b765" />
 
 
-### Carrito con productos
-
-<img width="293" height="631" alt="Captura de pantalla 2026-09-16 a las 5 42 21 p  m" src="https://github.com/user-attachments/assets/8fbf3c20-d0cc-4e18-8462-a41e08e817d7" />
-
-### Resumen de compra
-
-Aquí se colocará una captura mostrando el subtotal, IGV, total y cantidad de productos.
 
