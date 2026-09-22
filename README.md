@@ -1,60 +1,62 @@
-# Laboratorio 02 - Carrito de Compras en Kotlin
+# Programación en Móviles
 
-**Nombre:** Mayra Julisa Garcia Rojas
+Repositorio donde se almacenan los trabajos, laboratorios y proyectos desarrollados durante el curso de **Programación en Móviles**.
 
-## Descripción
+Los proyectos fueron desarrollados utilizando principalmente **Kotlin** y herramientas de desarrollo para aplicaciones móviles.
 
-Este proyecto consiste en desarrollar un programa de carrito de compras utilizando el lenguaje Kotlin.
+## Datos del estudiante
 
-El programa permite registrar productos indicando su nombre, precio y cantidad. También permite mostrar los productos agregados al carrito y calcular el subtotal, el IGV del 18% y el total de la compra.
+- **Nombre:** Mayra Julisa Garcia Rojas
+- **Curso:** Programación en Móviles
+- **Institución:** TECSUP
+- **Lenguaje principal:** Kotlin
 
-Además, el programa identifica el producto más caro y aplica un descuento dependiendo del monto total de la compra.
+## Contenido del repositorio
 
-## Funciones implementadas
+El repositorio está organizado por sesiones:
 
-Las principales funciones implementadas en el programa son:
+| Sesión | Contenido |
+|--------|-----------|
+| [Sesion01](./Sesion01) | Actividades y ejercicios de la primera sesión |
+| [Sesion02](./Sesion02) | Laboratorios y ejercicios relacionados con Kotlin |
+| [Sesion03](./Sesion03) | Actividades y proyectos de la tercera sesión |
+| [Sesion04](./Sesion04) | Desarrollo de aplicaciones móviles con Kotlin y Jetpack Compose |
+| [Sesion05](./Sesion05) | Actividades y proyectos de la quinta sesión |
+| [Sesion06](./Sesion06) | Actividades y proyectos de la sexta sesión |
 
-* `calcularSubtotal()` - Calcula el subtotal de todos los productos considerando su precio y cantidad.
-* `calcularIGV()` - Calcula el IGV correspondiente al 18% del subtotal.
-* `calcularTotal()` - Calcula el total sumando el subtotal y el IGV.
-* `mostrarDetalle()` - Muestra el detalle de los productos del carrito con cantidades e importes alineados.
-* `calcularDescuento()` - Calcula el descuento según el monto total utilizando la estructura `when`.
-* `maxByOrNull` - Permite encontrar el producto con el precio más alto.
+## Tecnologías utilizadas
 
-## Productos registrados
+- Kotlin
+- Android Studio
+- Jetpack Compose
+- Gradle
+- Git
+- GitHub
 
-El carrito contiene los siguientes productos:
+## Proyectos
 
-* Laptop HP
-* Mouse Logitech
-* Teclado Mecánico
-* Audífonos Sony
+Durante las sesiones se desarrollan diferentes ejercicios y laboratorios para practicar conceptos de programación y desarrollo de aplicaciones móviles.
 
-## Resultado de la ejecución
+Entre los trabajos realizados se encuentra un **carrito de compras en Kotlin**, donde se aplicaron conceptos como:
 
-El programa muestra el detalle del carrito y realiza los cálculos correspondientes.
+- `data class`
+- Variables `val` y `var`
+- Listas mutables
+- Funciones
+- Ciclos `for`
+- Estructuras `when`
+- Colecciones de Kotlin
+- Cálculos de subtotal, IGV y total
+- Manejo de productos
 
-captura-consola.png
+También se desarrollan aplicaciones utilizando **Jetpack Compose**, trabajando con componentes de interfaz, estados, listas y tarjetas de productos.
 
-### Resultado final
+## Objetivo
 
-* **Subtotal:** S/ 3731.00
-* **IGV (18%):** S/ 671.58
-* **Total a pagar:** S/ 4402.58
-* **Producto más caro:** Laptop HP (S/ 2500.00)
-* **Descuento aplicado:** S/ 220.13
-* **Total con descuento:** S/ 4182.45
+El objetivo de este repositorio es almacenar y organizar los trabajos realizados durante el curso, permitiendo llevar un registro del aprendizaje y de los proyectos desarrollados en cada sesión.
 
-## Respuesta: ¿Por qué `val` y `var`?
+## Autora
 
-En Kotlin, `val` se utiliza para declarar una variable cuyo valor no puede ser reasignado después de su inicialización. En cambio, `var` permite modificar el valor de una variable posteriormente.
+**Mayra Julisa Garcia Rojas**
 
-En la clase `Producto`, `nombre` y `precio` fueron declarados como `val` porque representan datos que no deberían cambiar después de crear el producto.
-
-Por otro lado, `cantidad` fue declarada como `var` porque la cantidad de un producto puede cambiar durante el uso del carrito.
-
-Si se intenta cambiar el precio después de crear un producto, Kotlin mostrará un error porque `precio` fue declarado como `val`.
-
-## Conclusión
-
-En este laboratorio se aplicaron conceptos fundamentales de Kotlin, como `data class`, variables `val` y `var`, listas mutables, funciones, ciclos `for`, estructuras `when`, funciones de colecciones como `maxByOrNull` y formato de salida mediante `String.format`.
+Estudiante de TECSUP.
