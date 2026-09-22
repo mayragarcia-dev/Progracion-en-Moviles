@@ -1,4 +1,37 @@
 package com.tuapp.navlab.screens
 
-class DetailScreen {
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+
+@Composable
+fun DetailScreen(
+    navController: NavController,
+    itemId: Int
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+
+        Text("Detalle del elemento")
+
+        Text("ID del elemento: $itemId")
+
+        Button(
+            onClick = {
+                navController.popBackStack()
+            }
+        ) {
+            Text("Volver")
+        }
+    }
 }
