@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.tuapp.navlab.navigation.Screen
 import com.tuapp.navlab.screens.DetailScreen
 import com.tuapp.navlab.screens.HomeScreen
+import com.tuapp.navlab.screens.ListScreen
 import com.tuapp.navlab.screens.ProfileScreen
 import com.tuapp.navlab.ui.theme.NavLabTheme
 
