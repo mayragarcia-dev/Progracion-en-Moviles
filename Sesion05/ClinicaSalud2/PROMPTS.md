@@ -30,3 +30,5 @@ Este documento recopila los prompts y solicitudes principales utilizados durante
 * Establecimiento de **Mayra García** como usuaria principal ("Hola, Mayra", iniciales "MG").
 * Rediseño visual de la pantalla de **Historial médico** con tarjetas estructuradas y datos del paciente.
 * Creación de la pantalla y ruta dedicada para el perfil del usuario (`PerfilUsuarioScreen` / `"perfil_usuario"`).
+
+## An�lisis adicional de IA
