@@ -75,3 +75,5 @@ ClinicaSalud2/
 Proyecto acad√©mico - Programaci√≥n en M√≥viles.
 
 <!-- ActualizaciÛn de colores corporativos -->
+
+<!-- OptimizaciÛn de componentes -->
