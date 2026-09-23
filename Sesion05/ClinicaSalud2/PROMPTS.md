@@ -1,36 +1,60 @@
-# Registro de Prompts - Clínica Salud+
+## Prompts utilizados para la mejora con IA
 
-Este documento recopila los prompts y solicitudes principales utilizados durante el desarrollo asistido por IA de la aplicación **Clínica Salud+**, estructurado por etapas y mejoras.
+### Prompt 1 - Refactorización general
 
-## 1. Prompt inicial de desarrollo
-> "Crear una aplicación Android llamada Clínica Salud+ usando Kotlin, Jetpack Compose y Material 3. La aplicación debe ser sencilla y apropiada para un proyecto académico..."
+> Actúa como Tech Lead de Android. Necesito que mejores el código con buenas prácticas y diseño según esta interfaz de usuario. Esto está dirigido a mejorar mi código con IA, manteniendo los mismos conceptos básicos. Quiero que respondas en formato de código limpio.
+>
+> Ten en cuenta estas condiciones: No agregar código avanzado ni tampoco otra interfaz que no sea igual a la imagen enviada.
 
-**Resultado:** Definición de restricciones, pantallas de Inicio, Perfil del médico, Agendar cita, Confirmación, Menú lateral (Drawer), Mis citas e Historial médico.
+**Resultado:**
+Se revisó y reorganizó el código existente, manteniendo Kotlin, Jetpack Compose y Material 3, sin agregar arquitecturas o funcionalidades avanzadas.
 
-## 2. Solicitud de desarrollo por etapas
-> "La aplicación debe desarrollarse por etapas, respetando los commits requeridos por la actividad. Después de realizar cada cambio funcional importante, debes detenerte y esperar mi confirmación..."
+### Prompt 2 - Mantener la interfaz original
 
-**Resultado:** Implementación dividida en 3 etapas principales con control estricto de commits.
+> Analiza el código actual y mejóralo manteniendo exactamente la misma interfaz visual mostrada en la imagen. No cambies colores, distribución, textos, botones ni componentes visuales. Solo realiza mejoras internas de organización, legibilidad y buenas prácticas.
 
-## 3. Solicitud de documentación (README.md)
-> "En el readme pon esto # Clínica Salud+..."
+**Resultado:**
+Se realizaron mejoras internas sin modificar la estructura visual principal de la aplicación.
 
-**Resultado:** Creación del archivo `README.md` con descripción, funcionalidades, tecnologías, estructura de carpetas, evidencias y créditos de la autora.
+### Prompt 3 - Componentes reutilizables
 
-## 4. Prompt como Tech Lead de Android para refactorización
-> "Actúa como Tech Lead de Android y ayúdame a mejorar el código de mi aplicación Clínica Salud+. El objetivo es mejorar la calidad, organización, legibilidad y buenas prácticas..."
+> Revisa este código de Jetpack Compose y busca partes repetidas que puedan convertirse en componentes reutilizables. Mantén el mismo diseño, colores, tamaños y comportamiento. No agregues funcionalidades nuevas ni utilices código avanzado.
 
-**Resultado:** Refactorización interna del código en `MainActivity.kt`, creación del componente reutilizable `SelectionChip`, y optimización de estructura sin alterar la interfaz visual.
+**Resultado:**
+Se identificaron elementos reutilizables y se mejoró la organización de los componentes Compose.
 
-## 5. Ajustes de diseño, tonos y usuario principal
-> "Fíjate en sus tonos de colores y diseño... Que Mayra García sea el usuario principal... Mejorar visual de historial médico y revisar la ruta que lleva a Perfil."
+### Prompt 4 - Colores y diseño institucional
 
-**Resultado:** 
-* Desactivación del color dinámico en el tema (`Theme.kt`) para asegurar el color morado corporativo.
-* Establecimiento de **Mayra García** como usuaria principal ("Hola, Mayra", iniciales "MG").
-* Rediseño visual de la pantalla de **Historial médico** con tarjetas estructuradas y datos del paciente.
-* Creación de la pantalla y ruta dedicada para el perfil del usuario (`PerfilUsuarioScreen` / `"perfil_usuario"`).
+> Mejora los colores de la aplicación tomando como referencia la interfaz enviada. Mantén una apariencia sencilla y académica. Utiliza la paleta morada indicada y evita colores dinámicos que puedan cambiar la apariencia en diferentes dispositivos. No modifiques la distribución de las pantallas.
 
-## An�lisis adicional de IA
+**Resultado:**
+Se estableció una paleta morada institucional y se desactivó el color dinámico para mantener una apariencia consistente.
 
-## Sincronizaci�n completada
+### Prompt 5 - Perfil del usuario
+
+> Revisa la navegación de la aplicación y corrige la ruta que lleva al perfil del usuario. El perfil debe mostrar a Mayra García como usuario principal. Mantén el mismo estilo visual de la aplicación y no agregues funcionalidades adicionales.
+
+**Resultado:**
+Se corrigió la navegación hacia `PerfilUsuarioScreen` y se estableció a Mayra García como usuaria principal.
+
+### Prompt 6 - Historial médico
+
+> Mejora visualmente la pantalla de Historial médico utilizando los componentes básicos de Jetpack Compose y Material 3. Mantén el diseño general de la aplicación y utiliza tarjetas para organizar la información. No agregues base de datos ni funcionalidades avanzadas.
+
+**Resultado:**
+Se reorganizó la información del historial médico mediante tarjetas, manteniendo una implementación sencilla.
+
+### Prompt 7 - Agendamiento de citas
+
+> Revisa la pantalla de agendamiento de citas y mejora su diseño y organización. Mantén los mismos conceptos básicos del proyecto y la interfaz actual. No agregues APIs, base de datos, Firebase ni funcionalidades avanzadas.
+
+**Resultado:**
+Se mejoró la organización de la pantalla de agendamiento y se mantuvo la lógica sencilla del proyecto.
+
+### Prompt 8 - Revisión final
+
+> Actúa como revisor de código Android. Revisa el proyecto completo y detecta problemas de organización, código repetido o componentes que puedan mejorarse. Realiza únicamente cambios sencillos y apropiados para un proyecto académico. No cambies la interfaz ni agregues nuevas funcionalidades.
+
+**Resultado:**
+Se realizó una revisión general del código y se aplicaron mejoras de organización y legibilidad respetando el alcance original.
+
