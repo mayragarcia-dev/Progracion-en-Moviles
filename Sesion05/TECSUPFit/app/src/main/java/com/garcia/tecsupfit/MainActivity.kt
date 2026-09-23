@@ -10,18 +10,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.garcia.tecsupfit.ui.theme.TECSUPFitTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             TECSUPFitTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+                    InicioScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -31,17 +33,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun InicioScreen(
+    modifier: Modifier = Modifier
+) {
+    val clases = listOf(
+        Clase(1, "Yoga", "08:00 AM"),
+        Clase(2, "Spinning", "10:00 AM"),
+        Clase(3, "Funcional", "06:00 PM")
+    )
+
     Text(
-        text = "Hello $name!",
+        text = "TECSUP Fit - ${clases.size} clases disponibles",
         modifier = modifier
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TECSUPFitTheme {
-        Greeting("Android")
-    }
 }
