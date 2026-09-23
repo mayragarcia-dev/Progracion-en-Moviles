@@ -3,7 +3,7 @@ package com.garcia.tecsupfit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,31 +14,52 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.garcia.tecsupfit.ui.theme.TECSUPFitTheme
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
         setContent {
             TECSUPFitTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize()
-                ) { innerPadding ->
-                    InicioScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+
+                val navController = rememberNavController()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "inicio"
+                ) {
+
+                    composable("inicio") {
+                        InicioScreen(navController)
+                    }
+
+                    composable("detalle/{id}") { backStackEntry ->
+
+                        val id = backStackEntry.arguments
+                            ?.getString("id")
+                            ?.toIntOrNull()
+
+                        if (id != null) {
+                            DetalleScreen(
+                                id = id,
+                                navController = navController
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -46,9 +67,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun InicioScreen(
-    modifier: Modifier = Modifier
-) {
+fun InicioScreen(navController: NavController) {
+
     val clases = listOf(
         Clase(1, "Yoga", "08:00 AM"),
         Clase(2, "Spinning", "10:00 AM"),
@@ -60,63 +80,65 @@ fun InicioScreen(
     }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(top = 16.dp)
+            .padding(16.dp)
     ) {
 
         Text(
-            text = "TECSUP Fit",
-            modifier = Modifier.padding(horizontal = 16.dp)
+            text = "TECSUP Fit"
         )
 
         LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(vertical = 16.dp)
         ) {
+
             item {
+
                 Button(
                     onClick = {
                         filtroSeleccionado = "Hoy"
                     },
-                    modifier = Modifier.padding(start = 16.dp),
                     enabled = filtroSeleccionado != "Hoy"
                 ) {
-                    Text(
-                        text = "Hoy"
-                    )
+                    Text("Hoy")
                 }
             }
 
             item {
+
                 Button(
                     onClick = {
                         filtroSeleccionado = "Esta semana"
                     },
                     enabled = filtroSeleccionado != "Esta semana"
                 ) {
-                    Text(
-                        text = "Esta semana"
-                    )
+                    Text("Esta semana")
                 }
             }
         }
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+
             items(clases) { clase ->
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .clickable {
+                            navController.navigate(
+                                "detalle/${clase.id}"
+                            )
+                        }
                 ) {
+
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
+
                         Text(
                             text = clase.nombre
                         )
@@ -127,6 +149,68 @@ fun InicioScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun DetalleScreen(
+    id: Int,
+    navController: NavController
+) {
+
+    val clases = listOf(
+        Clase(1, "Yoga", "08:00 AM"),
+        Clase(2, "Spinning", "10:00 AM"),
+        Clase(3, "Funcional", "06:00 PM")
+    )
+
+    val clase = clases.find {
+        it.id == id
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+
+        Text(
+            text = "Detalle de clase"
+        )
+
+        if (clase != null) {
+
+            Text(
+                text = clase.nombre
+            )
+
+            Text(
+                text = clase.horario
+            )
+
+            Button(
+                onClick = {
+                    // Se implementará en el siguiente commit
+                }
+            ) {
+                Text("Reservar cupo")
+            }
+
+        } else {
+
+            Text(
+                text = "Clase no encontrada"
+            )
+        }
+
+        Button(
+            onClick = {
+                navController.popBackStack()
+            }
+        ) {
+            Text("Volver")
         }
     }
 }
