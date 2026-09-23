@@ -4,34 +4,47 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.garcia.clinicasalud.ui.theme.ClinicaSaludTheme
 import kotlinx.coroutines.launch
 
-// Data classes
+// ==========================================
+// DATA MODELS & SAMPLE DATA
+// ==========================================
+
 data class Doctor(
     val id: Int,
     val name: String,
     val specialty: String,
-    val rating: Double
+    val rating: Double,
+    val experience: String = "12 años exp.",
+    val reviewsCount: Int = 128,
+    val description: String = "Especialista en arritmias e hipertensión, formación en la Clínica Mayo."
 )
 
 data class Appointment(
@@ -39,14 +52,13 @@ data class Appointment(
     val specialty: String,
     val date: String,
     val time: String,
-    val status: String // "Confirmada" or "Completada"
+    val status: String // "Confirmada" o "Completada"
 )
 
 val sampleDoctors = listOf(
-    Doctor(1, "Dr. Juan Pérez", "Cardiología", 4.9),
-    Doctor(2, "Dra. María Gómez", "Pediatría", 4.8),
-    Doctor(3, "Dr. Carlos Ruiz", "Dermatología", 4.7),
-    Doctor(4, "Dra. Ana Torres", "Cardiología", 4.9)
+    Doctor(1, "Dra. Ana Torres", "Cardiología", 4.9, "12 años exp.", 128, "Especialista en arritmias e hipertensión, formación en la Clínica Mayo."),
+    Doctor(2, "Dr. Luis Vega", "Pediatría", 4.7, "8 años exp.", 95, "Especialista en pediatría general y desarrollo infantil."),
+    Doctor(3, "Dra. Rosa Díaz", "Dermatología", 4.8, "10 años exp.", 110, "Especialista en dermatología clínica y estética.")
 )
 
 class MainActivity : ComponentActivity() {
@@ -61,6 +73,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// ==========================================
+// MAIN APP COMPOSABLE & NAVIGATION DRAWER
+// ==========================================
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClinicaApp() {
@@ -68,28 +84,62 @@ fun ClinicaApp() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    // Shared list of appointments (starts with sample data including a "Completada" one)
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     val appointmentsList = remember {
         mutableStateListOf(
-            Appointment("Dr. Juan Pérez", "Cardiología", "24/09/2026", "10:00 AM", "Completada")
+            Appointment("Dra. Ana Torres", "Cardiología", "Viernes 27", "10:30 am", "Confirmada"),
+            Appointment("Dr. Luis Vega", "Pediatría", "Miércoles 15", "3:00 pm", "Completada")
         )
     }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Clínica Salud+",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
+            ModalDrawerSheet(
+                modifier = Modifier.width(300.dp)
+            ) {
+                // Drawer Header
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "MG",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Text(
+                        text = "Mayra García",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Paciente",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 HorizontalDivider()
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Drawer Items (highlighting selected route matching reference image)
                 NavigationDrawerItem(
                     label = { Text("Inicio") },
-                    selected = false,
-                    icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
+                    selected = currentRoute == "inicio",
+                    icon = { Icon(Icons.Default.Home, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
                         navController.navigate("inicio") {
@@ -100,8 +150,8 @@ fun ClinicaApp() {
                 )
                 NavigationDrawerItem(
                     label = { Text("Mis citas") },
-                    selected = false,
-                    icon = { Icon(Icons.Default.DateRange, contentDescription = "Mis citas") },
+                    selected = currentRoute == "mis_citas",
+                    icon = { Icon(Icons.Default.DateRange, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
                         navController.navigate("mis_citas")
@@ -110,11 +160,21 @@ fun ClinicaApp() {
                 )
                 NavigationDrawerItem(
                     label = { Text("Historial médico") },
-                    selected = false,
-                    icon = { Icon(Icons.Default.History, contentDescription = "Historial médico") },
+                    selected = currentRoute == "historial",
+                    icon = { Icon(Icons.Default.History, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
                         navController.navigate("historial")
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+                NavigationDrawerItem(
+                    label = { Text("Perfil") },
+                    selected = currentRoute == "perfil_usuario",
+                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate("perfil_usuario")
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
@@ -158,10 +218,8 @@ fun ClinicaApp() {
                 val doctor = sampleDoctors.find { it.id == doctorId } ?: sampleDoctors[0]
 
                 AgendarCitaScreen(
-                    doctor = doctor,
                     onBackClick = { navController.popBackStack() },
                     onConfirmarCita = { date, time ->
-                        // Add new appointment as "Confirmada"
                         appointmentsList.add(
                             Appointment(
                                 doctorName = doctor.name,
@@ -188,18 +246,15 @@ fun ClinicaApp() {
                 )
             ) { backStackEntry ->
                 val doctorName = backStackEntry.arguments?.getString("doctorName") ?: ""
-                val specialty = backStackEntry.arguments?.getString("specialty") ?: ""
                 val date = backStackEntry.arguments?.getString("date") ?: ""
                 val time = backStackEntry.arguments?.getString("time") ?: ""
 
                 ConfirmacionScreen(
                     doctorName = doctorName,
-                    specialty = specialty,
-                    date = date,
-                    time = time,
-                    onVolverInicio = {
-                        navController.navigate("inicio") {
-                            popUpTo("inicio") { inclusive = true }
+                    dateTimeText = "$date, $time",
+                    onVerMisCitas = {
+                        navController.navigate("mis_citas") {
+                            popUpTo("inicio")
                         }
                     }
                 )
@@ -217,9 +272,19 @@ fun ClinicaApp() {
                     onBackClick = { navController.popBackStack() }
                 )
             }
+
+            composable("perfil_usuario") {
+                PerfilUsuarioScreen(
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
         }
     }
 }
+
+// ==========================================
+// 1. INICIO SCREEN
+// ==========================================
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -228,14 +293,10 @@ fun InicioScreen(
     onDoctorClick: (Doctor) -> Unit,
     onMenuClick: () -> Unit
 ) {
-    val specialties = listOf("Todos", "Cardiología", "Pediatría", "Dermatología")
-    var selectedSpecialty by remember { mutableStateOf("Todos") }
+    val specialties = listOf("Cardiología", "Pediatría", "Dermatología")
+    var selectedSpecialty by remember { mutableStateOf("Cardiología") }
 
-    val filteredDoctors = if (selectedSpecialty == "Todos") {
-        doctors
-    } else {
-        doctors.filter { it.specialty == selectedSpecialty }
-    }
+    val filteredDoctors = doctors.filter { it.specialty == selectedSpecialty }
 
     Scaffold(
         topBar = {
@@ -243,12 +304,13 @@ fun InicioScreen(
                 title = { Text("Clínica Salud+") },
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menú"
-                        )
+                        Icon(Icons.Default.Menu, contentDescription = "Menú", tint = MaterialTheme.colorScheme.onPrimary)
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         }
     ) { innerPadding ->
@@ -256,21 +318,23 @@ fun InicioScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Especialidades",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
+                text = "Hola, Mayra",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
+            // Specialty Chips
             LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(bottom = 16.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(specialties) { specialty ->
+                    val isSelected = selectedSpecialty == specialty
                     FilterChip(
-                        selected = selectedSpecialty == specialty,
+                        selected = isSelected,
                         onClick = { selectedSpecialty = specialty },
                         label = { Text(specialty) }
                     )
@@ -278,13 +342,14 @@ fun InicioScreen(
             }
 
             Text(
-                text = "Médicos Disponibles",
+                text = "Médicos disponibles",
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
+                fontWeight = FontWeight.Bold
             )
 
+            // Doctors List
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(filteredDoctors) { doctor ->
@@ -300,30 +365,65 @@ fun DoctorCard(doctor: Doctor, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = doctor.name,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Especialidad: ${doctor.specialty}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Calificación: ⭐ ${doctor.rating}",
-                style = MaterialTheme.typography.bodySmall
-            )
+            // Purple avatar circle with plus icon
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = doctor.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = doctor.specialty,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(text = "⭐", fontSize = 12.sp)
+                Text(
+                    text = "${doctor.rating}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
+
+// ==========================================
+// 2. PERFIL DEL MÉDICO SCREEN
+// ==========================================
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -335,10 +435,10 @@ fun PerfilMedicoScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Perfil del Médico") },
+                title = { Text("Perfil del médico") },
                 navigationIcon = {
-                    TextButton(onClick = onBackClick) {
-                        Text("Atrás")
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
                     }
                 }
             )
@@ -348,63 +448,106 @@ fun PerfilMedicoScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Card(
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(
+                // Profile Avatar Circle with Plus
+                Box(
                     modifier = Modifier
-                        .padding(24.dp)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = doctor.name,
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                    Text(
-                        text = "Especialidad: ${doctor.specialty}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = "Calificación: ⭐ ${doctor.rating}",
-                        style = MaterialTheme.typography.bodyMedium
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(36.dp),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
+
+                Text(
+                    text = doctor.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    text = "${doctor.specialty} · ${doctor.experience}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(text = "⭐", fontSize = 14.sp)
+                    Text(
+                        text = "${doctor.rating} (${doctor.reviewsCount} reseñas)",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = doctor.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
             Button(
                 onClick = onAgendarClick,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(25.dp)
             ) {
-                Text("Agendar cita")
+                Text(text = "Agendar cita", fontSize = 16.sp)
             }
         }
     }
 }
 
+// ==========================================
+// 3. AGENDAR CITA SCREEN
+// ==========================================
+
+data class DateOption(val dayName: String, val dayNumber: String)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AgendarCitaScreen(
-    doctor: Doctor,
     onBackClick: () -> Unit,
     onConfirmarCita: (String, String) -> Unit
 ) {
-    val dates = listOf("25/09/2026", "26/09/2026", "27/09/2026")
-    val times = listOf("09:00 AM", "11:00 AM", "03:00 PM")
+    val dates = listOf(
+        DateOption("Jue", "26"),
+        DateOption("Vie", "27"),
+        DateOption("Sáb", "28")
+    )
+    val times = listOf("9:00", "10:30", "3:00")
 
-    var selectedDate by remember { mutableStateOf(dates[0]) }
-    var selectedTime by remember { mutableStateOf(times[0]) }
+    var selectedDate by remember { mutableStateOf("Vie 27") }
+    var selectedTime by remember { mutableStateOf("10:30") }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Agendar Cita") },
+                title = { Text("Agendar cita") },
                 navigationIcon = {
-                    TextButton(onClick = onBackClick) {
-                        Text("Atrás")
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
                     }
                 }
             )
@@ -414,116 +557,220 @@ fun AgendarCitaScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = "Médico: ${doctor.name} (${doctor.specialty})",
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            Text(
-                text = "Seleccione Fecha:",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                dates.forEach { date ->
-                    FilterChip(
-                        selected = selectedDate == date,
-                        onClick = { selectedDate = date },
-                        label = { Text(date) }
+                // Date Section matching Figure 1 design (Day top, Number bottom)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "Selecciona fecha",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        dates.forEach { dateOpt ->
+                            val dateString = "${dateOpt.dayName} ${dateOpt.dayNumber}"
+                            val isSelected = selectedDate == dateString
+                            DateSelectionChip(
+                                dayName = dateOpt.dayName,
+                                dayNumber = dateOpt.dayNumber,
+                                isSelected = isSelected,
+                                onClick = { selectedDate = dateString }
+                            )
+                        }
+                    }
+                }
+
+                // Time Section matching Figure 1 design
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "Selecciona hora",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        times.forEach { time ->
+                            val isSelected = selectedTime == time
+                            TimeSelectionChip(
+                                time = time,
+                                isSelected = isSelected,
+                                onClick = { selectedTime = time }
+                            )
+                        }
+                    }
                 }
             }
-
-            Text(
-                text = "Seleccione Hora:",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                times.forEach { time ->
-                    FilterChip(
-                        selected = selectedTime == time,
-                        onClick = { selectedTime = time },
-                        label = { Text(time) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = { onConfirmarCita(selectedDate, selectedTime) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(25.dp)
             ) {
-                Text("Confirmar cita")
+                Text(text = "Confirmar cita", fontSize = 16.sp)
             }
         }
     }
 }
+
+@Composable
+fun DateSelectionChip(
+    dayName: String,
+    dayNumber: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        color = backgroundColor,
+        modifier = Modifier.size(width = 72.dp, height = 72.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = dayName,
+                color = contentColor,
+                style = MaterialTheme.typography.bodySmall
+            )
+            Text(
+                text = dayNumber,
+                color = contentColor,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+    }
+}
+
+@Composable
+fun TimeSelectionChip(
+    time: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        color = backgroundColor,
+        modifier = Modifier.size(width = 90.dp, height = 50.dp)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = time,
+                color = contentColor,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
+// ==========================================
+// 4. CONFIRMACIÓN SCREEN
+// ==========================================
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfirmacionScreen(
     doctorName: String,
-    specialty: String,
-    date: String,
-    time: String,
-    onVolverInicio: () -> Unit
+    dateTimeText: String,
+    onVerMisCitas: () -> Unit
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Confirmación de Cita") }
-            )
+            TopAppBar(title = { Text("") })
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Card(
-                modifier = Modifier.fillMaxWidth()
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
+                // Green checkmark badge
+                Box(
                     modifier = Modifier
-                        .padding(24.dp)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                        .size(72.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFE8F5E9)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "¡Cita agendada con éxito!",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = Color(0xFF4CAF50),
+                        modifier = Modifier.size(40.dp)
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Médico: $doctorName", style = MaterialTheme.typography.bodyLarge)
-                    Text(text = "Especialidad: $specialty", style = MaterialTheme.typography.bodyLarge)
-                    Text(text = "Fecha: $date", style = MaterialTheme.typography.bodyLarge)
-                    Text(text = "Hora: $time", style = MaterialTheme.typography.bodyLarge)
                 }
+
+                Text(
+                    text = "¡Cita agendada!",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = doctorName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Text(
+                    text = dateTimeText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
-            Spacer(modifier = Modifier.weight(1f))
-
             Button(
-                onClick = onVolverInicio,
-                modifier = Modifier.fillMaxWidth()
+                onClick = onVerMisCitas,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(25.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
             ) {
-                Text("Volver al inicio")
+                Text(text = "Ver mis citas", fontSize = 16.sp)
             }
         }
     }
 }
+
+// ==========================================
+// 5. MIS CITAS SCREEN
+// ==========================================
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -534,94 +781,10 @@ fun MisCitasScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mis Citas") },
+                title = { Text("Mis citas") },
                 navigationIcon = {
-                    TextButton(onClick = onBackClick) {
-                        Text("Atrás")
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-        ) {
-            if (appointments.isEmpty()) {
-                Text("No tienes citas registradas.")
-            } else {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(appointments) { appointment ->
-                        AppointmentCard(appointment = appointment)
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun AppointmentCard(appointment: Appointment) {
-    val isConfirmed = appointment.status == "Confirmada"
-    val containerColor = if (isConfirmed) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
-
-    Card(
-        colors = CardDefaults.cardColors(containerColor = containerColor),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = appointment.doctorName,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = appointment.status,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (isConfirmed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Text(
-                text = "Especialidad: ${appointment.specialty}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Fecha: ${appointment.date} - Hora: ${appointment.time}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HistorialMedicoScreen(
-    onBackClick: () -> Unit
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Historial Médico") },
-                navigationIcon = {
-                    TextButton(onClick = onBackClick) {
-                        Text("Atrás")
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
                     }
                 }
             )
@@ -634,41 +797,355 @@ fun HistorialMedicoScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Card(
-                modifier = Modifier.fillMaxWidth()
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxSize()
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = "Información del Paciente",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(text = "Tipo de Sangre: O+", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "Alergias: Ninguna conocida", style = MaterialTheme.typography.bodyMedium)
-                }
-            }
-
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = "Consultas Anteriores",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(text = "• 24/09/2026 - Dr. Juan Pérez (Cardiología)", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "• 10/08/2026 - Dra. María Gómez (Pediatría)", style = MaterialTheme.typography.bodyMedium)
+                items(appointments) { appointment ->
+                    AppointmentCard(appointment = appointment)
                 }
             }
         }
+    }
+}
+
+@Composable
+fun AppointmentCard(appointment: Appointment) {
+    val isConfirmed = appointment.status == "Confirmada"
+    val badgeContainerColor = if (isConfirmed) Color(0xFFE8F5E9) else MaterialTheme.colorScheme.surfaceVariant
+    val badgeContentColor = if (isConfirmed) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onSurfaceVariant
+    val accentColor = if (isConfirmed) Color(0xFF4CAF50) else Color.Transparent
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Left vertical accent bar matching Figure 2 design
+            if (isConfirmed) {
+                Box(
+                    modifier = Modifier
+                        .width(6.dp)
+                        .height(80.dp)
+                        .background(accentColor)
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = appointment.doctorName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${appointment.date}, ${appointment.time}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                // Status Badge
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = badgeContainerColor
+                ) {
+                    Text(
+                        text = appointment.status,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = badgeContentColor,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ==========================================
+// 6. HISTORIAL MÉDICO SCREEN
+// ==========================================
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HistorialMedicoScreen(
+    onBackClick: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Historial médico") },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Patient Info Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primaryContainer),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Column {
+                            Text(
+                                text = "Mayra García",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Paciente · ID: 849203",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text(
+                                text = "Tipo de Sangre",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = "🩸 O+",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Column {
+                            Text(
+                                text = "Alergias",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = "⚠️ Ninguna",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Past Consultations Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "Consultas Anteriores",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    ConsultationItem(
+                        date = "24/09/2026",
+                        doctor = "Dra. Ana Torres",
+                        specialty = "Cardiología",
+                        status = "Completada"
+                    )
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+                    ConsultationItem(
+                        date = "10/08/2026",
+                        doctor = "Dr. Luis Vega",
+                        specialty = "Pediatría",
+                        status = "Completada"
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ConsultationItem(
+    date: String,
+    doctor: String,
+    specialty: String,
+    status: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = doctor,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                text = "$specialty · $date",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant
+        ) {
+            Text(
+                text = status,
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+// ==========================================
+// 7. PERFIL DE USUARIO SCREEN
+// ==========================================
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PerfilUsuarioScreen(
+    onBackClick: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Mi Perfil") },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            // Avatar
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "MG",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Text(
+                text = "Mayra García",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = "Paciente registrado",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    ProfileInfoRow(label = "Correo electrónico", value = "mayra.garcia@clinicasalud.com")
+                    HorizontalDivider()
+                    ProfileInfoRow(label = "Teléfono", value = "+52 555 123 4567")
+                    HorizontalDivider()
+                    ProfileInfoRow(label = "Tipo de Sangre", value = "O+")
+                    HorizontalDivider()
+                    ProfileInfoRow(label = "ID de Paciente", value = "#849203")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileInfoRow(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
