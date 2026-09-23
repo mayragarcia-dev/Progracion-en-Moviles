@@ -10,7 +10,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.garcia.clinicasalud.ui.theme.ClinicaSaludTheme
+import kotlinx.coroutines.launch
 
 // Data classes
 data class Doctor(
@@ -35,7 +39,7 @@ data class Appointment(
     val specialty: String,
     val date: String,
     val time: String,
-    val status: String
+    val status: String // "Confirmada" or "Completada"
 )
 
 val sampleDoctors = listOf(
@@ -57,10 +61,13 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClinicaApp() {
     val navController = rememberNavController()
-    
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
     // Shared list of appointments (starts with sample data including a "Completada" one)
     val appointmentsList = remember {
         mutableStateListOf(
@@ -68,88 +75,148 @@ fun ClinicaApp() {
         )
     }
 
-    NavHost(navController = navController, startDestination = "inicio") {
-        composable("inicio") {
-            InicioScreen(
-                doctors = sampleDoctors,
-                onDoctorClick = { doctor ->
-                    navController.navigate("perfil/${doctor.id}")
-                },
-                onMenuClick = {
-                    // Drawer implementation in next stage or placeholder
-                }
-            )
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Clínica Salud+",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+                HorizontalDivider()
+                NavigationDrawerItem(
+                    label = { Text("Inicio") },
+                    selected = false,
+                    icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate("inicio") {
+                            popUpTo("inicio") { inclusive = true }
+                        }
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+                NavigationDrawerItem(
+                    label = { Text("Mis citas") },
+                    selected = false,
+                    icon = { Icon(Icons.Default.DateRange, contentDescription = "Mis citas") },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate("mis_citas")
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+                NavigationDrawerItem(
+                    label = { Text("Historial médico") },
+                    selected = false,
+                    icon = { Icon(Icons.Default.History, contentDescription = "Historial médico") },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate("historial")
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+            }
         }
+    ) {
+        NavHost(navController = navController, startDestination = "inicio") {
+            composable("inicio") {
+                InicioScreen(
+                    doctors = sampleDoctors,
+                    onDoctorClick = { doctor ->
+                        navController.navigate("perfil/${doctor.id}")
+                    },
+                    onMenuClick = {
+                        scope.launch { drawerState.open() }
+                    }
+                )
+            }
 
-        composable(
-            route = "perfil/{doctorId}",
-            arguments = listOf(navArgument("doctorId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val doctorId = backStackEntry.arguments?.getInt("doctorId") ?: 1
-            val doctor = sampleDoctors.find { it.id == doctorId } ?: sampleDoctors[0]
+            composable(
+                route = "perfil/{doctorId}",
+                arguments = listOf(navArgument("doctorId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val doctorId = backStackEntry.arguments?.getInt("doctorId") ?: 1
+                val doctor = sampleDoctors.find { it.id == doctorId } ?: sampleDoctors[0]
 
-            PerfilMedicoScreen(
-                doctor = doctor,
-                onBackClick = { navController.popBackStack() },
-                onAgendarClick = {
-                    navController.navigate("agendar/${doctor.id}")
-                }
-            )
-        }
+                PerfilMedicoScreen(
+                    doctor = doctor,
+                    onBackClick = { navController.popBackStack() },
+                    onAgendarClick = {
+                        navController.navigate("agendar/${doctor.id}")
+                    }
+                )
+            }
 
-        composable(
-            route = "agendar/{doctorId}",
-            arguments = listOf(navArgument("doctorId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val doctorId = backStackEntry.arguments?.getInt("doctorId") ?: 1
-            val doctor = sampleDoctors.find { it.id == doctorId } ?: sampleDoctors[0]
+            composable(
+                route = "agendar/{doctorId}",
+                arguments = listOf(navArgument("doctorId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val doctorId = backStackEntry.arguments?.getInt("doctorId") ?: 1
+                val doctor = sampleDoctors.find { it.id == doctorId } ?: sampleDoctors[0]
 
-            AgendarCitaScreen(
-                doctor = doctor,
-                onBackClick = { navController.popBackStack() },
-                onConfirmarCita = { date, time ->
-                    // Add new appointment as "Confirmada"
-                    appointmentsList.add(
-                        Appointment(
-                            doctorName = doctor.name,
-                            specialty = doctor.specialty,
-                            date = date,
-                            time = time,
-                            status = "Confirmada"
+                AgendarCitaScreen(
+                    doctor = doctor,
+                    onBackClick = { navController.popBackStack() },
+                    onConfirmarCita = { date, time ->
+                        // Add new appointment as "Confirmada"
+                        appointmentsList.add(
+                            Appointment(
+                                doctorName = doctor.name,
+                                specialty = doctor.specialty,
+                                date = date,
+                                time = time,
+                                status = "Confirmada"
+                            )
                         )
-                    )
-                    navController.navigate("confirmacion/${doctor.name}/${doctor.specialty}/$date/$time") {
-                        popUpTo("inicio")
+                        navController.navigate("confirmacion/${doctor.name}/${doctor.specialty}/$date/$time") {
+                            popUpTo("inicio")
+                        }
                     }
-                }
-            )
-        }
+                )
+            }
 
-        composable(
-            route = "confirmacion/{doctorName}/{specialty}/{date}/{time}",
-            arguments = listOf(
-                navArgument("doctorName") { type = NavType.StringType },
-                navArgument("specialty") { type = NavType.StringType },
-                navArgument("date") { type = NavType.StringType },
-                navArgument("time") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val doctorName = backStackEntry.arguments?.getString("doctorName") ?: ""
-            val specialty = backStackEntry.arguments?.getString("specialty") ?: ""
-            val date = backStackEntry.arguments?.getString("date") ?: ""
-            val time = backStackEntry.arguments?.getString("time") ?: ""
+            composable(
+                route = "confirmacion/{doctorName}/{specialty}/{date}/{time}",
+                arguments = listOf(
+                    navArgument("doctorName") { type = NavType.StringType },
+                    navArgument("specialty") { type = NavType.StringType },
+                    navArgument("date") { type = NavType.StringType },
+                    navArgument("time") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val doctorName = backStackEntry.arguments?.getString("doctorName") ?: ""
+                val specialty = backStackEntry.arguments?.getString("specialty") ?: ""
+                val date = backStackEntry.arguments?.getString("date") ?: ""
+                val time = backStackEntry.arguments?.getString("time") ?: ""
 
-            ConfirmacionScreen(
-                doctorName = doctorName,
-                specialty = specialty,
-                date = date,
-                time = time,
-                onVolverInicio = {
-                    navController.navigate("inicio") {
-                        popUpTo("inicio") { inclusive = true }
+                ConfirmacionScreen(
+                    doctorName = doctorName,
+                    specialty = specialty,
+                    date = date,
+                    time = time,
+                    onVolverInicio = {
+                        navController.navigate("inicio") {
+                            popUpTo("inicio") { inclusive = true }
+                        }
                     }
-                }
-            )
+                )
+            }
+
+            composable("mis_citas") {
+                MisCitasScreen(
+                    appointments = appointmentsList,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            composable("historial") {
+                HistorialMedicoScreen(
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
         }
     }
 }
@@ -453,6 +520,154 @@ fun ConfirmacionScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Volver al inicio")
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MisCitasScreen(
+    appointments: List<Appointment>,
+    onBackClick: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Mis Citas") },
+                navigationIcon = {
+                    TextButton(onClick = onBackClick) {
+                        Text("Atrás")
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
+            if (appointments.isEmpty()) {
+                Text("No tienes citas registradas.")
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(appointments) { appointment ->
+                        AppointmentCard(appointment = appointment)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AppointmentCard(appointment: Appointment) {
+    val isConfirmed = appointment.status == "Confirmada"
+    val containerColor = if (isConfirmed) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
+    }
+
+    Card(
+        colors = CardDefaults.cardColors(containerColor = containerColor),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = appointment.doctorName,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = appointment.status,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (isConfirmed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Text(
+                text = "Especialidad: ${appointment.specialty}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Fecha: ${appointment.date} - Hora: ${appointment.time}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HistorialMedicoScreen(
+    onBackClick: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Historial Médico") },
+                navigationIcon = {
+                    TextButton(onClick = onBackClick) {
+                        Text("Atrás")
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Información del Paciente",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(text = "Tipo de Sangre: O+", style = MaterialTheme.typography.bodyMedium)
+                    Text(text = "Alergias: Ninguna conocida", style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Consultas Anteriores",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(text = "• 24/09/2026 - Dr. Juan Pérez (Cardiología)", style = MaterialTheme.typography.bodyMedium)
+                    Text(text = "• 10/08/2026 - Dra. María Gómez (Pediatría)", style = MaterialTheme.typography.bodyMedium)
+                }
             }
         }
     }
