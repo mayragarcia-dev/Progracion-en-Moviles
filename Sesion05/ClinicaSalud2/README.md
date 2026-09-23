@@ -52,12 +52,14 @@ ClinicaSalud2/
 ## Evidencias
 
 ### 1. Código de la aplicación
+<img width="1742" height="970" alt="image" src="https://github.com/user-attachments/assets/4b2d79e5-cef8-4855-9efe-cf7e1aa6714a" />
 
-![Captura del código](capturas/codigo.png)
+
 
 ### 2. Pantallas de la aplicación
 
-![Captura de la aplicación](capturas/aplicacion.png)
+<img width="617" height="699" alt="image" src="https://github.com/user-attachments/assets/b61cc1be-c836-4384-894a-571944d26001" />
+
 
 ## Ejecución
 
