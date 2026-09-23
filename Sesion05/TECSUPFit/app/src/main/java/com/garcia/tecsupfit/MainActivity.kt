@@ -60,6 +60,20 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
+
+                    composable("confirmacion/{id}") { backStackEntry ->
+
+                        val id = backStackEntry.arguments
+                            ?.getString("id")
+                            ?.toIntOrNull()
+
+                        if (id != null) {
+                            ConfirmacionScreen(
+                                id = id,
+                                navController = navController
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -95,7 +109,6 @@ fun InicioScreen(navController: NavController) {
         ) {
 
             item {
-
                 Button(
                     onClick = {
                         filtroSeleccionado = "Hoy"
@@ -107,7 +120,6 @@ fun InicioScreen(navController: NavController) {
             }
 
             item {
-
                 Button(
                     onClick = {
                         filtroSeleccionado = "Esta semana"
@@ -192,10 +204,74 @@ fun DetalleScreen(
 
             Button(
                 onClick = {
-                    // Se implementará en el siguiente commit
+                    navController.navigate(
+                        "confirmacion/${clase.id}"
+                    )
                 }
             ) {
                 Text("Reservar cupo")
+            }
+
+        } else {
+
+            Text(
+                text = "Clase no encontrada"
+            )
+        }
+
+        Button(
+            onClick = {
+                navController.popBackStack()
+            }
+        ) {
+            Text("Volver")
+        }
+    }
+}
+
+@Composable
+fun ConfirmacionScreen(
+    id: Int,
+    navController: NavController
+) {
+
+    val clases = listOf(
+        Clase(1, "Yoga", "08:00 AM"),
+        Clase(2, "Spinning", "10:00 AM"),
+        Clase(3, "Funcional", "06:00 PM")
+    )
+
+    val clase = clases.find {
+        it.id == id
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+
+        Text(
+            text = "Reserva confirmada"
+        )
+
+        if (clase != null) {
+
+            Text(
+                text = "Clase: ${clase.nombre}"
+            )
+
+            Text(
+                text = "Horario: ${clase.horario}"
+            )
+
+            Button(
+                onClick = {
+                    // Se implementará en el siguiente commit
+                }
+            ) {
+                Text("Ver reservas")
             }
 
         } else {
