@@ -9,28 +9,31 @@ import androidx.navigation.navArgument
 import com.tuapp.navlab.screens.DetailScreen
 import com.tuapp.navlab.screens.HomeScreen
 import com.tuapp.navlab.screens.ListScreen
+import com.tuapp.navlab.screens.LoginScreen
 import com.tuapp.navlab.screens.ProfileScreen
 
 @Composable
 fun AppNavigation() {
-
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Login.route
     ) {
+        composable(Screen.Login.route) {
+            LoginScreen(navController = navController)
+        }
 
         composable(Screen.Home.route) {
-            HomeScreen(navController)
+            HomeScreen(navController = navController)
         }
 
         composable(Screen.List.route) {
-            ListScreen(navController)
+            ListScreen(navController = navController)
         }
 
         composable(Screen.Profile.route) {
-            ProfileScreen(navController)
+            ProfileScreen(navController = navController)
         }
 
         composable(
@@ -38,16 +41,14 @@ fun AppNavigation() {
             arguments = listOf(
                 navArgument("itemId") {
                     type = NavType.IntType
-                    defaultValue = 0
+                    defaultValue = 1
                 }
             )
         ) { backStackEntry ->
-
-            val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
-
+            val itemId = backStackEntry.arguments?.getInt("itemId") ?: 1
             DetailScreen(
                 navController = navController,
-                itemId = itemId
+                studentId = if (itemId <= 0) 1 else itemId
             )
         }
     }
