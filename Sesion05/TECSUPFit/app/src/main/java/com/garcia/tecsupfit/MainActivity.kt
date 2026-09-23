@@ -74,6 +74,10 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
+
+                    composable("reservas") {
+                        ReservasScreen(navController)
+                    }
                 }
             }
         }
@@ -268,7 +272,7 @@ fun ConfirmacionScreen(
 
             Button(
                 onClick = {
-                    // Se implementará en el siguiente commit
+                    navController.navigate("reservas")
                 }
             ) {
                 Text("Ver reservas")
@@ -285,6 +289,68 @@ fun ConfirmacionScreen(
             onClick = {
                 navController.popBackStack()
             }
+        ) {
+            Text("Volver")
+        }
+    }
+}
+
+@Composable
+fun ReservasScreen(navController: NavController) {
+
+    val reservas = listOf(
+        Clase(1, "Yoga", "08:00 AM"),
+        Clase(2, "Spinning", "10:00 AM"),
+        Clase(3, "Funcional", "06:00 PM")
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+
+        Text(
+            text = "Mis reservas"
+        )
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+
+            items(reservas) { reserva ->
+
+                Card(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+
+                        Text(
+                            text = reserva.nombre
+                        )
+
+                        Text(
+                            text = reserva.horario
+                        )
+
+                        Text(
+                            text = "Estado: Confirmada"
+                        )
+                    }
+                }
+            }
+        }
+
+        Button(
+            onClick = {
+                navController.popBackStack()
+            },
+            modifier = Modifier.padding(top = 16.dp)
         ) {
             Text("Volver")
         }
