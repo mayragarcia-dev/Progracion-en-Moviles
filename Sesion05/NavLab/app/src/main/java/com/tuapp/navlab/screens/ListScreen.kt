@@ -37,12 +37,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.tuapp.navlab.model.Student
 import com.tuapp.navlab.model.sampleStudents
 import com.tuapp.navlab.navigation.Screen
+import com.tuapp.navlab.ui.theme.NavLabTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -151,5 +154,13 @@ private fun StudentItemCard(
                 tint = Color.Gray
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ListScreenPreview() {
+    NavLabTheme {
+        ListScreen(navController = rememberNavController())
     }
 }

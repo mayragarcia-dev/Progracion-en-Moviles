@@ -5,19 +5,30 @@ data class Student(
     val name: String,
     val career: String,
     val studentId: String = "2024-0001",
-    val email: String = "juan.leon@example.com",
-    val phone: String = "987654321",
-    val cycle: String = "5to Ciclo",
-    val faculty: String = "Ingeniería y Tecnología",
-    val biography: String = "Estudiante destacado con interés en desarrollo Android."
+    val email: String = "mayra.garcia@tecsup.edu.pe",
+    val phone: String = "934008523",
+    val cycle: String = "4to Ciclo",
+    val faculty: String = "Diseño y Desarrollo de Software",
+    val biography: String = "Estudiante destacada con interés en desarrollo Android."
 )
 
 val sampleStudents = listOf(
     Student(
         id = 1,
+        name = "Mayra Garcia",
+        career = "Diseño y Desarrollo de Software",
+        studentId = "2024-0001",
+        email = "mayra.garcia@tecsup.edu.pe",
+        phone = "934008523",
+        cycle = "4to Ciclo",
+        faculty = "Diseño y Desarrollo de Software",
+        biography = "Estudiante destacada con interés en desarrollo Android."
+    ),
+    Student(
+        id = 2,
         name = "Juan León",
         career = "Ingeniería de Sistemas",
-        studentId = "2024-0001",
+        studentId = "2024-0002",
         email = "juan.leon@example.com",
         phone = "987654321",
         cycle = "5to Ciclo",
@@ -25,10 +36,10 @@ val sampleStudents = listOf(
         biography = "Estudiante destacado con interés en desarrollo Android."
     ),
     Student(
-        id = 2,
+        id = 3,
         name = "Maria Garcia",
         career = "Arquitectura",
-        studentId = "2024-0002",
+        studentId = "2024-0003",
         email = "maria.garcia@example.com",
         phone = "976543210",
         cycle = "5to Ciclo",
@@ -36,10 +47,10 @@ val sampleStudents = listOf(
         biography = "Apasionada por el diseño de espacios sostenibles y urbanismo."
     ),
     Student(
-        id = 3,
+        id = 4,
         name = "Carlos Perez",
         career = "Medicina",
-        studentId = "2024-0003",
+        studentId = "2024-0004",
         email = "carlos.perez@example.com",
         phone = "965432109",
         cycle = "6to Ciclo",
@@ -47,10 +58,10 @@ val sampleStudents = listOf(
         biography = "Interesado en investigación médica y pediatría."
     ),
     Student(
-        id = 4,
+        id = 5,
         name = "Ana Lopez",
         career = "Derecho",
-        studentId = "2024-0004",
+        studentId = "2024-0005",
         email = "ana.lopez@example.com",
         phone = "954321098",
         cycle = "3er Ciclo",
@@ -58,10 +69,10 @@ val sampleStudents = listOf(
         biography = "Enfocada en derecho corporativo e internacional."
     ),
     Student(
-        id = 5,
+        id = 6,
         name = "Luis Ramirez",
         career = "Administración",
-        studentId = "2024-0005",
+        studentId = "2024-0006",
         email = "luis.ramirez@example.com",
         phone = "943210987",
         cycle = "4to Ciclo",
