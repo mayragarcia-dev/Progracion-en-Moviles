@@ -73,3 +73,5 @@ ClinicaSalud2/
 **Mayra Julisa Garcia Rojas**
 
 Proyecto académico - Programación en Móviles.
+
+<!-- Actualizaci�n de colores corporativos -->
