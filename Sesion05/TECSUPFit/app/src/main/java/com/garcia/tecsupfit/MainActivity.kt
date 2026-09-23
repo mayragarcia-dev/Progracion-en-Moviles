@@ -12,8 +12,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.garcia.tecsupfit.ui.theme.TECSUPFitTheme
 
@@ -38,48 +48,134 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
-                NavHost(
-                    navController = navController,
-                    startDestination = "inicio"
-                ) {
+                val backStackEntry by navController
+                    .currentBackStackEntryAsState()
 
-                    composable("inicio") {
-                        InicioScreen(navController)
-                    }
+                val currentRoute = backStackEntry
+                    ?.destination
+                    ?.route
 
-                    composable("detalle/{id}") { backStackEntry ->
+                val rutasBottomBar = listOf(
+                    "inicio",
+                    "reservas",
+                    "rutinas",
+                    "perfil"
+                )
 
-                        val id = backStackEntry.arguments
-                            ?.getString("id")
-                            ?.toIntOrNull()
-
-                        if (id != null) {
-                            DetalleScreen(
-                                id = id,
-                                navController = navController
+                Scaffold(
+                    bottomBar = {
+                        if (currentRoute in rutasBottomBar) {
+                            BottomBar(
+                                navController = navController,
+                                currentRoute = currentRoute
                             )
                         }
                     }
+                ) { innerPadding ->
 
-                    composable("confirmacion/{id}") { backStackEntry ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = "inicio",
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
 
-                        val id = backStackEntry.arguments
-                            ?.getString("id")
-                            ?.toIntOrNull()
-
-                        if (id != null) {
-                            ConfirmacionScreen(
-                                id = id,
-                                navController = navController
-                            )
+                        composable("inicio") {
+                            InicioScreen(navController)
                         }
-                    }
 
-                    composable("reservas") {
-                        ReservasScreen(navController)
+                        composable("detalle/{id}") { backStackEntry ->
+
+                            val id = backStackEntry.arguments
+                                ?.getString("id")
+                                ?.toIntOrNull()
+
+                            if (id != null) {
+                                DetalleScreen(
+                                    id = id,
+                                    navController = navController
+                                )
+                            }
+                        }
+
+                        composable("confirmacion/{id}") { backStackEntry ->
+
+                            val id = backStackEntry.arguments
+                                ?.getString("id")
+                                ?.toIntOrNull()
+
+                            if (id != null) {
+                                ConfirmacionScreen(
+                                    id = id,
+                                    navController = navController
+                                )
+                            }
+                        }
+
+                        composable("reservas") {
+                            ReservasScreen(navController)
+                        }
+
+                        composable("rutinas") {
+                            RutinasScreen()
+                        }
+
+                        composable("perfil") {
+                            PerfilScreen()
+                        }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun BottomBar(
+    navController: NavController,
+    currentRoute: String?
+) {
+
+    val items = listOf(
+        Triple("inicio", "Inicio", Icons.Default.Home),
+        Triple("reservas", "Reservas", Icons.Default.CalendarMonth),
+        Triple("rutinas", "Rutinas", Icons.Default.FitnessCenter),
+        Triple("perfil", "Perfil", Icons.Default.Person)
+    )
+
+    NavigationBar {
+
+        items.forEach { item ->
+
+            NavigationBarItem(
+                selected = currentRoute == item.first,
+
+                onClick = {
+
+                    if (currentRoute != item.first) {
+
+                        navController.navigate(item.first) {
+
+                            popUpTo("inicio") {
+                                saveState = true
+                            }
+
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                },
+
+                icon = {
+                    Icon(
+                        imageVector = item.third,
+                        contentDescription = item.second
+                    )
+                },
+
+                label = {
+                    Text(item.second)
+                }
+            )
         }
     }
 }
@@ -353,6 +449,98 @@ fun ReservasScreen(navController: NavController) {
             modifier = Modifier.padding(top = 16.dp)
         ) {
             Text("Volver")
+        }
+    }
+}
+
+@Composable
+fun RutinasScreen() {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+
+        Text(
+            text = "Rutinas"
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+
+                Text("Rutina de fuerza")
+
+                Text("Entrenamiento para mejorar resistencia y fuerza.")
+            }
+        }
+
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+
+                Text("Rutina de cardio")
+
+                Text("Ejercicios para mejorar la resistencia cardiovascular.")
+            }
+        }
+    }
+}
+
+@Composable
+fun PerfilScreen() {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+
+        Text(
+            text = "Mi perfil"
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                Text("Usuario TECSUP")
+
+                Text("usuario@tecsup.edu.pe")
+            }
+        }
+
+        Text("Estadísticas")
+
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                Text("Clases tomadas: 12")
+
+                Text("Racha de asistencia: 5 días")
+            }
         }
     }
 }
