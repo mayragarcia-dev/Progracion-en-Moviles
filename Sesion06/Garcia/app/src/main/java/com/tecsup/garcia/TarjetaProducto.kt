@@ -61,13 +61,30 @@ fun TarjetaProducto(
                     )
                 }
 
-                // Hito 1: Ícono de 3 puntos + estado expanded en la tarjeta de producto
+                // Hito 2: DropdownMenu con opciones básicas funcionando
                 Box {
                     IconButton(onClick = { menuExpanded = true }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = "Opciones",
                             tint = Color.DarkGray
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = { menuExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Favoritos") },
+                            onClick = { menuExpanded = false }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Compartir") },
+                            onClick = { menuExpanded = false }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Reportar") },
+                            onClick = { menuExpanded = false }
                         )
                     }
                 }
