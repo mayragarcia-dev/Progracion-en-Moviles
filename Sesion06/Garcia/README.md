@@ -1,29 +1,34 @@
-# Lab 04: Carrito de Compras TECSUP
+# TECSUP Store: DropdownMenu y NavigationDrawer
 
-**Nombre:** Mayra Garcia
-**Descripción:** Aplicación de carrito de compras desarrollada en Jetpack Compose que permite agregar productos, visualizarlos en una lista, eliminarlos con confirmación y calcular subtotales, IGV y descuentos automáticos.
+**Nombre:** Mayra García
+**Descripción:** Aplicación TECSUP Store desarrollada en Jetpack Compose que implementa tarjetas de producto interactivas con menú contextual (`DropdownMenu` de 3 puntos) y navegación lateral avanzada (`NavigationDrawer` con cabecera de usuario y destinos activos resaltados).
 
-## Capturas de Pantalla
-<img width="1538" height="1599" alt="image" src="https://github.com/user-attachments/assets/f2924647-34da-41ac-baf4-746d3fdcc9c9" />
+## Funcionalidades Implementadas (Sesión 06)
+- [x] **`TarjetaProducto.kt`:** Ícono de 3 puntos (⋮) con estado `expanded` y `DropdownMenu` desplegable ("Favoritos", "Compartir", "Reportar") equipado con `leadingIcon` personalizados.
+- [x] **`AppDrawer.kt`:** Contenido del `NavigationDrawer` usando `ModalDrawerSheet`, incluyendo encabezado de usuario con avatar/iniciales ("MG"), nombre, correo y resaltado visual del ítem activo.
+- [x] **`AppNavegacion.kt`:** Estructura de navegación principal envuelta con `ModalNavigationDrawer`, barra superior (`TopAppBar`) y botón ☰ para apertura del menú lateral.
 
+## Hitos de Desarrollo y Commits
+1. **Hito 1:** `feat: agregar ícono de 3 puntos y estado expanded en la tarjeta de producto`
+2. **Hito 2:** `feat: implementar DropdownMenu con opciones básicas en la tarjeta de producto`
+3. **Hito 3:** `feat: personalizar DropdownMenu con leadingIcon y colores en la tarjeta`
+4. **Hito 4:** `feat: crear estructura del NavigationDrawer con ModalDrawerSheet`
+5. **Hito 5:** `feat: implementar navegación real desde los ítems del drawer en AppNavegacion`
+6. **Hito 6:** `feat: personalizar encabezado de usuario e indicador visual de ítem activo en el drawer`
 
-## Respuestas Conceptuales
+---
 
-### (a) ¿Por qué `mutableStateListOf` y no una `MutableList` normal?
-Una `MutableList` normal no es observable por Compose. Si agregas o eliminas elementos de una `MutableList` estándar, Compose no detectará el cambio y no recompondrá la UI (la lista en pantalla no se actualizará). `mutableStateListOf` crea una lista especial que notifica a Compose cada vez que su contenido cambia, provocando la actualización automática de la interfaz.
+## Lab Anterior: Carrito de Compras TECSUP
 
-### (b) ¿Por qué la lista se declara con `val`?
-Se declara con `val` porque la **referencia** a la lista no cambia (siempre es el mismo objeto lista creado por `remember`). Lo que cambia es el **contenido** interno de la lista (sus elementos). En Kotlin, `val` impide reasignar la variable a una nueva lista, pero no impide modificar el contenido de la estructura de datos mutable a la que apunta.
+**Descripción:** Aplicación de carrito de compras desarrollada en Jetpack Compose que permite agregar productos, visualizarlos en una lista, eliminarlos y calcular subtotales e IGV (18%).
 
-### (c) ¿Qué hace `weight(1f)` en la `LazyColumn`?
-El modificador `weight(1f)` dentro de una `Column` indica que el componente debe ocupar todo el espacio vertical sobrante. En este caso, permite que la `LazyColumn` se expanda para llenar el centro de la pantalla, empujando el panel de totales hacia la parte inferior y manteniéndolo siempre visible (fijo abajo) independientemente de cuántos productos haya.
+### Respuestas Conceptuales
 
-## Funcionalidades Implementadas
-- [x] Modelo de datos `Producto`.
-- [x] Formulario compacto (Nombre, Precio/Cant en fila).
-- [x] Lista observable con `LazyColumn`.
-- [x] Tarjeta de producto con diseño según guía.
-- [x] Eliminación de productos con elevación de eventos (`onEliminar`).
-- [x] Panel de totales con Subtotal e IGV (18%).
-- [x] **Reto:** Confirmación de borrado mediante `AlertDialog`.
-- [x] **Reto:** Sistema de descuentos dinámicos (5% > 3000, 10% > 5000).
+#### (a) ¿Por qué `mutableStateListOf` y no una `MutableList` normal?
+Una `MutableList` normal no es observable por Compose. Si agregas o eliminas elementos de una `MutableList` estándar, Compose no detectará el cambio y no recompondrá la UI. `mutableStateListOf` crea una lista observable que notifica a Compose cada vez que su contenido cambia.
+
+#### (b) ¿Por qué la lista se declara con `val`?
+Se declara con `val` porque la **referencia** a la lista no cambia (siempre es el mismo objeto lista creado por `remember`). Lo que cambia es el **contenido** interno de la lista (sus elementos).
+
+#### (c) ¿Qué hace `weight(1f)` en la `LazyColumn`?
+Indica que el componente debe ocupar todo el espacio vertical sobrante, permitiendo que la `LazyColumn` se expanda en el centro y mantenga el panel de totales fijo en la parte inferior.
