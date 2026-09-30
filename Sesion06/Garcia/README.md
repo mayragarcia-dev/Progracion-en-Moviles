@@ -18,6 +18,8 @@
 5. **Hito 5:** `feat: implementar navegación real desde los ítems del drawer en AppNavegacion`
 6. **Hito 6:** `feat: personalizar encabezado de usuario e indicador visual de ítem activo en el drawer`
 
+<img width="1600" height="1600" alt="image" src="https://github.com/user-attachments/assets/8a4a25bb-8e25-4e01-9b7e-22f18afacfa6" />
+
 ---
 
 ## Base del Proyecto: Laboratorio 04 (Carrito de Compras)
