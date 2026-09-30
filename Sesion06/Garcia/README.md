@@ -1,9 +1,11 @@
-# TECSUP Store: DropdownMenu y NavigationDrawer
+# Laboratorio 06: DropdownMenu y NavigationDrawer en TECSUP Store
 
 **Nombre:** Mayra García
 **Descripción:** Aplicación TECSUP Store desarrollada en Jetpack Compose que implementa tarjetas de producto interactivas con menú contextual (`DropdownMenu` de 3 puntos) y navegación lateral avanzada (`NavigationDrawer` con cabecera de usuario y destinos activos resaltados).
 
-## Funcionalidades Implementadas (Sesión 06)
+> **Nota:** Este proyecto es la continuación y evolución del Laboratorio 04 (Carrito de Compras).
+
+## Funcionalidades Implementadas (Laboratorio 06)
 - [x] **`TarjetaProducto.kt`:** Ícono de 3 puntos (⋮) con estado `expanded` y `DropdownMenu` desplegable ("Favoritos", "Compartir", "Reportar") equipado con `leadingIcon` personalizados.
 - [x] **`AppDrawer.kt`:** Contenido del `NavigationDrawer` usando `ModalDrawerSheet`, incluyendo encabezado de usuario con avatar/iniciales ("MG"), nombre, correo y resaltado visual del ítem activo.
 - [x] **`AppNavegacion.kt`:** Estructura de navegación principal envuelta con `ModalNavigationDrawer`, barra superior (`TopAppBar`) y botón ☰ para apertura del menú lateral.
@@ -18,11 +20,11 @@
 
 ---
 
-## Lab Anterior: Carrito de Compras TECSUP
+## Base del Proyecto: Laboratorio 04 (Carrito de Compras)
 
 **Descripción:** Aplicación de carrito de compras desarrollada en Jetpack Compose que permite agregar productos, visualizarlos en una lista, eliminarlos y calcular subtotales e IGV (18%).
 
-### Respuestas Conceptuales
+### Respuestas Conceptuales (Lab 04)
 
 #### (a) ¿Por qué `mutableStateListOf` y no una `MutableList` normal?
 Una `MutableList` normal no es observable por Compose. Si agregas o eliminas elementos de una `MutableList` estándar, Compose no detectará el cambio y no recompondrá la UI. `mutableStateListOf` crea una lista observable que notifica a Compose cada vez que su contenido cambia.
