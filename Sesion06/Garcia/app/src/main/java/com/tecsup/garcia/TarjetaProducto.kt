@@ -2,8 +2,7 @@ package com.tecsup.garcia
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,7 +14,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TarjetaProducto(
     producto: Producto,
-    onEliminar: () -> Unit
+    onEliminar: () -> Unit,
+    onFavoritoClick: () -> Unit = {},
+    onCompartirClick: () -> Unit = {},
+    onReportarClick: () -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -61,7 +63,7 @@ fun TarjetaProducto(
                     )
                 }
 
-                // Hito 2: DropdownMenu con opciones básicas funcionando
+                // Hito 3: Personalización del DropdownMenu (íconos, callbacks)
                 Box {
                     IconButton(onClick = { menuExpanded = true }) {
                         Icon(
@@ -76,15 +78,45 @@ fun TarjetaProducto(
                     ) {
                         DropdownMenuItem(
                             text = { Text("Favoritos") },
-                            onClick = { menuExpanded = false }
+                            onClick = {
+                                menuExpanded = false
+                                onFavoritoClick()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Default.Favorite,
+                                    contentDescription = "Favoritos",
+                                    tint = Color(0xFFD81B60)
+                                )
+                            }
                         )
                         DropdownMenuItem(
                             text = { Text("Compartir") },
-                            onClick = { menuExpanded = false }
+                            onClick = {
+                                menuExpanded = false
+                                onCompartirClick()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Default.Share,
+                                    contentDescription = "Compartir",
+                                    tint = Color(0xFF4A148C)
+                                )
+                            }
                         )
                         DropdownMenuItem(
                             text = { Text("Reportar") },
-                            onClick = { menuExpanded = false }
+                            onClick = {
+                                menuExpanded = false
+                                onReportarClick()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Default.Warning,
+                                    contentDescription = "Reportar",
+                                    tint = Color(0xFFE65100)
+                                )
+                            }
                         )
                     }
                 }
