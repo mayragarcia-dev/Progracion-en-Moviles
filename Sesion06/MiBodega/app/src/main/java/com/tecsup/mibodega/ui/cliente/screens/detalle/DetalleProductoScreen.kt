@@ -1,5 +1,8 @@
 package com.tecsup.mibodega.ui.cliente.screens.detalle
 
+// Hito 6: PantallaDetalleProducto + navegación con parámetro
+
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
