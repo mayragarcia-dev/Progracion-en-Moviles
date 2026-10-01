@@ -1,5 +1,8 @@
 package com.tecsup.mibodega.ui.cliente.screens.carrito
 
+// Hito 7: PantallaCarrito con cálculo reactivo
+
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
