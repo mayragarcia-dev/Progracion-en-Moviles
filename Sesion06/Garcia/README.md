@@ -17,8 +17,9 @@
 4. **Hito 4:** `feat: crear estructura del NavigationDrawer con ModalDrawerSheet`
 5. **Hito 5:** `feat: implementar navegación real desde los ítems del drawer en AppNavegacion`
 6. **Hito 6:** `feat: personalizar encabezado de usuario e indicador visual de ítem activo en el drawer`
+<img width="320" height="742" alt="image" src="https://github.com/user-attachments/assets/8885a5f0-470e-434e-b688-af016ca699a2" />
 
-<img width="1600" height="1600" alt="image" src="https://github.com/user-attachments/assets/8a4a25bb-8e25-4e01-9b7e-22f18afacfa6" />
+<img width="318" height="708" alt="image" src="https://github.com/user-attachments/assets/3f21a2a2-9d28-4da9-bc68-65b9ab8e340c" />
 
 ---
 
