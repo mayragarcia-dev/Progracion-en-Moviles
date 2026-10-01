@@ -130,6 +130,7 @@ fun InicioScreen(
                 modifier = Modifier.padding(top = 20.dp, bottom = 4.dp)
             )
 
+            // Hito 5: LazyRow de categorías con filtro
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(vertical = 8.dp)
