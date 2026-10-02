@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.tecsup.mibodega.ui.cliente.modelo.ItemCarrito
@@ -40,6 +40,11 @@ fun AppNavegacion(
                     navController.navigate(Rutas.REGISTRO)
                 },
                 onIniciarSesion = {
+                    navController.navigate(Rutas.INICIO) {
+                        popUpTo(Rutas.BIENVENIDA) {
+                            inclusive = true
+                        }
+                    }
                 },
                 onTerminos = {
                 }
