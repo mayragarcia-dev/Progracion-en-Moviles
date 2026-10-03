@@ -12,15 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Phone
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -81,7 +80,7 @@ fun BienvenidaScreen(
         BotonPrimario(
             texto = "Registrarme",
             subtexto = "con mi teléfono",
-            icono = rememberVectorPainter(Icons.Default.Phone),
+            icono = painterResource(R.drawable.ic_whatsapp),
             onClick = onRegistrarse
         )
 
@@ -110,11 +109,22 @@ private fun IlustracionBodega() {
             .height(220.dp),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(R.drawable.ilustracion_bodega),
-            contentDescription = "Ilustración de la bodega",
-            modifier = Modifier.size(200.dp)
-        )
+        Surface(
+            modifier = Modifier.size(170.dp),
+            shape = RoundedCornerShape(24.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ilustracion_bodega),
+                    contentDescription = "Ilustración de la bodega",
+                    modifier = Modifier.size(130.dp)
+                )
+            }
+        }
     }
 }
 
