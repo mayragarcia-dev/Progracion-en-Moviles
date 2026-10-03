@@ -28,6 +28,9 @@ fun AppNavegacion(
     var carrito by remember {
         mutableStateOf<List<ItemCarrito>>(emptyList())
     }
+    var ultimoTotal by remember { mutableStateOf(25.90) }
+    var ultimaDireccion by remember { mutableStateOf("Av. Los Olivos 123") }
+    var ultimaReferencia by remember { mutableStateOf("Frente al parque") }
 
     NavHost(
         navController = navController,
@@ -158,7 +161,10 @@ fun AppNavegacion(
                     navController.popBackStack()
                 },
                 onConfirmarPedido = { direccion, referencia, telefono, metodoPago ->
-                    // Vaciar carrito opcionalmente o proceder a confirmación con popUpTo
+                    val subtotal = carrito.sumOf { it.producto.precio * it.cantidad }
+                    ultimoTotal = if (carrito.isNotEmpty()) subtotal + 4.00 else 25.90
+                    ultimaDireccion = if (direccion.isNotEmpty()) direccion else "Av. Los Olivos 123"
+                    ultimaReferencia = if (referencia.isNotEmpty()) referencia else "Frente al parque"
                     carrito = emptyList()
                     navController.navigate(Rutas.CONFIRMACION) {
                         popUpTo(Rutas.INICIO) {
@@ -171,6 +177,9 @@ fun AppNavegacion(
 
         composable(Rutas.CONFIRMACION) {
             ConfirmacionScreen(
+                total = ultimoTotal,
+                direccion = ultimaDireccion,
+                referencia = ultimaReferencia,
                 onIrAInicio = {
                     navController.navigate(Rutas.INICIO) {
                         popUpTo(Rutas.INICIO) {
