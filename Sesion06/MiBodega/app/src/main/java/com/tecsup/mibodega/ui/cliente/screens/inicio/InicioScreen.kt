@@ -23,6 +23,15 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.material.icons.filled.LocalDrink
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Fastfood
+import androidx.compose.material.icons.filled.Store
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -174,13 +183,29 @@ private fun ChipCategoria(
     val fondo = if (seleccionado) VerdeBodega else GrisClaro
     val contenido = if (seleccionado) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
-    Row(
+    val icono = when (texto) {
+        "Todos" -> Icons.Default.ShoppingBag
+        "Bebidas" -> Icons.Default.LocalDrink
+        "Abarrotes" -> Icons.Default.Category
+        "Snacks" -> Icons.Default.Fastfood
+        else -> Icons.Default.Store
+    }
+
+    Column(
         modifier = Modifier
-            .background(fondo, RoundedCornerShape(20.dp))
+            .background(fondo, RoundedCornerShape(16.dp))
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = texto, color = contenido, fontWeight = FontWeight.Medium)
+        Icon(
+            imageVector = icono,
+            contentDescription = texto,
+            tint = contenido,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(text = texto, color = contenido, fontWeight = FontWeight.Medium, style = MaterialTheme.typography.bodySmall)
     }
 }
 
