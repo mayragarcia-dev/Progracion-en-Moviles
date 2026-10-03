@@ -36,19 +36,3 @@ Condiciones estrictas:
 - No introduzcas dependencias externas innecesarias, animaciones complejas ni características avanzadas no solicitadas.
 - Entrega únicamente código limpio, comentado donde sea estrictamente necesario y listo para producción.
 ```
-
----
-
-## 3. Prompt de Refactorización Arquitectónica (Clean Code & MVVM)
-
-**Uso:** Cuando buscas ordenar la estructura de carpetas o separar la lógica de negocio de la interfaz de usuario manteniendo la simplicidad del proyecto académico/profesional.
-
-```text
-Actúa como Tech Lead de Android. Necesito que limpies y organices el código fuente actual aplicando buenas prácticas de desarrollo en Android (Clean Code / MVVM básico según aplique).
-
-Condiciones:
-- Conserva la lógica fundamental y los nombres de variables/funciones clave para no romper la compatibilidad.
-- Asegúrate de que la interfaz gráfica sea exactamente idéntica a la especificada en el diseño/imagen.
-- Evita sobreingeniería o patrones complejos innecesarios para el alcance actual del proyecto.
-- Presenta las mejoras de manera modular y en formato de código limpio.
-```
