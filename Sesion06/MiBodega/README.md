@@ -1,5 +1,11 @@
 # Mi Bodega - Aplicación Android con Jetpack Compose
 
+<img width="875" height="665" alt="image" src="https://github.com/user-attachments/assets/84bab43c-15dc-4143-9c9a-09586bab1b9d" />
+<img width="925" height="636" alt="image" src="https://github.com/user-attachments/assets/06009af8-fed8-4d89-9110-f824e0bebaf3" />
+<img width="565" height="573" alt="image" src="https://github.com/user-attachments/assets/d58bcffe-48cf-4bde-8d40-e0f7d4d1b598" />
+
+
+
 ## VI. Preguntas de reflexión
 
 ### 1. ¿Por qué `Producto.kt` y `MainActivity.kt` se entregaron completos, y las pantallas no? ¿Qué tienen en común los archivos que sí se dejaron como esqueleto?
