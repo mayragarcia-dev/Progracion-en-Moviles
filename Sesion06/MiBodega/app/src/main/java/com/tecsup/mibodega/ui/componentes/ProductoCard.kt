@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.theme.GrisClaro
 import com.tecsup.mibodega.ui.theme.VerdeBodega
@@ -62,7 +63,18 @@ fun ProductoCard(
                     .background(GrisClaro, RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                if (producto.imagenRes != 0) {
+                if (producto.imagenUrl.isNotEmpty()) {
+                    AsyncImage(
+                        model = producto.imagenUrl,
+                        contentDescription = producto.nombre,
+                        placeholder = if (producto.imagenRes != 0) painterResource(producto.imagenRes) else null,
+                        error = if (producto.imagenRes != 0) painterResource(producto.imagenRes) else null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(6.dp)
+                    )
+                } else if (producto.imagenRes != 0) {
                     Image(
                         painter = painterResource(producto.imagenRes),
                         contentDescription = producto.nombre,

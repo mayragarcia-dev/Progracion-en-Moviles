@@ -19,6 +19,7 @@ import com.tecsup.mibodega.ui.cliente.screens.confirmacion.ConfirmacionScreen
 import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
 import com.tecsup.mibodega.ui.cliente.screens.entrega.DatosEntregaScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
+import com.tecsup.mibodega.ui.cliente.screens.login.LoginScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
 
 @Composable
@@ -43,13 +44,27 @@ fun AppNavegacion(
                     navController.navigate(Rutas.REGISTRO)
                 },
                 onIniciarSesion = {
+                    navController.navigate(Rutas.LOGIN)
+                },
+                onTerminos = {
+                }
+            )
+        }
+
+        composable(Rutas.LOGIN) {
+            LoginScreen(
+                onVolver = {
+                    navController.popBackStack()
+                },
+                onIniciarSesion = { correo, contrasena ->
                     navController.navigate(Rutas.INICIO) {
                         popUpTo(Rutas.BIENVENIDA) {
                             inclusive = true
                         }
                     }
                 },
-                onTerminos = {
+                onCrearCuenta = {
+                    navController.navigate(Rutas.REGISTRO)
                 }
             )
         }
@@ -101,7 +116,8 @@ fun AppNavegacion(
                 backStackEntry.arguments?.getInt("productoId") ?: 0
 
             val producto =
-                listaProductosFake.first { it.id == productoId }
+                listaProductosFake.firstOrNull { it.id == productoId }
+                    ?: listaProductosFake.first()
 
             DetalleProductoScreen(
                 producto = producto,

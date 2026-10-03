@@ -54,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.cliente.modelo.listaCategorias
 import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
@@ -183,12 +184,12 @@ private fun ChipCategoria(
     val fondo = if (seleccionado) VerdeBodega else GrisClaro
     val contenido = if (seleccionado) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
-    val icono = when (texto) {
-        "Todos" -> Icons.Default.ShoppingBag
-        "Bebidas" -> Icons.Default.LocalDrink
-        "Abarrotes" -> Icons.Default.Category
-        "Snacks" -> Icons.Default.Fastfood
-        else -> Icons.Default.Store
+    val emoji = when (texto) {
+        "Todos" -> "🛍️"
+        "Bebidas" -> "🥤"
+        "Abarrotes" -> "🥫"
+        "Snacks" -> "🍿"
+        else -> "🏪"
     }
 
     Column(
@@ -198,14 +199,17 @@ private fun ChipCategoria(
             .padding(horizontal = 16.dp, vertical = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            imageVector = icono,
-            contentDescription = texto,
-            tint = contenido,
-            modifier = Modifier.size(24.dp)
+        Text(
+            text = emoji,
+            fontSize = 24.sp
         )
         Spacer(Modifier.height(4.dp))
-        Text(text = texto, color = contenido, fontWeight = FontWeight.Medium, style = MaterialTheme.typography.bodySmall)
+        Text(
+            text = texto,
+            color = contenido,
+            fontWeight = FontWeight.Medium,
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
 

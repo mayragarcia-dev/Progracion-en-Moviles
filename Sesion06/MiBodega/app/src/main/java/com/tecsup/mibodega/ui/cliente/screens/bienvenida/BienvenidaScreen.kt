@@ -3,6 +3,7 @@ package com.tecsup.mibodega.ui.cliente.screens.bienvenida
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -56,9 +57,10 @@ fun BienvenidaScreen(
             )
             .safeDrawingPadding()
             .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.weight(0.5f))
 
         IlustracionBodega()
 
@@ -95,7 +97,7 @@ fun BienvenidaScreen(
 
         PieTerminos(onTerminos = onTerminos)
 
-        Spacer(Modifier.height(24.dp))
+Spacer(Modifier.weight(0.5f))
     }
 }
 
@@ -164,4 +166,3 @@ private fun BienvenidaPreview() {
         BienvenidaScreen({}, {}, {})
     }
 }
-
