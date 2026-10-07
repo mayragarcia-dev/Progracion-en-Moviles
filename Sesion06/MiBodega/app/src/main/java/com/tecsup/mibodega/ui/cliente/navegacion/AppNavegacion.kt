@@ -98,8 +98,9 @@ fun AppNavegacion(
                 onVolver = {
                     navController.popBackStack()
                 },
-                onCrearCuenta = { nombre, telefono, direccion, referencia ->
+                onCrearCuenta = { nombre, correo, telefono, direccion, referencia ->
                     usuarioNombre = nombre
+                    usuarioCorreo = correo
                     usuarioTelefono = telefono
                     usuarioDireccion = direccion
                     ultimaDireccion = direccion

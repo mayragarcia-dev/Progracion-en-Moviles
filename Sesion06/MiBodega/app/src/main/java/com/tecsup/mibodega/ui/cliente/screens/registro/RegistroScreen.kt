@@ -46,14 +46,16 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 @Composable
 fun RegistroScreen(
     onVolver: () -> Unit,
-    onCrearCuenta: (nombre: String, telefono: String, direccion: String, referencia: String) -> Unit
+    onCrearCuenta: (nombre: String, correo: String, telefono: String, direccion: String, referencia: String) -> Unit
 ) {
     var nombre by remember { mutableStateOf("") }
+    var correo by remember { mutableStateOf("") }
     var telefono by remember { mutableStateOf("") }
     var direccion by remember { mutableStateOf("") }
     var referencia by remember { mutableStateOf("") }
 
     var errorNombre by remember { mutableStateOf<String?>(null) }
+    var errorCorreo by remember { mutableStateOf<String?>(null) }
     var errorTelefono by remember { mutableStateOf<String?>(null) }
     var errorDireccion by remember { mutableStateOf<String?>(null) }
 
@@ -94,6 +96,19 @@ fun RegistroScreen(
             },
             placeholder = "Juan Pérez",
             mensajeError = errorNombre
+        )
+        Spacer(Modifier.height(16.dp))
+
+        CampoTexto(
+            etiqueta = "Correo electrónico",
+            valor = correo,
+            onValorCambia = {
+                correo = it
+                errorCorreo = null
+            },
+            placeholder = "ejemplo@correo.com",
+            teclado = KeyboardType.Email,
+            mensajeError = errorCorreo
         )
         Spacer(Modifier.height(16.dp))
 
@@ -143,6 +158,11 @@ fun RegistroScreen(
                     esValido = false
                 }
 
+                if (correo.isBlank() || !correo.contains("@")) {
+                    errorCorreo = "El correo debe contener '@'"
+                    esValido = false
+                }
+
                 if (telefono.length != 9) {
                     errorTelefono = "El teléfono debe tener exactamente 9 dígitos"
                     esValido = false
@@ -154,7 +174,7 @@ fun RegistroScreen(
                 }
 
                 if (esValido) {
-                    onCrearCuenta(nombre, telefono, direccion, referencia)
+                    onCrearCuenta(nombre, correo, telefono, direccion, referencia)
                 }
             }
         )
@@ -198,6 +218,6 @@ private fun EncabezadoRegistro(onVolver: () -> Unit) {
 @Composable
 private fun RegistroPreview() {
     BodegaTheme {
-        RegistroScreen(onVolver = {}, onCrearCuenta = { _, _, _, _ -> })
+        RegistroScreen(onVolver = {}, onCrearCuenta = { _, _, _, _, _ -> })
     }
 }
