@@ -29,8 +29,13 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -46,6 +51,7 @@ import com.tecsup.mibodega.ui.componentes.SelectorCantidad
 import com.tecsup.mibodega.ui.theme.BodegaTheme
 import com.tecsup.mibodega.ui.theme.GrisClaro
 import com.tecsup.mibodega.ui.theme.VerdeBodega
+import kotlinx.coroutines.launch
 
 private const val COSTO_DELIVERY = 4.00
 
@@ -66,71 +72,91 @@ fun CarritoScreen(
     val subtotal = carrito.sumOf { it.producto.precio * it.cantidad }
     val total = subtotal + COSTO_DELIVERY
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding()
-    ) {
-        EncabezadoCarrito(onVolver = onVolver)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-        if (carrito.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(24.dp)
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .safeDrawingPadding()
+        ) {
+            EncabezadoCarrito(onVolver = onVolver)
+
+            if (carrito.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.ShoppingBasket,
-                        contentDescription = null,
-                        tint = VerdeBodega.copy(alpha = 0.5f),
-                        modifier = Modifier.size(80.dp)
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    Text(
-                        text = "Tu carrito está vacío",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = "Agrega algunos productos para realizar tu pedido",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.padding(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingBasket,
+                            contentDescription = null,
+                            tint = VerdeBodega.copy(alpha = 0.5f),
+                            modifier = Modifier.size(80.dp)
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            text = "Tu carrito está vacío",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = "Agrega algunos productos para realizar tu pedido",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                    }
                 }
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 20.dp),
-                contentPadding = PaddingValues(vertical = 8.dp)
-            ) {
-                items(carrito, key = { it.producto.id }) { item ->
-                    FilaCarrito(
-                        item = item,
-                        onIncrementar = { onIncrementar(item.producto) },
-                        onDecrementar = { onDecrementar(item.producto) },
-                        onEliminar = { onEliminar(item.producto) }
-                    )
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 20.dp),
+                    contentPadding = PaddingValues(vertical = 8.dp)
+                ) {
+                    items(carrito, key = { it.producto.id }) { item ->
+                        FilaCarrito(
+                            item = item,
+                            onIncrementar = { onIncrementar(item.producto) },
+                            onDecrementar = {
+                                if (item.cantidad == 1) {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Se eliminó ${item.producto.nombre} del carrito")
+                                    }
+                                }
+                                onDecrementar(item.producto)
+                            },
+                            onEliminar = {
+                                onEliminar(item.producto)
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Se eliminó ${item.producto.nombre} del carrito")
+                                }
+                            }
+                        )
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    }
                 }
-            }
 
-            ResumenYBoton(
-                subtotal = subtotal,
-                delivery = COSTO_DELIVERY,
-                total = total,
-                onContinuarPedido = onContinuarPedido
-            )
+                ResumenYBoton(
+                    subtotal = subtotal,
+                    delivery = COSTO_DELIVERY,
+                    total = total,
+                    onContinuarPedido = onContinuarPedido
+                )
+            }
         }
     }
 }
