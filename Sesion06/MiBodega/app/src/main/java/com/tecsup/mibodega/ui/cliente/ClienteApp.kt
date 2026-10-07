@@ -5,10 +5,15 @@ import androidx.navigation.compose.rememberNavController
 import com.tecsup.mibodega.ui.cliente.navegacion.AppNavegacion
 
 @Composable
-fun ClienteApp() {
+fun ClienteApp(
+    isDarkMode: Boolean,
+    onToggleDarkMode: () -> Unit
+) {
     val navController = rememberNavController()
 
     AppNavegacion(
-        navController = navController
+        navController = navController,
+        isDarkMode = isDarkMode,
+        onToggleDarkMode = onToggleDarkMode
     )
 }

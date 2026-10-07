@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -66,6 +68,8 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 fun InicioScreen(
     productos: List<Producto> = listaProductosFake,
     cantidadCarrito: Int,
+    isDarkMode: Boolean,
+    onToggleDarkMode: () -> Unit,
     onVerCarrito: () -> Unit,
     onVerFavoritos: () -> Unit,
     onVerPedidos: () -> Unit,
@@ -89,6 +93,16 @@ fun InicioScreen(
                 title = { Text("Mi Bodega", fontWeight = FontWeight.Bold) },
                 actions = {
                     val cantFavoritos = productos.count { it.esFavorito }
+
+                    // Botón para alternar modo claro / oscuro
+                    IconButton(onClick = onToggleDarkMode) {
+                        Icon(
+                            imageVector = if (isDarkMode) Icons.Default.WbSunny else Icons.Default.DarkMode,
+                            contentDescription = "Cambiar modo claro/oscuro",
+                            tint = if (isDarkMode) androidx.compose.ui.graphics.Color(0xFFFFC107) else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+
                     IconButton(onClick = onVerFavoritos) {
                         BadgedBox(
                             badge = {
@@ -286,6 +300,8 @@ private fun InicioPreview() {
     BodegaTheme {
         InicioScreen(
             cantidadCarrito = 3,
+            isDarkMode = false,
+            onToggleDarkMode = {},
             onVerCarrito = {},
             onVerFavoritos = {},
             onVerPedidos = {},

@@ -27,7 +27,9 @@ import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
 
 @Composable
 fun AppNavegacion(
-    navController: NavHostController
+    navController: NavHostController,
+    isDarkMode: Boolean,
+    onToggleDarkMode: () -> Unit
 ) {
     var carrito by remember {
         mutableStateOf<List<ItemCarrito>>(emptyList())
@@ -109,6 +111,8 @@ fun AppNavegacion(
             InicioScreen(
                 productos = productos,
                 cantidadCarrito = carrito.sumOf { it.cantidad },
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = onToggleDarkMode,
                 onVerCarrito = {
                     navController.navigate(Rutas.CARRITO)
                 },
