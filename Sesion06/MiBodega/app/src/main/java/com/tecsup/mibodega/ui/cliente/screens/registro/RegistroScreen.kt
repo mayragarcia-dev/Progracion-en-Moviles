@@ -53,6 +53,10 @@ fun RegistroScreen(
     var direccion by remember { mutableStateOf("") }
     var referencia by remember { mutableStateOf("") }
 
+    var errorNombre by remember { mutableStateOf<String?>(null) }
+    var errorTelefono by remember { mutableStateOf<String?>(null) }
+    var errorDireccion by remember { mutableStateOf<String?>(null) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -84,25 +88,39 @@ fun RegistroScreen(
         CampoTexto(
             etiqueta = "Nombre completo",
             valor = nombre,
-            onValorCambia = { nombre = it },
-            placeholder = "Juan Pérez"
+            onValorCambia = {
+                nombre = it
+                errorNombre = null
+            },
+            placeholder = "Juan Pérez",
+            mensajeError = errorNombre
         )
         Spacer(Modifier.height(16.dp))
 
         CampoTexto(
-            etiqueta = "Teléfono",
+            etiqueta = "Teléfono (9 dígitos)",
             valor = telefono,
-            onValorCambia = { telefono = it },
-            placeholder = "987 654 321",
-            teclado = KeyboardType.Phone
+            onValorCambia = { nuevo ->
+                if (nuevo.length <= 9 && nuevo.all { it.isDigit() }) {
+                    telefono = nuevo
+                    errorTelefono = null
+                }
+            },
+            placeholder = "987654321",
+            teclado = KeyboardType.Phone,
+            mensajeError = errorTelefono
         )
         Spacer(Modifier.height(16.dp))
 
         CampoTexto(
             etiqueta = "Dirección de entrega",
             valor = direccion,
-            onValorCambia = { direccion = it },
-            placeholder = "Av. Los Olivos 123"
+            onValorCambia = {
+                direccion = it
+                errorDireccion = null
+            },
+            placeholder = "Av. Los Olivos 123",
+            mensajeError = errorDireccion
         )
         Spacer(Modifier.height(16.dp))
 
@@ -117,7 +135,28 @@ fun RegistroScreen(
 
         BotonPrimario(
             texto = "Crear cuenta",
-            onClick = { onCrearCuenta(nombre, telefono, direccion, referencia) }
+            onClick = {
+                var esValido = true
+
+                if (nombre.isBlank()) {
+                    errorNombre = "El nombre es obligatorio"
+                    esValido = false
+                }
+
+                if (telefono.length != 9) {
+                    errorTelefono = "El teléfono debe tener exactamente 9 dígitos"
+                    esValido = false
+                }
+
+                if (direccion.isBlank()) {
+                    errorDireccion = "La dirección es obligatoria"
+                    esValido = false
+                }
+
+                if (esValido) {
+                    onCrearCuenta(nombre, telefono, direccion, referencia)
+                }
+            }
         )
 
         Spacer(Modifier.height(24.dp))
@@ -162,4 +201,3 @@ private fun RegistroPreview() {
         RegistroScreen(onVolver = {}, onCrearCuenta = { _, _, _, _ -> })
     }
 }
-

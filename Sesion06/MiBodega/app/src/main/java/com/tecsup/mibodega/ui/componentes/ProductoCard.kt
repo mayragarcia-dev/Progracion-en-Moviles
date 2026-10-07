@@ -63,20 +63,18 @@ fun ProductoCard(
                     .background(GrisClaro, RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                if (producto.imagenUrl.isNotEmpty()) {
-                    AsyncImage(
-                        model = producto.imagenUrl,
+                if (producto.imagenRes != 0) {
+                    Image(
+                        painter = painterResource(producto.imagenRes),
                         contentDescription = producto.nombre,
-                        placeholder = if (producto.imagenRes != 0) painterResource(producto.imagenRes) else null,
-                        error = if (producto.imagenRes != 0) painterResource(producto.imagenRes) else null,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(6.dp)
                     )
-                } else if (producto.imagenRes != 0) {
-                    Image(
-                        painter = painterResource(producto.imagenRes),
+                } else if (producto.imagenUrl.isNotEmpty()) {
+                    AsyncImage(
+                        model = producto.imagenUrl,
                         contentDescription = producto.nombre,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
