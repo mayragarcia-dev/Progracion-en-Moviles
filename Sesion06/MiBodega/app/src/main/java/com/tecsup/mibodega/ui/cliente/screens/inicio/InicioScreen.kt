@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.LocalDrink
 import androidx.compose.material.icons.filled.Category
@@ -61,6 +62,7 @@ import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
 import com.tecsup.mibodega.ui.componentes.ProductoCard
 import com.tecsup.mibodega.ui.theme.BodegaTheme
 import com.tecsup.mibodega.ui.theme.GrisClaro
+import com.tecsup.mibodega.ui.theme.RojoPrecio
 import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
@@ -77,8 +79,10 @@ fun InicioScreen(
     productos: List<Producto> = listaProductosFake,
     cantidadCarrito: Int,
     onVerCarrito: () -> Unit,
+    onVerFavoritos: () -> Unit,
     onProductoClick: (Producto) -> Unit,
-    onAgregarProducto: (Producto) -> Unit
+    onAgregarProducto: (Producto) -> Unit,
+    onFavoritoClick: (Producto) -> Unit
 ) {
     var categoriaSeleccionada by remember { mutableStateOf(listaCategorias.first()) }
     var textoBusqueda by remember { mutableStateOf("") }
@@ -94,6 +98,23 @@ fun InicioScreen(
             TopAppBar(
                 title = { Text("Mi Bodega", fontWeight = FontWeight.Bold) },
                 actions = {
+                    val cantFavoritos = productos.count { it.esFavorito }
+                    IconButton(onClick = onVerFavoritos) {
+                        BadgedBox(
+                            badge = {
+                                if (cantFavoritos > 0) {
+                                    Badge { Text("$cantFavoritos") }
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Favorite,
+                                contentDescription = "Favoritos",
+                                tint = RojoPrecio
+                            )
+                        }
+                    }
+
                     IconButton(onClick = onVerCarrito) {
                         BadgedBox(
                             badge = {
@@ -164,8 +185,10 @@ fun InicioScreen(
                 items(productosFiltrados) { producto ->
                     ProductoCard(
                         producto = producto,
+                        esFavorito = producto.esFavorito,
                         onClick = { onProductoClick(producto) },
-                        onAgregar = { onAgregarProducto(producto) }
+                        onAgregar = { onAgregarProducto(producto) },
+                        onFavoritoClick = { onFavoritoClick(producto) }
                     )
                 }
             }
@@ -245,8 +268,10 @@ private fun InicioPreview() {
         InicioScreen(
             cantidadCarrito = 3,
             onVerCarrito = {},
+            onVerFavoritos = {},
             onProductoClick = {},
-            onAgregarProducto = {}
+            onAgregarProducto = {},
+            onFavoritoClick = {}
         )
     }
 }

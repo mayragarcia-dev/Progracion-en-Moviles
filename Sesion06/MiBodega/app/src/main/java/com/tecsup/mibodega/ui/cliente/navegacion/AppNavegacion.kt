@@ -18,6 +18,7 @@ import com.tecsup.mibodega.ui.cliente.screens.carrito.CarritoScreen
 import com.tecsup.mibodega.ui.cliente.screens.confirmacion.ConfirmacionScreen
 import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
 import com.tecsup.mibodega.ui.cliente.screens.entrega.DatosEntregaScreen
+import com.tecsup.mibodega.ui.cliente.screens.favoritos.FavoritosScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
 import com.tecsup.mibodega.ui.cliente.screens.login.LoginScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
@@ -28,6 +29,9 @@ fun AppNavegacion(
 ) {
     var carrito by remember {
         mutableStateOf<List<ItemCarrito>>(emptyList())
+    }
+    var productos by remember {
+        mutableStateOf(listaProductosFake)
     }
     var ultimoTotal by remember { mutableStateOf(25.90) }
     var ultimaDireccion by remember { mutableStateOf("Av. Los Olivos 123") }
@@ -86,9 +90,13 @@ fun AppNavegacion(
 
         composable(Rutas.INICIO) {
             InicioScreen(
+                productos = productos,
                 cantidadCarrito = carrito.sumOf { it.cantidad },
                 onVerCarrito = {
                     navController.navigate(Rutas.CARRITO)
+                },
+                onVerFavoritos = {
+                    navController.navigate(Rutas.FAVORITOS)
                 },
                 onProductoClick = { producto ->
                     navController.navigate(Rutas.detalle(producto.id))
@@ -99,6 +107,35 @@ fun AppNavegacion(
                         producto,
                         1
                     )
+                },
+                onFavoritoClick = { producto ->
+                    productos = productos.map {
+                        if (it.id == producto.id) it.copy(esFavorito = !it.esFavorito) else it
+                    }
+                }
+            )
+        }
+
+        composable(Rutas.FAVORITOS) {
+            FavoritosScreen(
+                productosFavoritos = productos.filter { it.esFavorito },
+                onVolver = {
+                    navController.popBackStack()
+                },
+                onProductoClick = { producto ->
+                    navController.navigate(Rutas.detalle(producto.id))
+                },
+                onAgregarProducto = { producto ->
+                    carrito = agregarOSumarProducto(
+                        carrito,
+                        producto,
+                        1
+                    )
+                },
+                onFavoritoClick = { producto ->
+                    productos = productos.map {
+                        if (it.id == producto.id) it.copy(esFavorito = !it.esFavorito) else it
+                    }
                 }
             )
         }
@@ -116,13 +153,19 @@ fun AppNavegacion(
                 backStackEntry.arguments?.getInt("productoId") ?: 0
 
             val producto =
-                listaProductosFake.firstOrNull { it.id == productoId }
-                    ?: listaProductosFake.first()
+                productos.firstOrNull { it.id == productoId }
+                    ?: productos.first()
 
             DetalleProductoScreen(
                 producto = producto,
+                esFavorito = producto.esFavorito,
                 onVolver = {
                     navController.popBackStack()
+                },
+                onToggleFavorito = {
+                    productos = productos.map {
+                        if (it.id == producto.id) it.copy(esFavorito = !it.esFavorito) else it
+                    }
                 },
                 onAgregarAlCarrito = { productoSeleccionado, cantidad ->
                     carrito = agregarOSumarProducto(
