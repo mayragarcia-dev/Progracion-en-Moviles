@@ -19,6 +19,7 @@ import com.tecsup.mibodega.ui.cliente.screens.confirmacion.ConfirmacionScreen
 import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
 import com.tecsup.mibodega.ui.cliente.screens.entrega.DatosEntregaScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
+import com.tecsup.mibodega.ui.cliente.screens.login.LoginScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
 
 @Composable
@@ -28,6 +29,9 @@ fun AppNavegacion(
     var carrito by remember {
         mutableStateOf<List<ItemCarrito>>(emptyList())
     }
+    var ultimoTotal by remember { mutableStateOf(25.90) }
+    var ultimaDireccion by remember { mutableStateOf("Av. Los Olivos 123") }
+    var ultimaReferencia by remember { mutableStateOf("Frente al parque") }
 
     NavHost(
         navController = navController,
@@ -40,13 +44,27 @@ fun AppNavegacion(
                     navController.navigate(Rutas.REGISTRO)
                 },
                 onIniciarSesion = {
+                    navController.navigate(Rutas.LOGIN)
+                },
+                onTerminos = {
+                }
+            )
+        }
+
+        composable(Rutas.LOGIN) {
+            LoginScreen(
+                onVolver = {
+                    navController.popBackStack()
+                },
+                onIniciarSesion = { correo, contrasena ->
                     navController.navigate(Rutas.INICIO) {
                         popUpTo(Rutas.BIENVENIDA) {
                             inclusive = true
                         }
                     }
                 },
-                onTerminos = {
+                onCrearCuenta = {
+                    navController.navigate(Rutas.REGISTRO)
                 }
             )
         }
@@ -98,7 +116,8 @@ fun AppNavegacion(
                 backStackEntry.arguments?.getInt("productoId") ?: 0
 
             val producto =
-                listaProductosFake.first { it.id == productoId }
+                listaProductosFake.firstOrNull { it.id == productoId }
+                    ?: listaProductosFake.first()
 
             DetalleProductoScreen(
                 producto = producto,
@@ -158,7 +177,10 @@ fun AppNavegacion(
                     navController.popBackStack()
                 },
                 onConfirmarPedido = { direccion, referencia, telefono, metodoPago ->
-                    // Vaciar carrito opcionalmente o proceder a confirmación con popUpTo
+                    val subtotal = carrito.sumOf { it.producto.precio * it.cantidad }
+                    ultimoTotal = if (carrito.isNotEmpty()) subtotal + 4.00 else 25.90
+                    ultimaDireccion = if (direccion.isNotEmpty()) direccion else "Av. Los Olivos 123"
+                    ultimaReferencia = if (referencia.isNotEmpty()) referencia else "Frente al parque"
                     carrito = emptyList()
                     navController.navigate(Rutas.CONFIRMACION) {
                         popUpTo(Rutas.INICIO) {
@@ -171,6 +193,9 @@ fun AppNavegacion(
 
         composable(Rutas.CONFIRMACION) {
             ConfirmacionScreen(
+                total = ultimoTotal,
+                direccion = ultimaDireccion,
+                referencia = ultimaReferencia,
                 onIrAInicio = {
                     navController.navigate(Rutas.INICIO) {
                         popUpTo(Rutas.INICIO) {

@@ -6,15 +6,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -41,10 +41,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.cliente.modelo.listaCategorias
 import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
@@ -55,8 +57,6 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
  * Pantalla 3: Inicio / Productos (mockup "Cliente").
- * La más completa: Scaffold (topBar + bottomBar), LazyRow de categorías
- * y LazyVerticalGrid de productos.
  *
  * @param productos lista completa (fake por ahora, luego vendrá de un ViewModel)
  * @param cantidadCarrito para el badge del carrito en la topBar
@@ -100,63 +100,77 @@ fun InicioScreen(
         },
         bottomBar = { BarraInferior() }
     ) { paddingInterno ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingInterno)
-                .padding(horizontal = 16.dp)
+        LazyColumn(
+            contentPadding = PaddingValues(
+                top = paddingInterno.calculateTopPadding() + 8.dp,
+                bottom = paddingInterno.calculateBottomPadding() + 32.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxSize()
         ) {
-            OutlinedTextField(
-                value = textoBusqueda,
-                onValueChange = { textoBusqueda = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                placeholder = { Text("Buscar productos...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = GrisClaro,
-                    focusedContainerColor = GrisClaro,
-                    unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedBorderColor = VerdeBodega
-                )
-            )
-
-            Text(
-                text = "Productos destacados",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(top = 20.dp, bottom = 4.dp)
-            )
-
-            // Hito 5: LazyRow de categorías con filtro
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(vertical = 8.dp)
-            ) {
-                items(listaCategorias) { categoria ->
-                    ChipCategoria(
-                        texto = categoria,
-                        seleccionado = categoria == categoriaSeleccionada,
-                        onClick = { categoriaSeleccionada = categoria }
+            // Item 1: Buscador
+            item {
+                OutlinedTextField(
+                    value = textoBusqueda,
+                    onValueChange = { textoBusqueda = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("Buscar productos...") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = GrisClaro,
+                        focusedContainerColor = GrisClaro,
+                        unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+                        focusedBorderColor = VerdeBodega
                     )
+                )
+            }
+
+            // Item 2: Título
+            item {
+                Text(
+                    text = "Productos destacados",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+
+            // Item 3: LazyRow de categorías
+            item {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(vertical = 4.dp)
+                ) {
+                    items(listaCategorias) { categoria ->
+                        ChipCategoria(
+                            texto = categoria,
+                            seleccionado = categoria == categoriaSeleccionada,
+                            onClick = { categoriaSeleccionada = categoria }
+                        )
+                    }
                 }
             }
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(vertical = 12.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(productosFiltrados) { producto ->
-                    ProductoCard(
-                        producto = producto,
-                        onClick = { onProductoClick(producto) },
-                        onAgregar = { onAgregarProducto(producto) }
-                    )
+            // Item 4+: Filas de productos en cuadrícula de 2 columnas
+            items(productosFiltrados.chunked(2)) { par ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    for (producto in par) {
+                        ProductoCard(
+                            producto = producto,
+                            onClick = { onProductoClick(producto) },
+                            onAgregar = { onAgregarProducto(producto) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    if (par.size == 1) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
                 }
             }
         }
@@ -174,13 +188,32 @@ private fun ChipCategoria(
     val fondo = if (seleccionado) VerdeBodega else GrisClaro
     val contenido = if (seleccionado) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
-    Row(
+    val emoji = when (texto) {
+        "Todos" -> "🛍️"
+        "Bebidas" -> "🥤"
+        "Abarrotes" -> "🥫"
+        "Snacks" -> "🍿"
+        else -> "🏪"
+    }
+
+    Column(
         modifier = Modifier
-            .background(fondo, RoundedCornerShape(20.dp))
+            .background(fondo, RoundedCornerShape(16.dp))
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = texto, color = contenido, fontWeight = FontWeight.Medium)
+        Text(
+            text = emoji,
+            fontSize = 24.sp
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = texto,
+            color = contenido,
+            fontWeight = FontWeight.Medium,
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
 
