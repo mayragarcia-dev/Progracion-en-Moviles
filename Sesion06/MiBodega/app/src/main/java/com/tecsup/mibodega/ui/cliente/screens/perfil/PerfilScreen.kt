@@ -16,11 +16,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +46,7 @@ fun PerfilScreen(
     correo: String = "juan.perez@tecsup.edu.pe",
     telefono: String = "987654321",
     direccion: String = "Av. Los Olivos 123",
+    referencia: String = "Frente al parque",
     onVolver: () -> Unit,
     onCerrarSesion: () -> Unit
 ) {
@@ -58,47 +63,74 @@ fun PerfilScreen(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(8.dp))
 
+            // Avatar con diseño moderno
             Box(
                 modifier = Modifier
-                    .size(96.dp)
+                    .size(100.dp)
                     .background(VerdeBodega.copy(alpha = 0.15f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Avatar",
-                    tint = VerdeBodega,
-                    modifier = Modifier.size(48.dp)
-                )
+                Box(
+                    modifier = Modifier
+                        .size(84.dp)
+                        .background(VerdeBodega, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (nombre.isNotBlank()) nombre.take(1).uppercase() else "U",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             Spacer(Modifier.height(16.dp))
 
             Text(
-                text = nombre,
+                text = if (nombre.isNotBlank()) nombre else "Usuario Mi Bodega",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
+            Spacer(Modifier.height(2.dp))
             Text(
-                text = correo,
+                text = if (correo.isNotBlank()) correo else "correo@ejemplo.com",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(Modifier.height(28.dp))
+            Spacer(Modifier.height(24.dp))
 
+            // Tarjeta de información detallada
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Text(
+                        text = "Información de contacto y entrega",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = VerdeBodega
+                    )
+                    Spacer(Modifier.height(16.dp))
+
                     FilaInfo(icono = Icons.Default.Phone, etiqueta = "Teléfono", valor = telefono)
-                    Spacer(Modifier.height(12.dp))
-                    FilaInfo(icono = Icons.Default.LocationOn, etiqueta = "Dirección", valor = direccion)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = GrisClaro)
+
+                    FilaInfo(icono = Icons.Default.LocationOn, etiqueta = "Dirección de entrega", valor = direccion)
+                    
+                    if (referencia.isNotBlank()) {
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = GrisClaro)
+                        FilaInfo(icono = Icons.Default.Info, etiqueta = "Referencia", valor = referencia)
+                    }
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = GrisClaro)
+                    FilaInfo(icono = Icons.Default.Email, etiqueta = "Correo electrónico", valor = correo)
                 }
             }
 
@@ -145,26 +177,27 @@ private fun FilaInfo(
     ) {
         Box(
             modifier = Modifier
-                .size(36.dp)
-                .background(GrisClaro, RoundedCornerShape(8.dp)),
+                .size(40.dp)
+                .background(GrisClaro, RoundedCornerShape(10.dp)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icono,
                 contentDescription = etiqueta,
                 tint = VerdeBodega,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(22.dp)
             )
         }
-        Spacer(modifier = Modifier.width(12.dp))
-        Column {
+        Spacer(modifier = Modifier.width(14.dp))
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = etiqueta,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            Spacer(Modifier.height(2.dp))
             Text(
-                text = valor,
+                text = if (valor.isNotBlank()) valor else "No especificado",
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold
             )

@@ -177,6 +177,7 @@ fun AppNavegacion(
                 correo = usuarioCorreo,
                 telefono = usuarioTelefono,
                 direccion = usuarioDireccion,
+                referencia = ultimaReferencia,
                 onVolver = {
                     navController.popBackStack()
                 },
