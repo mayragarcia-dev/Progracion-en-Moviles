@@ -8,6 +8,7 @@ object Rutas {
     const val DETALLE = "detalle/{productoId}"
     const val CARRITO = "carrito"
     const val FAVORITOS = "favoritos"
+    const val CATEGORIAS = "categorias"
     const val PEDIDOS = "pedidos"
     const val PERFIL = "perfil"
     const val DATOS_ENTREGA = "datos_entrega"

@@ -68,6 +68,7 @@ fun InicioScreen(
     cantidadCarrito: Int,
     onVerCarrito: () -> Unit,
     onVerFavoritos: () -> Unit,
+    onVerCategorias: () -> Unit,
     onVerPedidos: () -> Unit,
     onVerPerfil: () -> Unit,
     onProductoClick: (Producto) -> Unit,
@@ -122,6 +123,7 @@ fun InicioScreen(
         },
         bottomBar = {
             BarraInferior(
+                onVerCategorias = onVerCategorias,
                 onVerPedidos = onVerPedidos,
                 onVerPerfil = onVerPerfil
             )
@@ -248,6 +250,7 @@ private fun ChipCategoria(
 
 @Composable
 private fun BarraInferior(
+    onVerCategorias: () -> Unit,
     onVerPedidos: () -> Unit,
     onVerPerfil: () -> Unit
 ) {
@@ -265,6 +268,7 @@ private fun BarraInferior(
                 onClick = {
                     seleccionado = indice
                     when (indice) {
+                        1 -> onVerCategorias()
                         2 -> onVerPedidos()
                         3 -> onVerPerfil()
                         else -> {}
@@ -289,6 +293,7 @@ private fun InicioPreview() {
             cantidadCarrito = 3,
             onVerCarrito = {},
             onVerFavoritos = {},
+            onVerCategorias = {},
             onVerPedidos = {},
             onVerPerfil = {},
             onProductoClick = {},
