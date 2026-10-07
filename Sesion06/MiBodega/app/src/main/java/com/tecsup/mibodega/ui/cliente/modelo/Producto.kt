@@ -7,5 +7,6 @@ data class Producto(
     val precio: Double,
     val categoria: String,
     val imagenRes: Int = 0,
-    val imagenUrl: String = ""
+    val imagenUrl: String = "",
+    val esFavorito: Boolean = false
 )
