@@ -203,6 +203,8 @@ fun AppNavegacion(
                 telefono = usuarioTelefono,
                 direccion = usuarioDireccion,
                 referencia = ultimaReferencia,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = onToggleDarkMode,
                 onVolver = {
                     navController.popBackStack()
                 },

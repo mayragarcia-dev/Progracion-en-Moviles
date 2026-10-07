@@ -1,6 +1,7 @@
 package com.tecsup.mibodega.ui.cliente.screens.perfil
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,22 +17,24 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +50,8 @@ fun PerfilScreen(
     telefono: String = "987654321",
     direccion: String = "Av. Los Olivos 123",
     referencia: String = "Frente al parque",
+    isDarkMode: Boolean,
+    onToggleDarkMode: () -> Unit,
     onVolver: () -> Unit,
     onCerrarSesion: () -> Unit
 ) {
@@ -101,7 +106,7 @@ fun PerfilScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(20.dp))
 
             // Tarjeta de información detallada
             Card(
@@ -131,6 +136,62 @@ fun PerfilScreen(
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = GrisClaro)
                     FilaInfo(icono = Icons.Default.Email, etiqueta = "Correo electrónico", valor = correo)
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // Tarjeta de Preferencias (Modo Oscuro / Claro)
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(GrisClaro, RoundedCornerShape(10.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = if (isDarkMode) Icons.Default.WbSunny else Icons.Default.DarkMode,
+                                contentDescription = null,
+                                tint = VerdeBodega,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                        Spacer(Modifier.width(14.dp))
+                        Column {
+                            Text(
+                                text = "Modo oscuro",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = if (isDarkMode) "Activado" else "Desactivado",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    Switch(
+                        checked = isDarkMode,
+                        onCheckedChange = { onToggleDarkMode() },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                            checkedTrackColor = VerdeBodega
+                        )
+                    )
                 }
             }
 
@@ -209,6 +270,6 @@ private fun FilaInfo(
 @Composable
 private fun PerfilPreview() {
     BodegaTheme {
-        PerfilScreen(onVolver = {}, onCerrarSesion = {})
+        PerfilScreen(isDarkMode = false, onToggleDarkMode = {}, onVolver = {}, onCerrarSesion = {})
     }
 }
