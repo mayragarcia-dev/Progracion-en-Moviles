@@ -27,7 +27,8 @@ fun CampoTexto(
     onValorCambia: (String) -> Unit,
     modifier: Modifier = Modifier,
     placeholder: String? = null,
-    teclado: KeyboardType = KeyboardType.Text
+    teclado: KeyboardType = KeyboardType.Text,
+    mensajeError: String? = null
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
@@ -43,6 +44,7 @@ fun CampoTexto(
                 .fillMaxWidth(),
             placeholder = placeholder?.let { { Text(it) } },
             singleLine = true,
+            isError = mensajeError != null,
             shape = RoundedCornerShape(10.dp),
             keyboardOptions = KeyboardOptions(keyboardType = teclado),
             colors = OutlinedTextFieldDefaults.colors(
@@ -52,5 +54,12 @@ fun CampoTexto(
                 focusedBorderColor = MaterialTheme.colorScheme.primary
             )
         )
+        if (mensajeError != null) {
+            Text(
+                text = mensajeError,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
     }
 }
