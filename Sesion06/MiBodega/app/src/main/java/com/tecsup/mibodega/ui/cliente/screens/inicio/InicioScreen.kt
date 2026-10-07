@@ -53,7 +53,6 @@ import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
 import com.tecsup.mibodega.ui.componentes.ProductoCard
 import com.tecsup.mibodega.ui.theme.BodegaTheme
 import com.tecsup.mibodega.ui.theme.GrisClaro
-import com.tecsup.mibodega.ui.theme.RojoPrecio
 import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
@@ -69,6 +68,8 @@ fun InicioScreen(
     cantidadCarrito: Int,
     onVerCarrito: () -> Unit,
     onVerFavoritos: () -> Unit,
+    onVerPedidos: () -> Unit,
+    onVerPerfil: () -> Unit,
     onProductoClick: (Producto) -> Unit,
     onAgregarProducto: (Producto) -> Unit,
     onFavoritoClick: (Producto) -> Unit
@@ -118,7 +119,12 @@ fun InicioScreen(
                 }
             )
         },
-        bottomBar = { BarraInferior() }
+        bottomBar = {
+            BarraInferior(
+                onVerPedidos = onVerPedidos,
+                onVerPerfil = onVerPerfil
+            )
+        }
     ) { paddingInterno ->
         LazyColumn(
             contentPadding = PaddingValues(
@@ -240,7 +246,10 @@ private fun ChipCategoria(
 }
 
 @Composable
-private fun BarraInferior() {
+private fun BarraInferior(
+    onVerPedidos: () -> Unit,
+    onVerPerfil: () -> Unit
+) {
     var seleccionado by remember { mutableStateOf(0) }
     val items = listOf(
         Triple("Inicio", Icons.Default.Home, 0),
@@ -252,7 +261,14 @@ private fun BarraInferior() {
         items.forEach { (etiqueta, icono, indice) ->
             NavigationBarItem(
                 selected = seleccionado == indice,
-                onClick = { seleccionado = indice },
+                onClick = {
+                    seleccionado = indice
+                    when (indice) {
+                        2 -> onVerPedidos()
+                        3 -> onVerPerfil()
+                        else -> {}
+                    }
+                },
                 icon = { Icon(icono, contentDescription = etiqueta) },
                 label = { Text(etiqueta) },
                 colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
@@ -272,6 +288,8 @@ private fun InicioPreview() {
             cantidadCarrito = 3,
             onVerCarrito = {},
             onVerFavoritos = {},
+            onVerPedidos = {},
+            onVerPerfil = {},
             onProductoClick = {},
             onAgregarProducto = {},
             onFavoritoClick = {}

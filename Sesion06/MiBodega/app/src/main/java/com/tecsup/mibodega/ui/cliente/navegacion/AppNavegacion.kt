@@ -21,6 +21,8 @@ import com.tecsup.mibodega.ui.cliente.screens.entrega.DatosEntregaScreen
 import com.tecsup.mibodega.ui.cliente.screens.favoritos.FavoritosScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
 import com.tecsup.mibodega.ui.cliente.screens.login.LoginScreen
+import com.tecsup.mibodega.ui.cliente.screens.pedidos.PedidosScreen
+import com.tecsup.mibodega.ui.cliente.screens.perfil.PerfilScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
 
 @Composable
@@ -36,6 +38,12 @@ fun AppNavegacion(
     var ultimoTotal by remember { mutableStateOf(25.90) }
     var ultimaDireccion by remember { mutableStateOf("Av. Los Olivos 123") }
     var ultimaReferencia by remember { mutableStateOf("Frente al parque") }
+
+    // Datos del usuario (perfil y registro)
+    var usuarioNombre by remember { mutableStateOf("Juan Pérez") }
+    var usuarioTelefono by remember { mutableStateOf("987654321") }
+    var usuarioDireccion by remember { mutableStateOf("Av. Los Olivos 123") }
+    var usuarioCorreo by remember { mutableStateOf("juan.perez@tecsup.edu.pe") }
 
     NavHost(
         navController = navController,
@@ -61,6 +69,10 @@ fun AppNavegacion(
                     navController.popBackStack()
                 },
                 onIniciarSesion = { correo, contrasena ->
+                    usuarioCorreo = correo
+                    if (correo.contains("@")) {
+                        usuarioNombre = correo.substringBefore("@").replaceFirstChar { it.uppercase() }
+                    }
                     navController.navigate(Rutas.INICIO) {
                         popUpTo(Rutas.BIENVENIDA) {
                             inclusive = true
@@ -79,6 +91,11 @@ fun AppNavegacion(
                     navController.popBackStack()
                 },
                 onCrearCuenta = { nombre, telefono, direccion, referencia ->
+                    usuarioNombre = nombre
+                    usuarioTelefono = telefono
+                    usuarioDireccion = direccion
+                    ultimaDireccion = direccion
+                    ultimaReferencia = referencia
                     navController.navigate(Rutas.INICIO) {
                         popUpTo(Rutas.BIENVENIDA) {
                             inclusive = true
@@ -97,6 +114,12 @@ fun AppNavegacion(
                 },
                 onVerFavoritos = {
                     navController.navigate(Rutas.FAVORITOS)
+                },
+                onVerPedidos = {
+                    navController.navigate(Rutas.PEDIDOS)
+                },
+                onVerPerfil = {
+                    navController.navigate(Rutas.PERFIL)
                 },
                 onProductoClick = { producto ->
                     navController.navigate(Rutas.detalle(producto.id))
@@ -135,6 +158,33 @@ fun AppNavegacion(
                 onFavoritoClick = { producto ->
                     productos = productos.map {
                         if (it.id == producto.id) it.copy(esFavorito = !it.esFavorito) else it
+                    }
+                }
+            )
+        }
+
+        composable(Rutas.PEDIDOS) {
+            PedidosScreen(
+                onVolver = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(Rutas.PERFIL) {
+            PerfilScreen(
+                nombre = usuarioNombre,
+                correo = usuarioCorreo,
+                telefono = usuarioTelefono,
+                direccion = usuarioDireccion,
+                onVolver = {
+                    navController.popBackStack()
+                },
+                onCerrarSesion = {
+                    navController.navigate(Rutas.LOGIN) {
+                        popUpTo(Rutas.INICIO) {
+                            inclusive = true
+                        }
                     }
                 }
             )
