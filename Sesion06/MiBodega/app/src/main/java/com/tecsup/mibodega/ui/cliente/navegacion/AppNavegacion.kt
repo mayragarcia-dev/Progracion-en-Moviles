@@ -58,6 +58,8 @@ fun AppNavegacion(
 
         composable(Rutas.BIENVENIDA) {
             BienvenidaScreen(
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = onToggleDarkMode,
                 onRegistrarse = {
                     navController.navigate(Rutas.REGISTRO)
                 },
@@ -115,8 +117,6 @@ fun AppNavegacion(
             InicioScreen(
                 productos = productos,
                 cantidadCarrito = carrito.sumOf { it.cantidad },
-                isDarkMode = isDarkMode,
-                onToggleDarkMode = onToggleDarkMode,
                 onVerCarrito = {
                     navController.navigate(Rutas.CARRITO)
                 },

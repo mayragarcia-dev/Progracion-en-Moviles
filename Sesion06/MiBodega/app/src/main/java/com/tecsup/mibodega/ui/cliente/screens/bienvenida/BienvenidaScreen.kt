@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -42,6 +49,8 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
  */
 @Composable
 fun BienvenidaScreen(
+    isDarkMode: Boolean,
+    onToggleDarkMode: () -> Unit,
     onRegistrarse: () -> Unit,
     onIniciarSesion: () -> Unit,
     onTerminos: () -> Unit
@@ -60,7 +69,23 @@ fun BienvenidaScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Spacer(Modifier.weight(0.5f))
+        // Botón de alternancia modo claro/oscuro en la parte superior derecha
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconButton(onClick = onToggleDarkMode) {
+                Icon(
+                    imageVector = if (isDarkMode) Icons.Default.WbSunny else Icons.Default.DarkMode,
+                    contentDescription = "Cambiar modo claro/oscuro",
+                    tint = if (isDarkMode) Color(0xFFFFC107) else MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+
+        Spacer(Modifier.weight(0.3f))
 
         IlustracionBodega()
 
@@ -97,11 +122,11 @@ fun BienvenidaScreen(
 
         PieTerminos(onTerminos = onTerminos)
 
-Spacer(Modifier.weight(0.5f))
+        Spacer(Modifier.weight(0.5f))
     }
 }
 
-// Sub-composables PRIVADOS: solo los usa esta pantalla, por eso no van a "componentes".
+// Sub-composables PRIVADOS: solo los usa esta pantalla.
 
 @Composable
 private fun IlustracionBodega() {
@@ -163,6 +188,6 @@ private fun PieTerminos(onTerminos: () -> Unit) {
 @Composable
 private fun BienvenidaPreview() {
     BodegaTheme {
-        BienvenidaScreen({}, {}, {})
+        BienvenidaScreen(false, {}, {}, {}, {})
     }
 }
