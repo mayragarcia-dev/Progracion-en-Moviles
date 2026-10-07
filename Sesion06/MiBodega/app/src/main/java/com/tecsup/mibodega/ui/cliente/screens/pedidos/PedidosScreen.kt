@@ -43,14 +43,9 @@ data class PedidoItem(
     val direccion: String
 )
 
-val listaPedidosFake = listOf(
-    PedidoItem("PED-002", "07/10/2026 - 15:30", 29.90, "En camino", "Av. Los Olivos 123"),
-    PedidoItem("PED-001", "05/10/2026 - 11:20", 42.50, "Entregado", "Av. Los Olivos 123")
-)
-
 @Composable
 fun PedidosScreen(
-    pedidos: List<PedidoItem> = listaPedidosFake,
+    pedidos: List<PedidoItem> = emptyList(),
     onVolver: () -> Unit
 ) {
     Column(
@@ -80,14 +75,14 @@ fun PedidosScreen(
                     )
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        text = "No tienes pedidos recientes",
+                        text = "No tienes pedidos aún",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = "Tus compras realizadas aparecerán aquí",
+                        text = "Tus compras realizadas aparecerán aquí cuando realices un pedido",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center

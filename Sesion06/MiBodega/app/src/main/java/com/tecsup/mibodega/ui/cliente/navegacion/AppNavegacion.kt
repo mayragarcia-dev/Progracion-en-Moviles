@@ -21,6 +21,7 @@ import com.tecsup.mibodega.ui.cliente.screens.entrega.DatosEntregaScreen
 import com.tecsup.mibodega.ui.cliente.screens.favoritos.FavoritosScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
 import com.tecsup.mibodega.ui.cliente.screens.login.LoginScreen
+import com.tecsup.mibodega.ui.cliente.screens.pedidos.PedidoItem
 import com.tecsup.mibodega.ui.cliente.screens.pedidos.PedidosScreen
 import com.tecsup.mibodega.ui.cliente.screens.perfil.PerfilScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
@@ -36,6 +37,9 @@ fun AppNavegacion(
     }
     var productos by remember {
         mutableStateOf(listaProductosFake)
+    }
+    var listaPedidos by remember {
+        mutableStateOf<List<PedidoItem>>(emptyList())
     }
     var ultimoTotal by remember { mutableStateOf(25.90) }
     var ultimaDireccion by remember { mutableStateOf("Av. Los Olivos 123") }
@@ -169,6 +173,7 @@ fun AppNavegacion(
 
         composable(Rutas.PEDIDOS) {
             PedidosScreen(
+                pedidos = listaPedidos,
                 onVolver = {
                     navController.popBackStack()
                 }
@@ -276,10 +281,23 @@ fun AppNavegacion(
                 },
                 onConfirmarPedido = { direccion, referencia, telefono, metodoPago ->
                     val subtotal = carrito.sumOf { it.producto.precio * it.cantidad }
-                    ultimoTotal = if (carrito.isNotEmpty()) subtotal + 4.00 else 25.90
-                    ultimaDireccion = if (direccion.isNotEmpty()) direccion else "Av. Los Olivos 123"
+                    val total = if (carrito.isNotEmpty()) subtotal + 4.00 else 25.90
+                    val direccionFinal = if (direccion.isNotEmpty()) direccion else "Av. Los Olivos 123"
+
+                    ultimoTotal = total
+                    ultimaDireccion = direccionFinal
                     ultimaReferencia = if (referencia.isNotEmpty()) referencia else "Frente al parque"
+
+                    val nuevoPedido = PedidoItem(
+                        id = "PED-%03d".format(listaPedidos.size + 1),
+                        fecha = "Hoy",
+                        total = total,
+                        estado = "En camino",
+                        direccion = direccionFinal
+                    )
+                    listaPedidos = listOf(nuevoPedido) + listaPedidos
                     carrito = emptyList()
+
                     navController.navigate(Rutas.CONFIRMACION) {
                         popUpTo(Rutas.INICIO) {
                             inclusive = false
