@@ -32,7 +32,7 @@ import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
 import com.tecsup.mibodega.ui.componentes.ProductoCard
 import com.tecsup.mibodega.ui.theme.BodegaTheme
-import com.tecsup.mibodega.ui.theme.RojoPrecio
+import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 @Composable
 fun FavoritosScreen(
@@ -64,7 +64,7 @@ fun FavoritosScreen(
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = null,
-                        tint = RojoPrecio.copy(alpha = 0.5f),
+                        tint = VerdeBodega.copy(alpha = 0.5f),
                         modifier = Modifier.size(80.dp)
                     )
                     Spacer(Modifier.height(16.dp))

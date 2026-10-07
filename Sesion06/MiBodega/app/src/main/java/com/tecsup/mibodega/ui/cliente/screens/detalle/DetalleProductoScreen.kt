@@ -144,7 +144,7 @@ private fun EncabezadoDetalle(
             Icon(
                 imageVector = if (esFavorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = if (esFavorito) "Quitar de favoritos" else "Marcar como favorito",
-                tint = if (esFavorito) RojoPrecio else MaterialTheme.colorScheme.onSurfaceVariant
+                tint = if (esFavorito) VerdeBodega else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

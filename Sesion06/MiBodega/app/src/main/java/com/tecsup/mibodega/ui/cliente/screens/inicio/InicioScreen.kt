@@ -99,7 +99,7 @@ fun InicioScreen(
                             Icon(
                                 imageVector = Icons.Default.Favorite,
                                 contentDescription = "Favoritos",
-                                tint = RojoPrecio
+                                tint = VerdeBodega
                             )
                         }
                     }

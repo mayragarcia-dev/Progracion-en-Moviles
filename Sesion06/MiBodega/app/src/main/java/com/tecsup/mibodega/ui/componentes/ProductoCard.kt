@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.theme.GrisClaro
-import com.tecsup.mibodega.ui.theme.RojoPrecio
 import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 @Composable
@@ -101,7 +100,7 @@ fun ProductoCard(
                     Icon(
                         imageVector = if (esFavorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = if (esFavorito) "Quitar de favoritos" else "Marcar como favorito",
-                        tint = if (esFavorito) RojoPrecio else MaterialTheme.colorScheme.onSurfaceVariant,
+                        tint = if (esFavorito) VerdeBodega else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
                 }
