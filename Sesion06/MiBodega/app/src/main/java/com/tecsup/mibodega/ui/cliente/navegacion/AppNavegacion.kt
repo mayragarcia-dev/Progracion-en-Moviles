@@ -311,7 +311,11 @@ fun AppNavegacion(
                         fecha = "Hoy",
                         total = total,
                         estado = "En camino",
-                        direccion = direccionFinal
+                        direccion = direccionFinal,
+                        referencia = referencia,
+                        telefono = telefono,
+                        metodoPago = metodoPago,
+                        items = carrito.toList()
                     )
                     listaPedidos = listOf(nuevoPedido) + listaPedidos
                     carrito = emptyList()
@@ -334,6 +338,13 @@ fun AppNavegacion(
                     navController.navigate(Rutas.INICIO) {
                         popUpTo(Rutas.INICIO) {
                             inclusive = true
+                        }
+                    }
+                },
+                onVerEstadoPedido = {
+                    navController.navigate(Rutas.PEDIDOS) {
+                        popUpTo(Rutas.INICIO) {
+                            inclusive = false
                         }
                     }
                 }

@@ -29,7 +29,8 @@ fun ConfirmacionScreen(
     total: Double = 25.90,
     direccion: String = "Av. Los Olivos 123",
     referencia: String = "Frente al parque",
-    onIrAInicio: () -> Unit
+    onIrAInicio: () -> Unit,
+    onVerEstadoPedido: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -133,9 +134,9 @@ fun ConfirmacionScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        // Botón WhatsApp: Ver estado del pedido
+        // Botón: Ver estado del pedido -> Lleva a PedidosScreen
         OutlinedButton(
-            onClick = { /* TODO: ver estado del pedido en WhatsApp */ },
+            onClick = onVerEstadoPedido,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
@@ -180,6 +181,6 @@ fun ConfirmacionScreen(
 @Composable
 private fun ConfirmacionPreview() {
     BodegaTheme {
-        ConfirmacionScreen(onIrAInicio = {})
+        ConfirmacionScreen(onIrAInicio = {}, onVerEstadoPedido = {})
     }
 }

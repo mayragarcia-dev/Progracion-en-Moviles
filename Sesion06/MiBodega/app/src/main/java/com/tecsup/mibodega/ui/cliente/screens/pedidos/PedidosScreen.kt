@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tecsup.mibodega.ui.cliente.modelo.ItemCarrito
 import com.tecsup.mibodega.ui.theme.BodegaTheme
 import com.tecsup.mibodega.ui.theme.VerdeBodega
 
@@ -40,7 +41,11 @@ data class PedidoItem(
     val fecha: String,
     val total: Double,
     val estado: String,
-    val direccion: String
+    val direccion: String,
+    val referencia: String,
+    val telefono: String,
+    val metodoPago: String,
+    val items: List<ItemCarrito>
 )
 
 @Composable
@@ -132,13 +137,55 @@ fun PedidosScreen(
 
                             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
+                            // Detalles de entrega
                             Text(
-                                text = "Dirección: ${pedido.direccion}",
+                                text = "📍 Dirección: ${pedido.direccion}" + if (pedido.referencia.isNotBlank()) " (${pedido.referencia})" else "",
                                 style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = "📞 Teléfono: ${pedido.telefono}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = "💳 Método de pago: ${pedido.metodoPago}",
+                                style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
 
-                            Spacer(Modifier.height(4.dp))
+                            if (pedido.items.isNotEmpty()) {
+                                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                                Text(
+                                    text = "Productos:",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Spacer(Modifier.height(4.dp))
+                                for (item in pedido.items) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 2.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "${item.cantidad}x ${item.producto.nombre}",
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
+                                        Text(
+                                            text = "S/ %.2f".format(item.producto.precio * item.cantidad),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            }
+
+                            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -146,8 +193,9 @@ fun PedidosScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Total:",
-                                    style = MaterialTheme.typography.bodyMedium
+                                    text = "Total (incl. delivery):",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Medium
                                 )
                                 Text(
                                     text = "S/ %.2f".format(pedido.total),
