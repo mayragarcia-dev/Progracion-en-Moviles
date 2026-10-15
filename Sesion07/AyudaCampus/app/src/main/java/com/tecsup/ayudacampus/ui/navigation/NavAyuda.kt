@@ -1,0 +1,78 @@
+package com.tecsup.ayudacampus.ui.navigation
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.tecsup.ayudacampus.data.prefs.PreferenciasStore
+import com.tecsup.ayudacampus.data.repository.AyudaRepository
+import com.tecsup.ayudacampus.model.Rol
+import com.tecsup.ayudacampus.ui.cliente.LoginScreen
+import com.tecsup.ayudacampus.ui.cliente.SplashScreen
+import com.tecsup.ayudacampus.viewmodel.AyudaViewModelFactory
+import com.tecsup.ayudacampus.viewmodel.SesionViewModel
+import kotlinx.coroutines.flow.first
+
+@Composable
+fun NavAyuda(
+    repository: AyudaRepository,
+    preferencias: PreferenciasStore
+) {
+    val navController = rememberNavController()
+    val factory = AyudaViewModelFactory(repository, preferencias)
+    val sesionViewModel: SesionViewModel = viewModel(factory = factory)
+
+    NavHost(navController = navController, startDestination = Rutas.Splash) {
+        composable(Rutas.Splash) {
+            SplashScreen()
+            LaunchedEffect(Unit) {
+                val perfil = preferencias.perfilActivo.first()
+                val destino = when (perfil) {
+                    Rol.CLIENTE.name -> Rutas.MisTickets
+                    Rol.ADMIN.name -> Rutas.Panel
+                    else -> Rutas.Login
+                }
+                navController.navigate(destino) {
+                    popUpTo(Rutas.Splash) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+        }
+        composable(Rutas.Login) {
+            LoginScreen(vm = sesionViewModel) { rol ->
+                val destino = if (rol == Rol.CLIENTE) Rutas.MisTickets else Rutas.Panel
+                navController.navigate(destino) {
+                    popUpTo(Rutas.Login) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+        }
+        composable(Rutas.MisTickets) {
+            PantallaDestino("Mis tickets", "Estudiante")
+        }
+        composable(Rutas.Panel) {
+            PantallaDestino("Panel de soporte", "Soporte TI")
+        }
+    }
+}
+
+@Composable
+private fun PantallaDestino(titulo: String, perfil: String) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(titulo, style = MaterialTheme.typography.headlineSmall)
+        Text("Sesión iniciada: $perfil", style = MaterialTheme.typography.bodyMedium)
+    }
+}
