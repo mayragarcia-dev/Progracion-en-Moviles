@@ -3,6 +3,7 @@ package com.tecsup.ayudacampus.ui.soporte
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,16 +27,25 @@ import com.tecsup.ayudacampus.viewmodel.CategoriasViewModel
 fun CategoriasScreen(vm: CategoriasViewModel, onEditar: (Int) -> Unit) {
     val categorias by vm.categorias.collectAsState()
 
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(16.dp)
-    ) {
-        items(categorias, key = { it.id }) { categoria ->
-            CategoriaItem(
-                categoria = categoria,
-                onToggle = { vm.alternar(categoria) },
-                onEditar = { onEditar(categoria.id) }
+    Scaffold { innerPadding ->
+        Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            Text(
+                text = "Categorías de soporte",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
             )
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
+            ) {
+                items(categorias, key = { it.id }) { categoria ->
+                    CategoriaItem(
+                        categoria = categoria,
+                        onToggle = { vm.alternar(categoria) },
+                        onEditar = { onEditar(categoria.id) }
+                    )
+                }
+            }
         }
     }
 }
