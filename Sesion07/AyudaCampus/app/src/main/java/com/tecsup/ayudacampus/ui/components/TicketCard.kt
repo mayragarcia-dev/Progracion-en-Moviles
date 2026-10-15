@@ -30,7 +30,8 @@ import com.tecsup.ayudacampus.data.local.model.TicketResumen
 fun TicketCard(
     ticket: TicketResumen,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    mostrarCliente: Boolean = false
 ) {
     val colorPrioridad = when (ticket.prioridad) {
         "ALTA" -> Color(0xFFDC2626)
@@ -76,7 +77,8 @@ fun TicketCard(
                     Text(ticket.titulo, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Spacer(Modifier.height(2.dp))
                     Text(
-                        "#${ticket.id.toString().padStart(4, '0')} · ${ticket.ubicacion}",
+                        if (mostrarCliente) "#${ticket.id.toString().padStart(4, '0')} · ${ticket.clienteNombre}"
+                        else "#${ticket.id.toString().padStart(4, '0')} · ${ticket.ubicacion}",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,

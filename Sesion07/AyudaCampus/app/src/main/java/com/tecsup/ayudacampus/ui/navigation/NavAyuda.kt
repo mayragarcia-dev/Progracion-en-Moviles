@@ -27,6 +27,7 @@ import com.tecsup.ayudacampus.ui.cliente.NuevoTicketScreen
 import com.tecsup.ayudacampus.ui.cliente.DetalleTicketScreen
 import com.tecsup.ayudacampus.ui.cliente.SplashScreen
 import com.tecsup.ayudacampus.ui.soporte.BandejaScreen
+import com.tecsup.ayudacampus.ui.soporte.PanelScreen
 import com.tecsup.ayudacampus.viewmodel.AyudaViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.BandejaViewModel
 import com.tecsup.ayudacampus.viewmodel.BandejaViewModelFactory
@@ -34,6 +35,8 @@ import com.tecsup.ayudacampus.viewmodel.MisTicketsViewModel
 import com.tecsup.ayudacampus.viewmodel.MisTicketsViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.NuevoTicketViewModel
 import com.tecsup.ayudacampus.viewmodel.NuevoTicketViewModelFactory
+import com.tecsup.ayudacampus.viewmodel.PanelViewModel
+import com.tecsup.ayudacampus.viewmodel.PanelViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.SesionViewModel
 import com.tecsup.ayudacampus.viewmodel.TicketDetalleViewModel
 import com.tecsup.ayudacampus.viewmodel.TicketDetalleViewModelFactory
@@ -99,8 +102,28 @@ fun NavAyuda(
                 value = repository.buscarUsuario(usuarioId)
             }
             if (usuario?.rol == Rol.ADMIN.name) {
+                val panelViewModel: PanelViewModel = viewModel(factory = PanelViewModelFactory(repository))
+                PanelScreen(
+                    vm = panelViewModel,
+                    onVerTickets = { navController.navigate(Rutas.BandejaSoporte) },
+                    onBandejaClick = { navController.navigate(Rutas.BandejaSoporte) }
+                )
+            } else {
+                PantallaDestino("Preparando panel", "Soporte TI")
+            }
+        }
+        composable(Rutas.BandejaSoporte) {
+            val usuario by produceState<Usuario?>(initialValue = null) {
+                val usuarioId = preferencias.usuarioId.first()
+                value = repository.buscarUsuario(usuarioId)
+            }
+            if (usuario?.rol == Rol.ADMIN.name) {
                 val bandejaViewModel: BandejaViewModel = viewModel(factory = BandejaViewModelFactory(repository))
-                BandejaScreen(vm = bandejaViewModel) { ticketId -> navController.navigate(Rutas.detalleTicket(ticketId)) }
+                BandejaScreen(
+                    vm = bandejaViewModel,
+                    onTicketClick = { ticketId -> navController.navigate(Rutas.detalleTicket(ticketId)) },
+                    onPanelClick = { navController.popBackStack(Rutas.Panel, inclusive = false) }
+                )
             } else {
                 PantallaDestino("Preparando bandeja", "Soporte TI")
             }
@@ -144,7 +167,7 @@ fun NavAyuda(
                     vm = detalleViewModel,
                     onTicketsClick = {
                         navController.popBackStack(
-                            if (usuarioActual.rol == Rol.ADMIN.name) Rutas.Panel else Rutas.MisTickets,
+                            if (usuarioActual.rol == Rol.ADMIN.name) Rutas.BandejaSoporte else Rutas.MisTickets,
                             inclusive = false
                         )
                     },

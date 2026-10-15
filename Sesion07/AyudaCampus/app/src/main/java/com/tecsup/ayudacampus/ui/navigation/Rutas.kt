@@ -5,6 +5,7 @@ object Rutas {
     const val Login = "login"
     const val MisTickets = "mis_tickets"
     const val Panel = "panel"
+    const val BandejaSoporte = "bandeja_soporte"
     const val NuevoTicket = "nuevo_ticket"
     const val DetalleTicket = "detalle_ticket/{ticketId}"
 
