@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UsuarioDao {
+    @Query("SELECT * FROM usuarios WHERE correo = :correo AND clave = :clave LIMIT 1")
+    suspend fun login(correo: String, clave: String): Usuario?
+
     @Query("SELECT * FROM usuarios ORDER BY nombre")
     fun observarTodos(): Flow<List<Usuario>>
 
@@ -21,6 +24,12 @@ interface UsuarioDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertar(usuario: Usuario): Long
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertarTodos(lista: List<Usuario>)
+
+    @Query("SELECT COUNT(*) FROM usuarios")
+    suspend fun contar(): Int
 
     @Update
     suspend fun actualizar(usuario: Usuario)

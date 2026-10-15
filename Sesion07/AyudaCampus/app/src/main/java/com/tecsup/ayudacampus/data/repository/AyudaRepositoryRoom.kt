@@ -28,9 +28,9 @@ class AyudaRepositoryRoom(
     override suspend fun cambiarActiva(id: Int, activa: Boolean) = categoriaDao.cambiarActiva(id, activa)
 
     override fun observarTicketsCliente(clienteId: Int): Flow<List<TicketResumen>> =
-        ticketDao.observarPorCliente(clienteId)
+        ticketDao.observarResumenPorCliente(clienteId)
 
-    override fun observarTicketsSoporte(): Flow<List<TicketResumen>> = ticketDao.observarTodos()
+    override fun observarTicketsSoporte(): Flow<List<TicketResumen>> = ticketDao.observarResumenTodos()
 
     override fun observarDetalleSoporte(ticketId: Int): Flow<TicketResumen?> =
         ticketDao.observarDetalle(ticketId)
