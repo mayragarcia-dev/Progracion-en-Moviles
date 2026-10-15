@@ -61,6 +61,22 @@ interface TicketDao {
 
     @Query(
         """
+        SELECT t.id, t.titulo, t.descripcion, t.ubicacion, t.prioridad, t.estado,
+               t.fecha, t.fechaCierre, t.calificacion,
+               u.nombre AS clienteNombre, c.nombre AS categoriaNombre,
+               c.icono AS categoriaIcono,
+               (SELECT COUNT(*) FROM comentarios co WHERE co.ticketId = t.id) AS comentariosCount
+        FROM tickets t
+        INNER JOIN usuarios u ON u.id = t.clienteId
+        INNER JOIN categorias c ON c.id = t.categoriaId
+        WHERE t.id = :ticketId AND t.clienteId = :clienteId
+        LIMIT 1
+        """
+    )
+    fun observarDetalleDeCliente(clienteId: Int, ticketId: Int): Flow<TicketResumen?>
+
+    @Query(
+        """
         SELECT COUNT(*) AS total,
                COALESCE(SUM(CASE WHEN estado = 'ABIERTO' THEN 1 ELSE 0 END), 0) AS abiertos,
                COALESCE(SUM(CASE WHEN estado = 'EN_PROCESO' THEN 1 ELSE 0 END), 0) AS enProceso,
