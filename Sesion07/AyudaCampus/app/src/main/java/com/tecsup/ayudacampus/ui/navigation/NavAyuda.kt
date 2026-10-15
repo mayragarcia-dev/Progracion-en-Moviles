@@ -23,10 +23,13 @@ import com.tecsup.ayudacampus.data.local.entity.Usuario
 import com.tecsup.ayudacampus.model.Rol
 import com.tecsup.ayudacampus.ui.cliente.LoginScreen
 import com.tecsup.ayudacampus.ui.cliente.MisTicketsScreen
+import com.tecsup.ayudacampus.ui.cliente.NuevoTicketScreen
 import com.tecsup.ayudacampus.ui.cliente.SplashScreen
 import com.tecsup.ayudacampus.viewmodel.AyudaViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.MisTicketsViewModel
 import com.tecsup.ayudacampus.viewmodel.MisTicketsViewModelFactory
+import com.tecsup.ayudacampus.viewmodel.NuevoTicketViewModel
+import com.tecsup.ayudacampus.viewmodel.NuevoTicketViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.SesionViewModel
 import kotlinx.coroutines.flow.first
 
@@ -88,7 +91,24 @@ fun NavAyuda(
             PantallaDestino("Panel de soporte", "Soporte TI")
         }
         composable(Rutas.NuevoTicket) {
-            PantallaDestino("Nuevo ticket", "Estudiante")
+            val usuario by produceState<Usuario?>(initialValue = null) {
+                val usuarioId = preferencias.usuarioId.first()
+                value = repository.buscarUsuario(usuarioId)
+            }
+            if (usuario != null) {
+                val usuarioActual = requireNotNull(usuario)
+                val nuevoTicketViewModel: NuevoTicketViewModel = viewModel(
+                    key = "nuevo-ticket-${usuarioActual.id}",
+                    factory = NuevoTicketViewModelFactory(usuarioActual, repository)
+                )
+                NuevoTicketScreen(
+                    vm = nuevoTicketViewModel,
+                    onTicketCreado = { navController.popBackStack(Rutas.MisTickets, inclusive = false) },
+                    onTicketsClick = { navController.popBackStack(Rutas.MisTickets, inclusive = false) }
+                )
+            } else {
+                PantallaDestino("Preparando formulario", "Estudiante")
+            }
         }
         composable(
             route = Rutas.DetalleTicket,

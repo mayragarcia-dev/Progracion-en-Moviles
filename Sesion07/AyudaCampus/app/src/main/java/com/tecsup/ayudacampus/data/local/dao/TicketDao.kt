@@ -27,7 +27,7 @@ interface TicketDao {
         INNER JOIN usuarios u ON u.id = t.clienteId
         INNER JOIN categorias c ON c.id = t.categoriaId
         WHERE t.clienteId = :clienteId
-        ORDER BY CASE t.prioridad WHEN 'ALTA' THEN 0 WHEN 'MEDIA' THEN 1 ELSE 2 END, t.fecha DESC
+        ORDER BY t.fecha DESC
         """
     )
     fun observarResumenPorCliente(clienteId: Int): Flow<List<TicketResumen>>
