@@ -24,13 +24,19 @@ import com.tecsup.ayudacampus.model.Rol
 import com.tecsup.ayudacampus.ui.cliente.LoginScreen
 import com.tecsup.ayudacampus.ui.cliente.MisTicketsScreen
 import com.tecsup.ayudacampus.ui.cliente.NuevoTicketScreen
+import com.tecsup.ayudacampus.ui.cliente.DetalleTicketScreen
 import com.tecsup.ayudacampus.ui.cliente.SplashScreen
+import com.tecsup.ayudacampus.ui.soporte.BandejaScreen
 import com.tecsup.ayudacampus.viewmodel.AyudaViewModelFactory
+import com.tecsup.ayudacampus.viewmodel.BandejaViewModel
+import com.tecsup.ayudacampus.viewmodel.BandejaViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.MisTicketsViewModel
 import com.tecsup.ayudacampus.viewmodel.MisTicketsViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.NuevoTicketViewModel
 import com.tecsup.ayudacampus.viewmodel.NuevoTicketViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.SesionViewModel
+import com.tecsup.ayudacampus.viewmodel.TicketDetalleViewModel
+import com.tecsup.ayudacampus.viewmodel.TicketDetalleViewModelFactory
 import kotlinx.coroutines.flow.first
 
 @Composable
@@ -88,7 +94,16 @@ fun NavAyuda(
             }
         }
         composable(Rutas.Panel) {
-            PantallaDestino("Panel de soporte", "Soporte TI")
+            val usuario by produceState<Usuario?>(initialValue = null) {
+                val usuarioId = preferencias.usuarioId.first()
+                value = repository.buscarUsuario(usuarioId)
+            }
+            if (usuario?.rol == Rol.ADMIN.name) {
+                val bandejaViewModel: BandejaViewModel = viewModel(factory = BandejaViewModelFactory(repository))
+                BandejaScreen(vm = bandejaViewModel) { ticketId -> navController.navigate(Rutas.detalleTicket(ticketId)) }
+            } else {
+                PantallaDestino("Preparando bandeja", "Soporte TI")
+            }
         }
         composable(Rutas.NuevoTicket) {
             val usuario by produceState<Usuario?>(initialValue = null) {
@@ -114,7 +129,32 @@ fun NavAyuda(
             route = Rutas.DetalleTicket,
             arguments = listOf(navArgument("ticketId") { type = NavType.IntType })
         ) { entrada ->
-            PantallaDestino("Ticket #${entrada.arguments?.getInt("ticketId")}", "Detalle")
+            val ticketId = entrada.arguments?.getInt("ticketId") ?: return@composable
+            val usuario by produceState<Usuario?>(initialValue = null, ticketId) {
+                val usuarioId = preferencias.usuarioId.first()
+                value = repository.buscarUsuario(usuarioId)
+            }
+            if (usuario != null) {
+                val usuarioActual = requireNotNull(usuario)
+                val detalleViewModel: TicketDetalleViewModel = viewModel(
+                    key = "detalle-$ticketId-${usuarioActual.id}",
+                    factory = TicketDetalleViewModelFactory(ticketId, usuarioActual, repository)
+                )
+                DetalleTicketScreen(
+                    vm = detalleViewModel,
+                    onTicketsClick = {
+                        navController.popBackStack(
+                            if (usuarioActual.rol == Rol.ADMIN.name) Rutas.Panel else Rutas.MisTickets,
+                            inclusive = false
+                        )
+                    },
+                    onNuevoClick = {
+                        if (usuarioActual.rol == Rol.CLIENTE.name) navController.navigate(Rutas.NuevoTicket)
+                    }
+                )
+            } else {
+                PantallaDestino("Cargando detalle", "Ticket")
+            }
         }
     }
 }
