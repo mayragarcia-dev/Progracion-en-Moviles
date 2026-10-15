@@ -3,7 +3,7 @@ package com.tecsup.ayudacampus.data.repository
 import com.tecsup.ayudacampus.data.local.dao.CategoriaDao
 import com.tecsup.ayudacampus.data.local.dao.ComentarioDao
 import com.tecsup.ayudacampus.data.local.dao.TicketDao
-import com.tecsup.ayudacampus.data.local.entity.CategoriaEntity
+import com.tecsup.ayudacampus.data.local.entity.Categoria
 import com.tecsup.ayudacampus.data.local.entity.ComentarioEntity
 import com.tecsup.ayudacampus.data.local.entity.TicketEntity
 import com.tecsup.ayudacampus.data.local.model.ResumenPanel
@@ -15,7 +15,7 @@ class AyudaRepositoryRoom(
     private val ticketDao: TicketDao,
     private val comentarioDao: ComentarioDao
 ) : AyudaRepository {
-    override fun observarCategoriasActivas(): Flow<List<CategoriaEntity>> = categoriaDao.observarActivas()
+    override fun observarCategoriasActivas(): Flow<List<Categoria>> = categoriaDao.observarActivas()
 
     override fun observarTicketsCliente(clienteId: Int): Flow<List<TicketResumen>> =
         ticketDao.observarPorCliente(clienteId)
@@ -33,7 +33,7 @@ class AyudaRepositoryRoom(
 
     override fun observarResumenPanel(): Flow<ResumenPanel> = ticketDao.observarResumenPanel()
 
-    override suspend fun buscarCategoria(categoriaId: Int): CategoriaEntity? =
+    override suspend fun buscarCategoria(categoriaId: Int): Categoria? =
         categoriaDao.buscarPorId(categoriaId)
 
     override suspend fun buscarTicket(ticketId: Int): TicketEntity? = ticketDao.buscarPorId(ticketId)
