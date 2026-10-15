@@ -7,18 +7,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.tecsup.ayudacampus.data.prefs.PreferenciasStore
 import com.tecsup.ayudacampus.data.repository.AyudaRepository
+import com.tecsup.ayudacampus.data.local.entity.Usuario
 import com.tecsup.ayudacampus.model.Rol
 import com.tecsup.ayudacampus.ui.cliente.LoginScreen
+import com.tecsup.ayudacampus.ui.cliente.MisTicketsScreen
 import com.tecsup.ayudacampus.ui.cliente.SplashScreen
 import com.tecsup.ayudacampus.viewmodel.AyudaViewModelFactory
+import com.tecsup.ayudacampus.viewmodel.MisTicketsViewModel
+import com.tecsup.ayudacampus.viewmodel.MisTicketsViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.SesionViewModel
 import kotlinx.coroutines.flow.first
 
@@ -57,10 +65,36 @@ fun NavAyuda(
             }
         }
         composable(Rutas.MisTickets) {
-            PantallaDestino("Mis tickets", "Estudiante")
+            val usuario by produceState<Usuario?>(initialValue = null) {
+                val usuarioId = preferencias.usuarioId.first()
+                value = repository.buscarUsuario(usuarioId)
+            }
+            if (usuario != null) {
+                val usuarioActual = requireNotNull(usuario)
+                val ticketsViewModel: MisTicketsViewModel = viewModel(
+                    key = "mis-tickets-${usuarioActual.id}",
+                    factory = MisTicketsViewModelFactory(usuarioActual, repository)
+                )
+                MisTicketsScreen(
+                    vm = ticketsViewModel,
+                    onTicketClick = { ticketId -> navController.navigate(Rutas.detalleTicket(ticketId)) },
+                    onNuevo = { navController.navigate(Rutas.NuevoTicket) }
+                )
+            } else {
+                PantallaDestino("Cargando tickets", "Estudiante")
+            }
         }
         composable(Rutas.Panel) {
             PantallaDestino("Panel de soporte", "Soporte TI")
+        }
+        composable(Rutas.NuevoTicket) {
+            PantallaDestino("Nuevo ticket", "Estudiante")
+        }
+        composable(
+            route = Rutas.DetalleTicket,
+            arguments = listOf(navArgument("ticketId") { type = NavType.IntType })
+        ) { entrada ->
+            PantallaDestino("Ticket #${entrada.arguments?.getInt("ticketId")}", "Detalle")
         }
     }
 }

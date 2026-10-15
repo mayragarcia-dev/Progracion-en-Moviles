@@ -25,6 +25,8 @@ class AyudaRepositoryRoom(
     override suspend fun login(correo: String, clave: String): Usuario? =
         usuarioDao.login(correo, clave)
 
+    override suspend fun buscarUsuario(usuarioId: Int): Usuario? = usuarioDao.buscarPorId(usuarioId)
+
     override fun observarCategorias(): Flow<List<Categoria>> = categoriaDao.observarTodas()
 
     override fun observarCategoriasActivas(): Flow<List<Categoria>> = categoriaDao.observarActivas()
