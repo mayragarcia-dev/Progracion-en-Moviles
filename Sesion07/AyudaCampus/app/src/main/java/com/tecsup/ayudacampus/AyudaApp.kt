@@ -33,6 +33,7 @@ fun AyudaCampusUi() {
     val database = remember(context) { AyudaDatabase.obtener(context) }
     val repository = remember(database) {
         AyudaRepositoryRoom(
+            usuarioDao = database.usuarioDao(),
             categoriaDao = database.categoriaDao(),
             ticketDao = database.ticketDao(),
             comentarioDao = database.comentarioDao()
