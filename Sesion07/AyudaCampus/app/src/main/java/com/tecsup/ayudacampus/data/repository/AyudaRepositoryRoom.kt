@@ -15,7 +15,17 @@ class AyudaRepositoryRoom(
     private val ticketDao: TicketDao,
     private val comentarioDao: ComentarioDao
 ) : AyudaRepository {
+    override fun observarCategorias(): Flow<List<Categoria>> = categoriaDao.observarTodas()
+
     override fun observarCategoriasActivas(): Flow<List<Categoria>> = categoriaDao.observarActivas()
+
+    override suspend fun guardarCategoria(categoria: Categoria) {
+        if (categoria.id == 0) categoriaDao.insertar(categoria) else categoriaDao.actualizar(categoria)
+    }
+
+    override suspend fun eliminarCategoria(categoria: Categoria) = categoriaDao.eliminar(categoria)
+
+    override suspend fun cambiarActiva(id: Int, activa: Boolean) = categoriaDao.cambiarActiva(id, activa)
 
     override fun observarTicketsCliente(clienteId: Int): Flow<List<TicketResumen>> =
         ticketDao.observarPorCliente(clienteId)
