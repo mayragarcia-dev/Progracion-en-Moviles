@@ -2,8 +2,8 @@ package com.tecsup.ayudacampus.ui.estudiante
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tecsup.ayudacampus.data.local.entity.ComentarioEntity
-import com.tecsup.ayudacampus.data.local.entity.TicketEntity
+import com.tecsup.ayudacampus.data.local.entity.Comentario
+import com.tecsup.ayudacampus.data.local.entity.Ticket
 import com.tecsup.ayudacampus.data.repository.AyudaRepository
 import com.tecsup.ayudacampus.domain.model.EstadosTicket
 import com.tecsup.ayudacampus.domain.model.PrioridadesTicket
@@ -57,7 +57,7 @@ class EstudianteViewModel(
             require(categoria?.activa == true) { "Selecciona una categoría activa." }
 
             repository.crearTicket(
-                TicketEntity(
+                Ticket(
                     clienteId = estudiante.id,
                     categoriaId = categoriaId,
                     titulo = tituloLimpio,
@@ -113,7 +113,7 @@ class EstudianteViewModel(
             val textoLimpio = texto.trim()
             require(textoLimpio.isNotEmpty()) { "Escribe un comentario antes de enviarlo." }
             repository.agregarComentario(
-                ComentarioEntity(
+                Comentario(
                     ticketId = ticketId,
                     autorId = estudiante.id,
                     autorNombre = estudiante.nombre,
@@ -130,7 +130,7 @@ class EstudianteViewModel(
         _uiState.update { it.copy(mensaje = null) }
     }
 
-    private suspend fun ticketDeEstudiante(ticketId: Int): TicketEntity {
+    private suspend fun ticketDeEstudiante(ticketId: Int): Ticket {
         val ticket = repository.buscarTicket(ticketId) ?: error("No se encontró el ticket.")
         require(ticket.clienteId == estudiante.id) { "No tienes permiso para acceder a este ticket." }
         return ticket

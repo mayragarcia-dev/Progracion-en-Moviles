@@ -4,8 +4,8 @@ import com.tecsup.ayudacampus.data.local.dao.CategoriaDao
 import com.tecsup.ayudacampus.data.local.dao.ComentarioDao
 import com.tecsup.ayudacampus.data.local.dao.TicketDao
 import com.tecsup.ayudacampus.data.local.entity.Categoria
-import com.tecsup.ayudacampus.data.local.entity.ComentarioEntity
-import com.tecsup.ayudacampus.data.local.entity.TicketEntity
+import com.tecsup.ayudacampus.data.local.entity.Comentario
+import com.tecsup.ayudacampus.data.local.entity.Ticket
 import com.tecsup.ayudacampus.data.local.model.ResumenPanel
 import com.tecsup.ayudacampus.data.local.model.TicketResumen
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +38,7 @@ class AyudaRepositoryRoom(
     override fun observarDetalleCliente(clienteId: Int, ticketId: Int): Flow<TicketResumen?> =
         ticketDao.observarDetalleDeCliente(clienteId, ticketId)
 
-    override fun observarComentarios(ticketId: Int): Flow<List<ComentarioEntity>> =
+    override fun observarComentarios(ticketId: Int): Flow<List<Comentario>> =
         comentarioDao.observarPorTicket(ticketId)
 
     override fun observarResumenPanel(): Flow<ResumenPanel> = ticketDao.observarResumenPanel()
@@ -46,11 +46,11 @@ class AyudaRepositoryRoom(
     override suspend fun buscarCategoria(categoriaId: Int): Categoria? =
         categoriaDao.buscarPorId(categoriaId)
 
-    override suspend fun buscarTicket(ticketId: Int): TicketEntity? = ticketDao.buscarPorId(ticketId)
+    override suspend fun buscarTicket(ticketId: Int): Ticket? = ticketDao.buscarPorId(ticketId)
 
-    override suspend fun crearTicket(ticket: TicketEntity): Long = ticketDao.insertar(ticket)
+    override suspend fun crearTicket(ticket: Ticket): Long = ticketDao.insertar(ticket)
 
-    override suspend fun actualizarTicket(ticket: TicketEntity) = ticketDao.actualizar(ticket)
+    override suspend fun actualizarTicket(ticket: Ticket) = ticketDao.actualizar(ticket)
 
-    override suspend fun agregarComentario(comentario: ComentarioEntity): Long = comentarioDao.insertar(comentario)
+    override suspend fun agregarComentario(comentario: Comentario): Long = comentarioDao.insertar(comentario)
 }

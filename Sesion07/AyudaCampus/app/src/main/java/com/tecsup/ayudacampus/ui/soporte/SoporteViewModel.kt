@@ -2,7 +2,7 @@ package com.tecsup.ayudacampus.ui.soporte
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tecsup.ayudacampus.data.local.entity.ComentarioEntity
+import com.tecsup.ayudacampus.data.local.entity.Comentario
 import com.tecsup.ayudacampus.data.repository.AyudaRepository
 import com.tecsup.ayudacampus.domain.model.EstadosTicket
 import com.tecsup.ayudacampus.domain.model.PrioridadesTicket
@@ -85,7 +85,7 @@ class SoporteViewModel(
             val textoLimpio = texto.trim()
             require(textoLimpio.isNotEmpty()) { "Escribe un comentario antes de enviarlo." }
             repository.agregarComentario(
-                ComentarioEntity(
+                Comentario(
                     ticketId = ticketId,
                     autorId = soporte.id,
                     autorNombre = soporte.nombre,

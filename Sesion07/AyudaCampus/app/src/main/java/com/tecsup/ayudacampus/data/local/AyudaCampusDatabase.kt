@@ -10,16 +10,16 @@ import com.tecsup.ayudacampus.data.local.dao.ComentarioDao
 import com.tecsup.ayudacampus.data.local.dao.TicketDao
 import com.tecsup.ayudacampus.data.local.dao.UsuarioDao
 import com.tecsup.ayudacampus.data.local.entity.Categoria
-import com.tecsup.ayudacampus.data.local.entity.ComentarioEntity
-import com.tecsup.ayudacampus.data.local.entity.TicketEntity
-import com.tecsup.ayudacampus.data.local.entity.UsuarioEntity
+import com.tecsup.ayudacampus.data.local.entity.Comentario
+import com.tecsup.ayudacampus.data.local.entity.Ticket
+import com.tecsup.ayudacampus.data.local.entity.Usuario
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [UsuarioEntity::class, Categoria::class, TicketEntity::class, ComentarioEntity::class],
+    entities = [Usuario::class, Categoria::class, Ticket::class, Comentario::class],
     version = 1,
     exportSchema = true
 )
@@ -63,11 +63,11 @@ abstract class AyudaCampusDatabase : RoomDatabase() {
 
             val clienteId = usuarioDao.buscarPorCorreo("juan@campus.test")?.id
                 ?: usuarioDao.insertar(
-                    UsuarioEntity(nombre = "Juan Pérez", correo = "juan@campus.test", clave = "1234", rol = "CLIENTE")
+                    Usuario(nombre = "Juan Pérez", correo = "juan@campus.test", clave = "1234", rol = "CLIENTE")
                 ).toInt()
             val soporteId = usuarioDao.buscarPorCorreo("soporte@campus.test")?.id
                 ?: usuarioDao.insertar(
-                    UsuarioEntity(nombre = "Soporte TI", correo = "soporte@campus.test", clave = "admin", rol = "ADMIN")
+                    Usuario(nombre = "Soporte TI", correo = "soporte@campus.test", clave = "admin", rol = "ADMIN")
                 ).toInt()
 
             val nombres = listOf(
@@ -85,27 +85,27 @@ abstract class AyudaCampusDatabase : RoomDatabase() {
             val categorias = categoriaDao.obtenerTodas().associateBy { it.nombre }
             val ahora = System.currentTimeMillis()
             val ejemplos = listOf(
-                TicketEntity(clienteId = clienteId, categoriaId = categorias.getValue("Red / Wi-Fi").id,
+                Ticket(clienteId = clienteId, categoriaId = categorias.getValue("Red / Wi-Fi").id,
                     titulo = "No conecta al Wi-Fi", descripcion = "Mi laptop no encuentra la red del campus.", ubicacion = "Biblioteca, piso 2", prioridad = "ALTA", estado = "ABIERTO", fecha = ahora - 86_400_000L),
-                TicketEntity(clienteId = clienteId, categoriaId = categorias.getValue("Hardware").id,
+                Ticket(clienteId = clienteId, categoriaId = categorias.getValue("Hardware").id,
                     titulo = "Equipo no enciende", descripcion = "La computadora del laboratorio no inicia.", ubicacion = "Laboratorio 3", prioridad = "ALTA", estado = "EN_PROCESO", fecha = ahora - 172_800_000L),
-                TicketEntity(clienteId = clienteId, categoriaId = categorias.getValue("Cuenta").id,
+                Ticket(clienteId = clienteId, categoriaId = categorias.getValue("Cuenta").id,
                     titulo = "Cuenta bloqueada", descripcion = "No puedo ingresar al portal académico.", ubicacion = "Remoto", prioridad = "MEDIA", estado = "RESUELTO", fecha = ahora - 259_200_000L, fechaCierre = ahora - 172_800_000L),
-                TicketEntity(clienteId = clienteId, categoriaId = categorias.getValue("Software").id,
+                Ticket(clienteId = clienteId, categoriaId = categorias.getValue("Software").id,
                     titulo = "Instalar herramienta de programación", descripcion = "Necesito el IDE para el curso.", ubicacion = "Laboratorio 1", prioridad = "BAJA", estado = "CERRADO", fecha = ahora - 345_600_000L, fechaCierre = ahora - 259_200_000L, calificacion = 5),
-                TicketEntity(clienteId = clienteId, categoriaId = categorias.getValue("Impresión").id,
+                Ticket(clienteId = clienteId, categoriaId = categorias.getValue("Impresión").id,
                     titulo = "Impresora sin conexión", descripcion = "La impresora del pabellón no aparece en la red.", ubicacion = "Pabellón A", prioridad = "MEDIA", estado = "ABIERTO", fecha = ahora - 43_200_000L),
-                TicketEntity(clienteId = clienteId, categoriaId = categorias.getValue("Red / Wi-Fi").id,
+                Ticket(clienteId = clienteId, categoriaId = categorias.getValue("Red / Wi-Fi").id,
                     titulo = "Conexión lenta", descripcion = "La conexión se interrumpe durante las clases.", ubicacion = "Aula 204", prioridad = "BAJA", estado = "EN_PROCESO", fecha = ahora - 21_600_000L)
             )
             val ticketIds = ejemplos.map { ticketDao.insertar(it).toInt() }
             val comentarios = listOf(
-                ComentarioEntity(ticketId = ticketIds[0], autorId = clienteId, autorNombre = "Juan Pérez", autorRol = "CLIENTE", texto = "El problema comenzó esta mañana.", fecha = ahora - 80_000_000L),
-                ComentarioEntity(ticketId = ticketIds[0], autorId = soporteId, autorNombre = "Soporte TI", autorRol = "ADMIN", texto = "Estamos revisando el punto de acceso de la biblioteca.", fecha = ahora - 79_000_000L),
-                ComentarioEntity(ticketId = ticketIds[1], autorId = soporteId, autorNombre = "Soporte TI", autorRol = "ADMIN", texto = "Se solicitó una revisión del equipo en el laboratorio.", fecha = ahora - 160_000_000L),
-                ComentarioEntity(ticketId = ticketIds[2], autorId = soporteId, autorNombre = "Soporte TI", autorRol = "ADMIN", texto = "La cuenta fue desbloqueada. Prueba nuevamente.", fecha = ahora - 170_000_000L),
-                ComentarioEntity(ticketId = ticketIds[3], autorId = clienteId, autorNombre = "Juan Pérez", autorRol = "CLIENTE", texto = "Gracias por la ayuda, quedó instalado.", fecha = ahora - 260_000_000L),
-                ComentarioEntity(ticketId = ticketIds[5], autorId = soporteId, autorNombre = "Soporte TI", autorRol = "ADMIN", texto = "Estamos midiendo la señal en el aula.", fecha = ahora - 20_000_000L)
+                Comentario(ticketId = ticketIds[0], autorId = clienteId, autorNombre = "Juan Pérez", autorRol = "CLIENTE", texto = "El problema comenzó esta mañana.", fecha = ahora - 80_000_000L),
+                Comentario(ticketId = ticketIds[0], autorId = soporteId, autorNombre = "Soporte TI", autorRol = "ADMIN", texto = "Estamos revisando el punto de acceso de la biblioteca.", fecha = ahora - 79_000_000L),
+                Comentario(ticketId = ticketIds[1], autorId = soporteId, autorNombre = "Soporte TI", autorRol = "ADMIN", texto = "Se solicitó una revisión del equipo en el laboratorio.", fecha = ahora - 160_000_000L),
+                Comentario(ticketId = ticketIds[2], autorId = soporteId, autorNombre = "Soporte TI", autorRol = "ADMIN", texto = "La cuenta fue desbloqueada. Prueba nuevamente.", fecha = ahora - 170_000_000L),
+                Comentario(ticketId = ticketIds[3], autorId = clienteId, autorNombre = "Juan Pérez", autorRol = "CLIENTE", texto = "Gracias por la ayuda, quedó instalado.", fecha = ahora - 260_000_000L),
+                Comentario(ticketId = ticketIds[5], autorId = soporteId, autorNombre = "Soporte TI", autorRol = "ADMIN", texto = "Estamos midiendo la señal en el aula.", fecha = ahora - 20_000_000L)
             )
             comentarios.forEach { comentarioDao.insertar(it) }
         }

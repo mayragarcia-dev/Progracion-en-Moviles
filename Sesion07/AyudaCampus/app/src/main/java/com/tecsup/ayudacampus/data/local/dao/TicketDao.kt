@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.tecsup.ayudacampus.data.local.entity.TicketEntity
+import com.tecsup.ayudacampus.data.local.entity.Ticket
 import com.tecsup.ayudacampus.data.local.model.ResumenPanel
 import com.tecsup.ayudacampus.data.local.model.TicketResumen
 import kotlinx.coroutines.flow.Flow
@@ -88,11 +88,11 @@ interface TicketDao {
     fun observarResumenPanel(): Flow<ResumenPanel>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertar(ticket: TicketEntity): Long
+    suspend fun insertar(ticket: Ticket): Long
 
     @Update
-    suspend fun actualizar(ticket: TicketEntity)
+    suspend fun actualizar(ticket: Ticket)
 
     @Query("SELECT * FROM tickets WHERE id = :ticketId LIMIT 1")
-    suspend fun buscarPorId(ticketId: Int): TicketEntity?
+    suspend fun buscarPorId(ticketId: Int): Ticket?
 }
