@@ -9,7 +9,7 @@ import com.tecsup.ayudacampus.data.local.dao.CategoriaDao
 import com.tecsup.ayudacampus.data.local.dao.ComentarioDao
 import com.tecsup.ayudacampus.data.local.dao.TicketDao
 import com.tecsup.ayudacampus.data.local.dao.UsuarioDao
-import com.tecsup.ayudacampus.data.local.entity.CategoriaEntity
+import com.tecsup.ayudacampus.data.local.entity.Categoria
 import com.tecsup.ayudacampus.data.local.entity.ComentarioEntity
 import com.tecsup.ayudacampus.data.local.entity.TicketEntity
 import com.tecsup.ayudacampus.data.local.entity.UsuarioEntity
@@ -19,7 +19,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [UsuarioEntity::class, CategoriaEntity::class, TicketEntity::class, ComentarioEntity::class],
+    entities = [UsuarioEntity::class, Categoria::class, TicketEntity::class, ComentarioEntity::class],
     version = 1,
     exportSchema = true
 )
@@ -79,7 +79,7 @@ abstract class AyudaCampusDatabase : RoomDatabase() {
             )
             nombres.forEach { (nombre, icono) ->
                 if (categoriaDao.obtenerTodas().none { it.nombre == nombre }) {
-                    categoriaDao.insertar(CategoriaEntity(nombre = nombre, icono = icono))
+                    categoriaDao.insertar(Categoria(nombre = nombre, icono = icono))
                 }
             }
             val categorias = categoriaDao.obtenerTodas().associateBy { it.nombre }
