@@ -8,7 +8,11 @@ import com.tecsup.ayudacampus.data.local.model.TicketResumen
 import kotlinx.coroutines.flow.Flow
 
 interface AyudaRepository {
+    fun observarCategorias(): Flow<List<Categoria>>
     fun observarCategoriasActivas(): Flow<List<Categoria>>
+    suspend fun guardarCategoria(categoria: Categoria)
+    suspend fun eliminarCategoria(categoria: Categoria)
+    suspend fun cambiarActiva(id: Int, activa: Boolean)
     fun observarTicketsCliente(clienteId: Int): Flow<List<TicketResumen>>
     fun observarTicketsSoporte(): Flow<List<TicketResumen>>
     fun observarDetalleSoporte(ticketId: Int): Flow<TicketResumen?>
