@@ -106,6 +106,9 @@ interface TicketDao {
     @Query("SELECT COUNT(*) FROM tickets WHERE estado = :estado")
     fun contarPorEstado(estado: String): Flow<Int>
 
+    @Query("SELECT COUNT(*) FROM tickets WHERE categoriaId = :categoriaId")
+    suspend fun contarPorCategoriaId(categoriaId: Int): Int
+
     @Query(
         """
         SELECT c.id AS categoriaId, c.nombre AS nombre, COUNT(t.id) AS cantidad

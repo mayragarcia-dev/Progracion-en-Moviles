@@ -29,6 +29,7 @@ interface AyudaRepository {
     fun observarResumenPanel(): Flow<ResumenPanel>
 
     suspend fun buscarCategoria(categoriaId: Int): Categoria?
+    suspend fun contarTicketsCategoria(categoriaId: Int): Int
     suspend fun buscarTicket(ticketId: Int): Ticket?
     suspend fun crearTicket(ticket: Ticket): Long
     suspend fun crearTicket(

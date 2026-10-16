@@ -24,8 +24,9 @@ import com.tecsup.ayudacampus.data.local.entity.Categoria
 import com.tecsup.ayudacampus.viewmodel.CategoriasViewModel
 
 @Composable
-fun CategoriasScreen(vm: CategoriasViewModel, onEditar: (Int) -> Unit) {
+fun CategoriasScreen(vm: CategoriasViewModel, onEditar: (Int) -> Unit, onNueva: () -> Unit = {}) {
     val categorias by vm.categorias.collectAsState()
+    val mensaje by vm.mensaje.collectAsState()
 
     Scaffold { innerPadding ->
         Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
@@ -34,6 +35,8 @@ fun CategoriasScreen(vm: CategoriasViewModel, onEditar: (Int) -> Unit) {
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
             )
+            androidx.compose.material3.Button(onClick = onNueva, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text("Nueva categoría") }
+            mensaje?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(horizontal = 16.dp)) }
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)

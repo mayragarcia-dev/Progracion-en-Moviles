@@ -58,6 +58,9 @@ class AyudaRepositoryRoom(
     override suspend fun buscarCategoria(categoriaId: Int): Categoria? =
         categoriaDao.buscarPorId(categoriaId)
 
+    override suspend fun contarTicketsCategoria(categoriaId: Int): Int =
+        ticketDao.contarPorCategoriaId(categoriaId)
+
     override suspend fun buscarTicket(ticketId: Int): Ticket? = ticketDao.buscarPorId(ticketId)
 
     override suspend fun crearTicket(ticket: Ticket): Long = ticketDao.insertar(ticket)

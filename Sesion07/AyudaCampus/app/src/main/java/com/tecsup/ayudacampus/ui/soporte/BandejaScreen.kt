@@ -31,7 +31,8 @@ import com.tecsup.ayudacampus.viewmodel.BandejaViewModel
 fun BandejaScreen(
     vm: BandejaViewModel,
     onTicketClick: (Int) -> Unit,
-    onPanelClick: () -> Unit = {}
+    onPanelClick: () -> Unit = {},
+    onCategoriasClick: () -> Unit = {}
 ) {
     val tickets by vm.tickets.collectAsState()
     val filtro by vm.filtroSeleccionado.collectAsState()
@@ -40,7 +41,7 @@ fun BandejaScreen(
             NavigationBar {
                 NavigationBarItem(false, onPanelClick, icon = { Text("▥") }, label = { Text("Panel") })
                 NavigationBarItem(true, {}, icon = { Text("▤") }, label = { Text("Tickets") })
-                NavigationBarItem(false, {}, icon = { Text("▦") }, label = { Text("Categorías") })
+                NavigationBarItem(false, onCategoriasClick, icon = { Text("▦") }, label = { Text("Categorías") })
                 NavigationBarItem(false, {}, icon = { Text("⚙") }, label = { Text("Ajustes") })
             }
         }

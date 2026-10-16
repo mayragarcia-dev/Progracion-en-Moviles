@@ -28,6 +28,9 @@ import com.tecsup.ayudacampus.ui.cliente.DetalleTicketScreen
 import com.tecsup.ayudacampus.ui.cliente.SplashScreen
 import com.tecsup.ayudacampus.ui.soporte.BandejaScreen
 import com.tecsup.ayudacampus.ui.soporte.PanelScreen
+import com.tecsup.ayudacampus.ui.soporte.AtenderTicketScreen
+import com.tecsup.ayudacampus.ui.soporte.CategoriasScreen
+import com.tecsup.ayudacampus.ui.soporte.FormularioCategoriaScreen
 import com.tecsup.ayudacampus.viewmodel.AyudaViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.BandejaViewModel
 import com.tecsup.ayudacampus.viewmodel.BandejaViewModelFactory
@@ -40,6 +43,9 @@ import com.tecsup.ayudacampus.viewmodel.PanelViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.SesionViewModel
 import com.tecsup.ayudacampus.viewmodel.TicketDetalleViewModel
 import com.tecsup.ayudacampus.viewmodel.TicketDetalleViewModelFactory
+import com.tecsup.ayudacampus.viewmodel.AtenderViewModel
+import com.tecsup.ayudacampus.viewmodel.AtenderViewModelFactory
+import com.tecsup.ayudacampus.viewmodel.CategoriasViewModel
 import kotlinx.coroutines.flow.first
 
 @Composable
@@ -121,8 +127,9 @@ fun NavAyuda(
                 val bandejaViewModel: BandejaViewModel = viewModel(factory = BandejaViewModelFactory(repository))
                 BandejaScreen(
                     vm = bandejaViewModel,
-                    onTicketClick = { ticketId -> navController.navigate(Rutas.detalleTicket(ticketId)) },
-                    onPanelClick = { navController.popBackStack(Rutas.Panel, inclusive = false) }
+                    onTicketClick = { ticketId -> navController.navigate(Rutas.atenderTicket(ticketId)) },
+                    onPanelClick = { navController.popBackStack(Rutas.Panel, inclusive = false) },
+                    onCategoriasClick = { navController.navigate(Rutas.Categorias) }
                 )
             } else {
                 PantallaDestino("Preparando bandeja", "Soporte TI")
@@ -178,6 +185,29 @@ fun NavAyuda(
             } else {
                 PantallaDestino("Cargando detalle", "Ticket")
             }
+        }
+        composable(route = Rutas.AtenderTicket, arguments = listOf(navArgument("ticketId") { type = NavType.IntType })) { entrada ->
+            val ticketId = entrada.arguments?.getInt("ticketId") ?: return@composable
+            val usuario by produceState<Usuario?>(initialValue = null) {
+                value = repository.buscarUsuario(preferencias.usuarioId.first())
+            }
+            if (usuario?.rol == Rol.ADMIN.name) {
+                val actual = requireNotNull(usuario)
+                val vm: AtenderViewModel = viewModel(key = "atender-$ticketId", factory = AtenderViewModelFactory(ticketId, actual, repository))
+                AtenderTicketScreen(vm) { navController.popBackStack() }
+            } else PantallaDestino("Preparando atención", "Soporte TI")
+        }
+        composable(Rutas.Categorias) {
+            val vm: CategoriasViewModel = viewModel(factory = factory)
+            CategoriasScreen(vm, onEditar = { navController.navigate(Rutas.formCategoria(it)) }, onNueva = { navController.navigate(Rutas.formCategoria()) })
+        }
+        composable(route = Rutas.FormCategoria, arguments = listOf(navArgument("categoriaId") { type = NavType.IntType; defaultValue = 0 })) { entrada ->
+            val categoriaId = entrada.arguments?.getInt("categoriaId") ?: 0
+            val vm: CategoriasViewModel = viewModel(factory = factory)
+            val categoria by produceState<com.tecsup.ayudacampus.data.local.entity.Categoria?>(initialValue = null, categoriaId) {
+                value = if (categoriaId == 0) null else repository.buscarCategoria(categoriaId)
+            }
+            FormularioCategoriaScreen(categoria = categoria, onGuardar = { vm.guardar(it); navController.popBackStack() }, onCancelar = { navController.popBackStack() })
         }
     }
 }
