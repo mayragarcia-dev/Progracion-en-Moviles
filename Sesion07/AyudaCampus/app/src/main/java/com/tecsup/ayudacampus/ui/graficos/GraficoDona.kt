@@ -43,7 +43,7 @@ fun GraficoDona(datos: List<DatoGrafico>, modifier: Modifier = Modifier) {
                         var angulo = -90f
                         datos.filter { it.valor > 0 }.forEach { dato ->
                             val barrido = 360f * dato.valor / total
-                            drawArc(Color(dato.color.toULong()), angulo, barrido, false, style = Stroke(grosor))
+                            drawArc(Color(dato.color.toInt()), angulo, barrido, false, style = Stroke(grosor))
                             angulo += barrido
                         }
                     }
@@ -56,7 +56,7 @@ fun GraficoDona(datos: List<DatoGrafico>, modifier: Modifier = Modifier) {
             Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
                 datos.forEach { dato ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(Modifier.size(10.dp).background(Color(dato.color.toULong()), CircleShape))
+                        Box(Modifier.size(10.dp).background(Color(dato.color.toInt()), CircleShape))
                         Spacer(Modifier.width(7.dp))
                         Text(dato.etiqueta, modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelSmall)
                         Spacer(Modifier.width(10.dp))

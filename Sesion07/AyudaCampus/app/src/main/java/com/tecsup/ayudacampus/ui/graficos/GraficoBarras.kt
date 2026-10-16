@@ -47,7 +47,7 @@ fun GraficoBarras(datos: List<DatoGrafico>, modifier: Modifier = Modifier) {
                     Box(
                         modifier = Modifier.width(32.dp)
                             .height((82f * dato.valor / maximo).coerceAtLeast(if (dato.valor == 0) 3f else 12f).dp)
-                            .background(Color(dato.color.toULong()), RoundedCornerShape(topStart = 7.dp, topEnd = 7.dp))
+                            .background(Color(dato.color.toInt()), RoundedCornerShape(topStart = 7.dp, topEnd = 7.dp))
                     )
                     Spacer(Modifier.height(5.dp))
                     Text(dato.etiqueta, style = MaterialTheme.typography.labelSmall, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)

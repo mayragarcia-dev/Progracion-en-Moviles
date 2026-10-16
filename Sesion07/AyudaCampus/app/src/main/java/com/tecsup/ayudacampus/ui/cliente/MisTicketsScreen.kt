@@ -57,7 +57,7 @@ fun MisTicketsScreen(
             NavigationBar {
                 NavigationBarItem(
                     selected = true,
-                    onClick = onPerfil,
+                    onClick = {},
                     icon = { Text("▤") },
                     label = { Text("Tickets") }
                 )
@@ -69,7 +69,7 @@ fun MisTicketsScreen(
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = {},
+                    onClick = onPerfil,
                     icon = { Text("♙") },
                     label = { Text("Perfil") }
                 )
