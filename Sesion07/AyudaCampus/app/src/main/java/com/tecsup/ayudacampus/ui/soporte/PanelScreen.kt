@@ -49,6 +49,7 @@ fun PanelScreen(
     val porEstado by vm.porEstado.collectAsState()
     val porCategoria by vm.porCategoria.collectAsState()
     val altas by vm.altasSinAtender.collectAsState()
+    val promedioResolucion by vm.promedioResolucion.collectAsState()
 
     Scaffold(
         bottomBar = {
@@ -71,6 +72,28 @@ fun PanelScreen(
                 ContadorPanel("$abiertos", "Abiertos", Color(0xFFFFF1CC), Color(0xFFB45309), Modifier.weight(1f))
                 ContadorPanel("$enProceso", "En proceso", Color(0xFFDBEAFE), Color(0xFF2563EB), Modifier.weight(1f))
                 ContadorPanel("$resueltos", "Resueltos", Color(0xFFDCFCE7), Color(0xFF16A34A), Modifier.weight(1f))
+            }
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text("◷", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.primary)
+                    Column {
+                        Text("Tiempo promedio de resolución", style = MaterialTheme.typography.labelMedium)
+                        Text(
+                            promedioResolucion ?: "Sin tickets cerrados",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
 
             Text("Tickets por estado", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
