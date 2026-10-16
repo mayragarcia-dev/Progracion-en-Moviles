@@ -24,6 +24,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,7 +46,8 @@ private val CianEstudiante = Color(0xFF0891B2)
 fun NuevoTicketScreen(
     vm: NuevoTicketViewModel,
     onTicketCreado: () -> Unit,
-    onTicketsClick: () -> Unit
+    onTicketsClick: () -> Unit,
+    mesaAbierta: Boolean = true
 ) {
     val state by vm.uiState.collectAsState()
     val categorias by vm.categorias.collectAsState()
@@ -81,7 +84,11 @@ fun NuevoTicketScreen(
             modifier = Modifier.fillMaxSize().padding(innerPadding)
                 .verticalScroll(rememberScrollState())
         ) {
-            Column(
+            if (!mesaAbierta) {
+                Card(Modifier.fillMaxWidth().padding(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
+                    Text("Mesa de ayuda cerrada", Modifier.padding(20.dp), color = MaterialTheme.colorScheme.onErrorContainer, style = MaterialTheme.typography.titleMedium)
+                }
+            } else Column(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {

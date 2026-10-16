@@ -39,6 +39,8 @@ class PreferenciasStore(private val context: Context) {
         }
     }
 
+    suspend fun cambiarPerfil(rol: String, usuarioId: Int) = guardarSesion(rol, usuarioId)
+
     suspend fun guardarModoOscuro(activado: Boolean) {
         context.dataStore.edit { preferencias -> preferencias[MODO_OSCURO] = activado }
     }

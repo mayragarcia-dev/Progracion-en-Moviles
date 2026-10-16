@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,6 +27,8 @@ import com.tecsup.ayudacampus.ui.cliente.MisTicketsScreen
 import com.tecsup.ayudacampus.ui.cliente.NuevoTicketScreen
 import com.tecsup.ayudacampus.ui.cliente.DetalleTicketScreen
 import com.tecsup.ayudacampus.ui.cliente.SplashScreen
+import com.tecsup.ayudacampus.ui.cliente.PerfilScreen
+import com.tecsup.ayudacampus.ui.soporte.AjustesScreen
 import com.tecsup.ayudacampus.ui.soporte.BandejaScreen
 import com.tecsup.ayudacampus.ui.soporte.PanelScreen
 import com.tecsup.ayudacampus.ui.soporte.AtenderTicketScreen
@@ -47,6 +50,7 @@ import com.tecsup.ayudacampus.viewmodel.AtenderViewModel
 import com.tecsup.ayudacampus.viewmodel.AtenderViewModelFactory
 import com.tecsup.ayudacampus.viewmodel.CategoriasViewModel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @Composable
 fun NavAyuda(
@@ -56,6 +60,7 @@ fun NavAyuda(
     val navController = rememberNavController()
     val factory = AyudaViewModelFactory(repository, preferencias)
     val sesionViewModel: SesionViewModel = viewModel(factory = factory)
+    val scope = rememberCoroutineScope()
 
     NavHost(navController = navController, startDestination = Rutas.Splash) {
         composable(Rutas.Splash) {
@@ -96,7 +101,8 @@ fun NavAyuda(
                 MisTicketsScreen(
                     vm = ticketsViewModel,
                     onTicketClick = { ticketId -> navController.navigate(Rutas.detalleTicket(ticketId)) },
-                    onNuevo = { navController.navigate(Rutas.NuevoTicket) }
+                    onNuevo = { navController.navigate(Rutas.NuevoTicket) },
+                    onPerfil = { navController.navigate(Rutas.Perfil) }
                 )
             } else {
                 PantallaDestino("Cargando tickets", "Estudiante")
@@ -112,7 +118,9 @@ fun NavAyuda(
                 PanelScreen(
                     vm = panelViewModel,
                     onVerTickets = { navController.navigate(Rutas.BandejaSoporte) },
-                    onBandejaClick = { navController.navigate(Rutas.BandejaSoporte) }
+                    onBandejaClick = { navController.navigate(Rutas.BandejaSoporte) },
+                    onAjustes = { navController.navigate(Rutas.Ajustes) },
+                    onCategorias = { navController.navigate(Rutas.Categorias) }
                 )
             } else {
                 PantallaDestino("Preparando panel", "Soporte TI")
@@ -129,7 +137,8 @@ fun NavAyuda(
                     vm = bandejaViewModel,
                     onTicketClick = { ticketId -> navController.navigate(Rutas.atenderTicket(ticketId)) },
                     onPanelClick = { navController.popBackStack(Rutas.Panel, inclusive = false) },
-                    onCategoriasClick = { navController.navigate(Rutas.Categorias) }
+                    onCategoriasClick = { navController.navigate(Rutas.Categorias) },
+                    onAjustesClick = { navController.navigate(Rutas.Ajustes) }
                 )
             } else {
                 PantallaDestino("Preparando bandeja", "Soporte TI")
@@ -140,7 +149,8 @@ fun NavAyuda(
                 val usuarioId = preferencias.usuarioId.first()
                 value = repository.buscarUsuario(usuarioId)
             }
-            if (usuario != null) {
+            val recibirTickets by preferencias.recibirTickets.collectAsState(initial = true)
+            if (usuario?.rol == Rol.CLIENTE.name) {
                 val usuarioActual = requireNotNull(usuario)
                 val nuevoTicketViewModel: NuevoTicketViewModel = viewModel(
                     key = "nuevo-ticket-${usuarioActual.id}",
@@ -148,10 +158,11 @@ fun NavAyuda(
                 )
                 NuevoTicketScreen(
                     vm = nuevoTicketViewModel,
+                    mesaAbierta = recibirTickets,
                     onTicketCreado = { navController.popBackStack(Rutas.MisTickets, inclusive = false) },
                     onTicketsClick = { navController.popBackStack(Rutas.MisTickets, inclusive = false) }
                 )
-            } else {
+            } else if (usuario == null) {
                 PantallaDestino("Preparando formulario", "Estudiante")
             }
         }
@@ -201,6 +212,34 @@ fun NavAyuda(
             val vm: CategoriasViewModel = viewModel(factory = factory)
             CategoriasScreen(vm, onEditar = { navController.navigate(Rutas.formCategoria(it)) }, onNueva = { navController.navigate(Rutas.formCategoria()) })
         }
+        composable(Rutas.Perfil) {
+            val usuario by produceState<Usuario?>(initialValue = null) { value = repository.buscarUsuario(preferencias.usuarioId.first()) }
+            if (usuario?.rol == Rol.CLIENTE.name) {
+                val actual = requireNotNull(usuario)
+                val ticketsVm: MisTicketsViewModel = viewModel(key = "perfil-tickets-${actual.id}", factory = MisTicketsViewModelFactory(actual, repository))
+                PerfilScreen(
+                    usuario = actual, tickets = ticketsVm.todosLosTickets, preferencias = preferencias,
+                    onTickets = { navController.popBackStack(Rutas.MisTickets, false) },
+                    onIrTickets = { navController.popBackStack(Rutas.MisTickets, false) },
+                    onNuevo = { navController.navigate(Rutas.NuevoTicket) },
+                    onCambiarPerfil = { scope.launch { cambiarPerfil(Rol.ADMIN, repository, preferencias, navController) } },
+                    onCerrarSesion = { scope.launch { cerrarSesion(preferencias, navController) } }
+                )
+            }
+        }
+        composable(Rutas.Ajustes) {
+            val usuario by produceState<Usuario?>(initialValue = null) { value = repository.buscarUsuario(preferencias.usuarioId.first()) }
+            if (usuario?.rol == Rol.ADMIN.name) {
+                AjustesScreen(
+                    usuario = requireNotNull(usuario), preferencias = preferencias,
+                    onPanel = { navController.popBackStack(Rutas.Panel, false) },
+                    onTickets = { navController.navigate(Rutas.BandejaSoporte) },
+                    onCategorias = { navController.navigate(Rutas.Categorias) },
+                    onCambiarPerfil = { scope.launch { cambiarPerfil(Rol.CLIENTE, repository, preferencias, navController) } },
+                    onCerrarSesion = { scope.launch { cerrarSesion(preferencias, navController) } }
+                )
+            }
+        }
         composable(route = Rutas.FormCategoria, arguments = listOf(navArgument("categoriaId") { type = NavType.IntType; defaultValue = 0 })) { entrada ->
             val categoriaId = entrada.arguments?.getInt("categoriaId") ?: 0
             val vm: CategoriasViewModel = viewModel(factory = factory)
@@ -210,6 +249,23 @@ fun NavAyuda(
             FormularioCategoriaScreen(categoria = categoria, onGuardar = { vm.guardar(it); navController.popBackStack() }, onCancelar = { navController.popBackStack() })
         }
     }
+}
+
+private suspend fun cambiarPerfil(
+    rol: Rol,
+    repository: AyudaRepository,
+    preferencias: PreferenciasStore,
+    navController: androidx.navigation.NavHostController
+) {
+    val usuario = repository.buscarUsuarioPorRol(rol.name) ?: return
+    preferencias.cambiarPerfil(rol.name, usuario.id)
+    val destino = if (rol == Rol.CLIENTE) Rutas.MisTickets else Rutas.Panel
+    navController.navigate(destino) { popUpTo(Rutas.Splash) { inclusive = true }; launchSingleTop = true }
+}
+
+private suspend fun cerrarSesion(preferencias: PreferenciasStore, navController: androidx.navigation.NavHostController) {
+    preferencias.cerrarSesion()
+    navController.navigate(Rutas.Login) { popUpTo(Rutas.Splash) { inclusive = true }; launchSingleTop = true }
 }
 
 @Composable

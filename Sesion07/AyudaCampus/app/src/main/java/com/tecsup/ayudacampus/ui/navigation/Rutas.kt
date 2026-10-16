@@ -3,6 +3,8 @@ package com.tecsup.ayudacampus.ui.navigation
 object Rutas {
     const val Splash = "splash"
     const val Login = "login"
+    const val Perfil = "perfil"
+    const val Ajustes = "ajustes"
     const val MisTickets = "mis_tickets"
     const val Panel = "panel"
     const val BandejaSoporte = "bandeja_soporte"

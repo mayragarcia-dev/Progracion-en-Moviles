@@ -39,7 +39,9 @@ private val VioletaPanel = Color(0xFF7C3AED)
 fun PanelScreen(
     vm: PanelViewModel,
     onVerTickets: () -> Unit,
-    onBandejaClick: () -> Unit
+    onBandejaClick: () -> Unit,
+    onAjustes: () -> Unit = {},
+    onCategorias: () -> Unit = {}
 ) {
     val abiertos by vm.abiertos.collectAsState()
     val enProceso by vm.enProceso.collectAsState()
@@ -53,8 +55,8 @@ fun PanelScreen(
             NavigationBar {
                 NavigationBarItem(true, {}, icon = { Text("▥", color = VioletaPanel) }, label = { Text("Panel", color = VioletaPanel) })
                 NavigationBarItem(false, onBandejaClick, icon = { Text("▤") }, label = { Text("Tickets") })
-                NavigationBarItem(false, {}, icon = { Text("▦") }, label = { Text("Categorías") })
-                NavigationBarItem(false, {}, icon = { Text("⚙") }, label = { Text("Ajustes") })
+                NavigationBarItem(false, onCategorias, icon = { Text("▦") }, label = { Text("Categorías") })
+                NavigationBarItem(false, onAjustes, icon = { Text("⚙") }, label = { Text("Ajustes") })
             }
         }
     ) { padding ->

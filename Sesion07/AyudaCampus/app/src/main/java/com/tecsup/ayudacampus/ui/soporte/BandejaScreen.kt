@@ -32,7 +32,8 @@ fun BandejaScreen(
     vm: BandejaViewModel,
     onTicketClick: (Int) -> Unit,
     onPanelClick: () -> Unit = {},
-    onCategoriasClick: () -> Unit = {}
+    onCategoriasClick: () -> Unit = {},
+    onAjustesClick: () -> Unit = {}
 ) {
     val tickets by vm.tickets.collectAsState()
     val filtro by vm.filtroSeleccionado.collectAsState()
@@ -42,7 +43,7 @@ fun BandejaScreen(
                 NavigationBarItem(false, onPanelClick, icon = { Text("▥") }, label = { Text("Panel") })
                 NavigationBarItem(true, {}, icon = { Text("▤") }, label = { Text("Tickets") })
                 NavigationBarItem(false, onCategoriasClick, icon = { Text("▦") }, label = { Text("Categorías") })
-                NavigationBarItem(false, {}, icon = { Text("⚙") }, label = { Text("Ajustes") })
+                NavigationBarItem(false, onAjustesClick, icon = { Text("⚙") }, label = { Text("Ajustes") })
             }
         }
     ) { padding ->

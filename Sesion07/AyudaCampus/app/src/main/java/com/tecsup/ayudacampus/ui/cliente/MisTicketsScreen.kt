@@ -39,7 +39,8 @@ import com.tecsup.ayudacampus.viewmodel.MisTicketsViewModel
 fun MisTicketsScreen(
     vm: MisTicketsViewModel,
     onTicketClick: (Int) -> Unit,
-    onNuevo: () -> Unit
+    onNuevo: () -> Unit,
+    onPerfil: () -> Unit = {}
 ) {
     val tickets by vm.tickets.collectAsState()
     val filtro by vm.filtroSeleccionado.collectAsState()
@@ -56,7 +57,7 @@ fun MisTicketsScreen(
             NavigationBar {
                 NavigationBarItem(
                     selected = true,
-                    onClick = {},
+                    onClick = onPerfil,
                     icon = { Text("▤") },
                     label = { Text("Tickets") }
                 )

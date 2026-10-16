@@ -6,6 +6,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.tecsup.ayudacampus.data.local.AyudaDatabase
@@ -32,8 +34,9 @@ fun AyudaCampusUi() {
         )
     }
     val preferencias = remember(context) { PreferenciasStore(context) }
+    val modoOscuro by preferencias.modoOscuro.collectAsState(initial = false)
 
-    AyudaCampusTheme {
+    AyudaCampusTheme(darkTheme = modoOscuro) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
