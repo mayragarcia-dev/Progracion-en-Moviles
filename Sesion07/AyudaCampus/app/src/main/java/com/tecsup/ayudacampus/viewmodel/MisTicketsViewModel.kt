@@ -31,7 +31,9 @@ class MisTicketsViewModel(
     private val _textoBusqueda = MutableStateFlow("")
     val textoBusqueda: StateFlow<String> = _textoBusqueda.asStateFlow()
 
-    private val ticketsCliente = repository.observarTicketsCliente(usuario.id)
+    val todosLosTickets: StateFlow<List<TicketResumen>> = repository.observarTicketsCliente(usuario.id)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    private val ticketsCliente = todosLosTickets
 
     val tickets: StateFlow<List<TicketResumen>> = combine(
         ticketsCliente,
