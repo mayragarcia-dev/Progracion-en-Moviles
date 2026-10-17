@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tecsup.ayudacampus.ui.components.TicketCard
 import com.tecsup.ayudacampus.viewmodel.FiltroBandeja
-import com.tecsup.ayudacampus.viewmodel.FiltroPrioridadBandeja
 import com.tecsup.ayudacampus.viewmodel.BandejaViewModel
 
 @Composable
@@ -39,11 +37,6 @@ fun BandejaScreen(
 ) {
     val tickets by vm.tickets.collectAsState()
     val filtro by vm.filtroSeleccionado.collectAsState()
-    val textoBusqueda by vm.textoBusqueda.collectAsState()
-    val prioridad by vm.prioridadSeleccionada.collectAsState()
-    val categoria by vm.categoriaSeleccionada.collectAsState()
-    val categorias by vm.categorias.collectAsState()
-    val slaPorTicket by vm.slaPorTicket.collectAsState()
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -57,13 +50,6 @@ fun BandejaScreen(
         Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp, vertical = 12.dp)) {
             Text("Tickets", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text("${tickets.size} solicitudes del campus", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            OutlinedTextField(
-                value = textoBusqueda,
-                onValueChange = vm::cambiarBusqueda,
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                label = { Text("Buscar por título, descripción, estudiante o número") }
-            )
             androidx.compose.foundation.layout.Row(
                 modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -73,35 +59,6 @@ fun BandejaScreen(
                         selected = filtro == opcion,
                         onClick = { vm.seleccionarFiltro(opcion) },
                         label = { Text(opcion.etiqueta) }
-                    )
-                }
-            }
-            androidx.compose.foundation.layout.Row(
-                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                FiltroPrioridadBandeja.entries.forEach { opcion ->
-                    FilterChip(
-                        selected = prioridad == opcion,
-                        onClick = { vm.seleccionarPrioridad(opcion) },
-                        label = { Text(opcion.etiqueta) }
-                    )
-                }
-            }
-            androidx.compose.foundation.layout.Row(
-                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                FilterChip(
-                    selected = categoria == null,
-                    onClick = { vm.seleccionarCategoria(null) },
-                    label = { Text("Todas las categorías") }
-                )
-                categorias.forEach { nombre ->
-                    FilterChip(
-                        selected = categoria == nombre,
-                        onClick = { vm.seleccionarCategoria(if (categoria == nombre) null else nombre) },
-                        label = { Text(nombre) }
                     )
                 }
             }
@@ -116,21 +73,7 @@ fun BandejaScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(tickets, key = { it.id }) { ticket ->
-                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            TicketCard(ticket = ticket, onClick = { onTicketClick(ticket.id) }, mostrarCliente = true)
-                            slaPorTicket[ticket.id]?.let { sla ->
-                                Text(
-                                    text = sla.etiqueta,
-                                    modifier = Modifier.padding(start = 12.dp),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = when {
-                                        sla.vencido -> MaterialTheme.colorScheme.error
-                                        sla.cumplido -> MaterialTheme.colorScheme.primary
-                                        else -> MaterialTheme.colorScheme.onSurfaceVariant
-                                    }
-                                )
-                            }
-                        }
+                        TicketCard(ticket = ticket, onClick = { onTicketClick(ticket.id) }, mostrarCliente = true)
                     }
                 }
             }

@@ -91,9 +91,6 @@ interface TicketDao {
     )
     fun observarResumenPanel(): Flow<ResumenPanel>
 
-    @Query("SELECT AVG(fechaCierre - fecha) FROM tickets WHERE fechaCierre IS NOT NULL")
-    fun observarPromedioResolucion(): Flow<Double?>
-
     @Transaction
     @Query("SELECT * FROM tickets WHERE clienteId = :clienteId ORDER BY fecha DESC")
     fun observarPorCliente(clienteId: Int): Flow<List<TicketConDetalle>>

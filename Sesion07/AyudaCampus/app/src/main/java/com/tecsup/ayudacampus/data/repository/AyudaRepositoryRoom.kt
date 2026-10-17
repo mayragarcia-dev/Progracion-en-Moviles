@@ -27,8 +27,6 @@ class AyudaRepositoryRoom(
 
     override suspend fun buscarUsuario(usuarioId: Int): Usuario? = usuarioDao.buscarPorId(usuarioId)
 
-    override suspend fun buscarUsuarioPorRol(rol: String): Usuario? = usuarioDao.buscarPorRol(rol)
-
     override fun observarCategorias(): Flow<List<Categoria>> = categoriaDao.observarTodas()
 
     override fun observarCategoriasActivas(): Flow<List<Categoria>> = categoriaDao.observarActivas()
@@ -56,8 +54,6 @@ class AyudaRepositoryRoom(
         comentarioDao.observarPorTicket(ticketId)
 
     override fun observarResumenPanel(): Flow<ResumenPanel> = ticketDao.observarResumenPanel()
-
-    override fun observarPromedioResolucion(): Flow<Double?> = ticketDao.observarPromedioResolucion()
 
     override suspend fun buscarCategoria(categoriaId: Int): Categoria? =
         categoriaDao.buscarPorId(categoriaId)
