@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.tecsup.ayudacampus.ui.components.TicketCard
 import com.tecsup.ayudacampus.viewmodel.FiltroBandeja
 import com.tecsup.ayudacampus.viewmodel.BandejaViewModel
+import com.tecsup.ayudacampus.domain.model.Prioridad
 
 @Composable
 fun BandejaScreen(
@@ -39,6 +41,10 @@ fun BandejaScreen(
     val tickets by vm.tickets.collectAsState()
     val filtro by vm.filtroSeleccionado.collectAsState()
     val slaPorTicket by vm.slaPorTicket.collectAsState()
+    val busqueda by vm.busqueda.collectAsState()
+    val prioridad by vm.prioridadSeleccionada.collectAsState()
+    val categoria by vm.categoriaSeleccionada.collectAsState()
+    val categorias by vm.categorias.collectAsState()
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -52,6 +58,14 @@ fun BandejaScreen(
         Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp, vertical = 12.dp)) {
             Text("Tickets", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text("${tickets.size} solicitudes del campus", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            OutlinedTextField(
+                value = busqueda,
+                onValueChange = vm::actualizarBusqueda,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                singleLine = true,
+                label = { Text("Buscar tickets") },
+                placeholder = { Text("Título, descripción, cliente o ubicación") }
+            )
             androidx.compose.foundation.layout.Row(
                 modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -62,6 +76,34 @@ fun BandejaScreen(
                         onClick = { vm.seleccionarFiltro(opcion) },
                         label = { Text(opcion.etiqueta) }
                     )
+                }
+            }
+            androidx.compose.foundation.layout.Row(
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                FilterChip(selected = prioridad == null, onClick = { vm.seleccionarPrioridad(null) }, label = { Text("Toda prioridad") })
+                Prioridad.entries.forEach { opcion ->
+                    FilterChip(
+                        selected = prioridad == opcion,
+                        onClick = { vm.seleccionarPrioridad(if (prioridad == opcion) null else opcion) },
+                        label = { Text(opcion.name.lowercase().replaceFirstChar { it.uppercase() }) }
+                    )
+                }
+            }
+            if (categorias.isNotEmpty()) {
+                androidx.compose.foundation.layout.Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    FilterChip(selected = categoria == null, onClick = { vm.seleccionarCategoria(null) }, label = { Text("Todas las categorías") })
+                    categorias.forEach { opcion ->
+                        FilterChip(
+                            selected = categoria == opcion,
+                            onClick = { vm.seleccionarCategoria(if (categoria == opcion) null else opcion) },
+                            label = { Text(opcion) }
+                        )
+                    }
                 }
             }
             if (tickets.isEmpty()) {

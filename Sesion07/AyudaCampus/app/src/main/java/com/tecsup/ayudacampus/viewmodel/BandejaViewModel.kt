@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tecsup.ayudacampus.data.local.model.TicketResumen
 import com.tecsup.ayudacampus.data.repository.AyudaRepository
 import com.tecsup.ayudacampus.domain.model.EstadoTicket
+import com.tecsup.ayudacampus.domain.model.Prioridad
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,15 +26,38 @@ enum class FiltroBandeja(val etiqueta: String) {
 class BandejaViewModel(repository: AyudaRepository) : ViewModel() {
     private val _filtroSeleccionado = MutableStateFlow(FiltroBandeja.TODOS)
     val filtroSeleccionado: StateFlow<FiltroBandeja> = _filtroSeleccionado.asStateFlow()
+    private val _busqueda = MutableStateFlow("")
+    val busqueda: StateFlow<String> = _busqueda.asStateFlow()
+    private val _prioridadSeleccionada = MutableStateFlow<Prioridad?>(null)
+    val prioridadSeleccionada: StateFlow<Prioridad?> = _prioridadSeleccionada.asStateFlow()
+    private val _categoriaSeleccionada = MutableStateFlow<String?>(null)
+    val categoriaSeleccionada: StateFlow<String?> = _categoriaSeleccionada.asStateFlow()
+
+    val categorias: StateFlow<List<String>> = repository.observarCategoriasActivas()
+        .map { lista -> lista.map { it.nombre }.distinct().sorted() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val tickets: StateFlow<List<TicketResumen>> = combine(
-        repository.observarTicketsSoporte(), filtroSeleccionado
-    ) { lista, filtro ->
-        when (filtro) {
+        repository.observarTicketsSoporte(),
+        filtroSeleccionado,
+        busqueda,
+        prioridadSeleccionada,
+        categoriaSeleccionada
+    ) { lista, filtro, texto, prioridad, categoria ->
+        val porEstado = when (filtro) {
             FiltroBandeja.TODOS -> lista
             FiltroBandeja.ABIERTOS -> lista.filter { it.estado == EstadoTicket.ABIERTO.name }
             FiltroBandeja.EN_PROCESO -> lista.filter { it.estado == EstadoTicket.EN_PROCESO.name }
             FiltroBandeja.RESUELTOS -> lista.filter { it.estado == EstadoTicket.RESUELTO.name }
+        }
+        porEstado.filter { ticket ->
+            val coincideTexto = texto.isBlank() || listOf(
+                ticket.titulo, ticket.descripcion, ticket.clienteNombre,
+                ticket.ubicacion, ticket.categoriaNombre
+            ).any { it.contains(texto.trim(), ignoreCase = true) }
+            val coincidePrioridad = prioridad == null || ticket.prioridad == prioridad.name
+            val coincideCategoria = categoria == null || ticket.categoriaNombre == categoria
+            coincideTexto && coincidePrioridad && coincideCategoria
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
@@ -65,6 +89,18 @@ class BandejaViewModel(repository: AyudaRepository) : ViewModel() {
 
     fun seleccionarFiltro(filtro: FiltroBandeja) {
         _filtroSeleccionado.value = filtro
+    }
+
+    fun actualizarBusqueda(texto: String) {
+        _busqueda.value = texto
+    }
+
+    fun seleccionarPrioridad(prioridad: Prioridad?) {
+        _prioridadSeleccionada.value = prioridad
+    }
+
+    fun seleccionarCategoria(categoria: String?) {
+        _categoriaSeleccionada.value = categoria
     }
 
     private fun formatearTiempo(milisegundos: Long): String {
