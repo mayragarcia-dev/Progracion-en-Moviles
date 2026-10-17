@@ -28,6 +28,7 @@ interface AyudaRepository {
     fun observarDetalleCliente(clienteId: Int, ticketId: Int): Flow<TicketResumen?>
     fun observarComentarios(ticketId: Int): Flow<List<Comentario>>
     fun observarResumenPanel(): Flow<ResumenPanel>
+    fun observarPromedioResolucion(): Flow<Double?>
 
     suspend fun buscarCategoria(categoriaId: Int): Categoria?
     suspend fun contarTicketsCategoria(categoriaId: Int): Int

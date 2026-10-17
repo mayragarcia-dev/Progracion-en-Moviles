@@ -44,6 +44,22 @@ class PanelViewModel(repository: AyudaRepository) : ViewModel() {
         System.currentTimeMillis() - 60 * 60 * 1_000L
     ).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
 
+    val promedioResolucion: StateFlow<String?> = repository.observarPromedioResolucion()
+        .map { promedioMs -> promedioMs?.toLong()?.let(::formatearDuracion) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    private fun formatearDuracion(milisegundos: Long): String {
+        val minutos = (milisegundos / 60_000).coerceAtLeast(0)
+        val dias = minutos / (24 * 60)
+        val horas = (minutos % (24 * 60)) / 60
+        val minutosRestantes = minutos % 60
+        return when {
+            dias > 0 -> "$dias d $horas h"
+            horas > 0 -> "$horas h $minutosRestantes min"
+            else -> "$minutosRestantes min"
+        }
+    }
+
     private fun ResumenPanel.toDatosGrafico(): List<DatoGrafico> = listOf(
         DatoGrafico("Abierto", abiertos, ColoresEstado[0]),
         DatoGrafico("En proceso", enProceso, ColoresEstado[1]),

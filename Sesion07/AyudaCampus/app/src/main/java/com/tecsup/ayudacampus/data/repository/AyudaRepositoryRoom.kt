@@ -57,6 +57,8 @@ class AyudaRepositoryRoom(
 
     override fun observarResumenPanel(): Flow<ResumenPanel> = ticketDao.observarResumenPanel()
 
+    override fun observarPromedioResolucion(): Flow<Double?> = ticketDao.observarPromedioResolucion()
+
     override suspend fun buscarCategoria(categoriaId: Int): Categoria? =
         categoriaDao.buscarPorId(categoriaId)
 
