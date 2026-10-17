@@ -16,6 +16,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,6 +38,7 @@ fun BandejaScreen(
 ) {
     val tickets by vm.tickets.collectAsState()
     val filtro by vm.filtroSeleccionado.collectAsState()
+    val slaPorTicket by vm.slaPorTicket.collectAsState()
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -73,7 +75,17 @@ fun BandejaScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(tickets, key = { it.id }) { ticket ->
-                        TicketCard(ticket = ticket, onClick = { onTicketClick(ticket.id) }, mostrarCliente = true)
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            TicketCard(ticket = ticket, onClick = { onTicketClick(ticket.id) }, mostrarCliente = true)
+                            slaPorTicket[ticket.id]?.let { sla ->
+                                Text(
+                                    sla.etiqueta,
+                                    modifier = Modifier.padding(start = 12.dp),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = if (sla.vencido) Color(0xFFDC2626) else MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
                     }
                 }
             }

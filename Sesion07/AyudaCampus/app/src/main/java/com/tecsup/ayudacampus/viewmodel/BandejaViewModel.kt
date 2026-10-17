@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 enum class FiltroBandeja(val etiqueta: String) {
@@ -34,10 +37,44 @@ class BandejaViewModel(repository: AyudaRepository) : ViewModel() {
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    val slaPorTicket: StateFlow<Map<Int, EstadoSla>> = combine(
+        repository.observarTicketsSoporte(),
+        flow {
+            while (true) {
+                emit(System.currentTimeMillis())
+                delay(60_000)
+            }
+        }
+    ) { lista, ahora ->
+        lista.associate { ticket ->
+            val limiteMs = when (ticket.prioridad) {
+                "ALTA" -> 4L * 60 * 60 * 1_000
+                "MEDIA" -> 24L * 60 * 60 * 1_000
+                else -> 72L * 60 * 60 * 1_000
+            }
+            val referencia = if (ticket.estado == EstadoTicket.RESUELTO.name || ticket.estado == EstadoTicket.CERRADO.name) {
+                ticket.fechaCierre ?: ahora
+            } else ahora
+            val restante = limiteMs - (referencia - ticket.fecha).coerceAtLeast(0L)
+            ticket.id to when {
+                restante >= 0L -> EstadoSla("SLA: ${formatearTiempo(restante)} restantes", false)
+                else -> EstadoSla("SLA excedido por ${formatearTiempo(-restante)}", true)
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
+
     fun seleccionarFiltro(filtro: FiltroBandeja) {
         _filtroSeleccionado.value = filtro
     }
+
+    private fun formatearTiempo(milisegundos: Long): String {
+        val minutos = milisegundos / 60_000
+        val horas = minutos / 60
+        return if (horas >= 24) "${horas / 24} d ${horas % 24} h" else "${horas} h ${minutos % 60} min"
+    }
 }
+
+data class EstadoSla(val etiqueta: String, val vencido: Boolean)
 
 class BandejaViewModelFactory(
     private val repository: AyudaRepository
