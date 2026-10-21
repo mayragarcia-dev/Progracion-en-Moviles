@@ -22,12 +22,12 @@ object DatosIniciales {
         )
         usuarioDao.insertarTodos(
             listOf(
-                Usuario(nombre = "Juan Pérez", correo = "juan@campus.test", clave = "1234", rol = "CLIENTE"),
+                Usuario(nombre = "Juan Pérez", correo = "mayra@campus.test", clave = "1234", rol = "CLIENTE"),
                 Usuario(nombre = "Soporte TI", correo = "soporte@campus.test", clave = "admin", rol = "ADMIN")
             )
         )
 
-        val clienteId = requireNotNull(usuarioDao.login("juan@campus.test", "1234")).id
+        val clienteId = requireNotNull(usuarioDao.login("mayra@campus.test", "1234")).id
         val soporteId = requireNotNull(usuarioDao.login("soporte@campus.test", "admin")).id
         val categorias = db.categoriaDao().obtenerTodas().associateBy { it.nombre }
         val ahora = System.currentTimeMillis()

@@ -16,7 +16,7 @@ Abre el proyecto en Android Studio y ejecuta la configuración `app` en un emula
 
 | Perfil | Correo | Clave |
 | --- | --- | --- |
-| Estudiante | `juan@campus.test` | `1234` |
+| Estudiante | `mayra@campus.test` | `1234` |
 | Soporte TI | `soporte@campus.test` | `admin` |
 
 ## Estructura de paquetes
