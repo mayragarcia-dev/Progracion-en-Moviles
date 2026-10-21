@@ -16,8 +16,10 @@ Abre el proyecto en Android Studio y ejecuta la configuración `app` en un emula
 
 | Perfil | Correo | Clave |
 | --- | --- | --- |
-| Estudiante | `juan@campus.test` | `1234` |
+| Mayra (Estudiante) | `mayra@campus.test` | `1234` |
 | Soporte TI | `soporte@campus.test` | `admin` |
+
+El inicio de sesión ignora espacios al principio o al final y no distingue mayúsculas en el correo. La base local usa migración destructiva para este proyecto de demostración: al cambiar la versión del esquema se reinician los datos Room y se cargan nuevamente los ejemplos.
 
 ## Estructura de paquetes
 
@@ -63,15 +65,12 @@ Las pantallas observan `StateFlow` y envían acciones al ViewModel. El repositor
 
 ### Estudiante
 
-| Mis tickets | Crear ticket | Perfil |
-| --- | --- | --- |
-| ![Mis tickets del estudiante](docs/screenshots/student-tickets.png) | ![Formulario Nuevo ticket](docs/screenshots/student-new-ticket.png) | ![Perfil y preferencias del estudiante](docs/screenshots/student-profile.png) |
+<img width="903" height="677" alt="image" src="https://github.com/user-attachments/assets/0f811d2a-836a-4e40-bfd3-347a3183431d" />
+<img width="655" height="732" alt="image" src="https://github.com/user-attachments/assets/37c8ea81-b6d3-45b5-a31d-e5f90d0f6a17" />
 
 ### Soporte TI
-
-| Panel | Bandeja | Ajustes |
-| --- | --- | --- |
-| ![Panel de Soporte TI](docs/screenshots/support-panel.png) | ![Bandeja de tickets](docs/screenshots/support-inbox.png) | ![Ajustes de Soporte TI](docs/screenshots/support-settings.png) |
+<img width="1069" height="797" alt="image" src="https://github.com/user-attachments/assets/50d7b74b-e014-41d8-b979-8c03bc1c6a49" />
+<img width="1026" height="779" alt="image" src="https://github.com/user-attachments/assets/40925513-0f5e-427e-9255-1b531b19c8c3" />
 
 ## Pruebas de aceptación en emulador
 
