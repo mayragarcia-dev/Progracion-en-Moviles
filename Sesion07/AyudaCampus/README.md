@@ -62,12 +62,18 @@ Las pantallas observan `StateFlow` y envían acciones al ViewModel. El repositor
 ## Capturas
 
 ### Estudiante
-<img width="502" height="761" alt="image" src="https://github.com/user-attachments/assets/83e5ab42-abdd-4082-8aa9-670fae2518c5" />
+
+<img width="502" height="761" alt="Captura de la aplicación para el perfil de estudiante" src="https://github.com/user-attachments/assets/83e5ab42-abdd-4082-8aa9-670fae2518c5" />
+
+| Mis tickets | Crear ticket | Perfil y preferencias |
+| --- | --- | --- |
+| <img src="docs/screenshots/student-tickets.png" alt="Pantalla Mis tickets del estudiante" width="240"> | <img src="docs/screenshots/student-new-ticket.png" alt="Formulario para crear un ticket" width="240"> | <img src="docs/screenshots/student-profile.png" alt="Perfil y preferencias del estudiante" width="240"> |
+
 ### Soporte TI
 
-| Panel | Bandeja | Ajustes |
+| Panel | Bandeja de tickets | Ajustes |
 | --- | --- | --- |
-| ![Panel de Soporte TI](docs/screenshots/support-panel.png) | ![Bandeja de tickets](docs/screenshots/support-inbox.png) | ![Ajustes de Soporte TI](docs/screenshots/support-settings.png) |
+| <img src="docs/screenshots/support-panel.png" alt="Panel de indicadores de Soporte TI" width="240"> | <img src="docs/screenshots/support-inbox.png" alt="Bandeja de tickets de Soporte TI" width="240"> | <img src="docs/screenshots/support-settings.png" alt="Ajustes de Soporte TI" width="240"> |
 
 ## Pruebas de aceptación en emulador
 
