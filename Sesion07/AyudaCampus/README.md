@@ -62,11 +62,7 @@ Las pantallas observan `StateFlow` y envían acciones al ViewModel. El repositor
 ## Capturas
 
 ### Estudiante
-
-| Mis tickets | Crear ticket | Perfil |
-| --- | --- | --- |
-| ![Mis tickets del estudiante](docs/screenshots/student-tickets.png) | ![Formulario Nuevo ticket](docs/screenshots/student-new-ticket.png) | ![Perfil y preferencias del estudiante](docs/screenshots/student-profile.png) |
-
+<img width="502" height="761" alt="image" src="https://github.com/user-attachments/assets/83e5ab42-abdd-4082-8aa9-670fae2518c5" />
 ### Soporte TI
 
 | Panel | Bandeja | Ajustes |
