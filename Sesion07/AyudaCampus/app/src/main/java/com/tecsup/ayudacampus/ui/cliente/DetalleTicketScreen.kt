@@ -53,7 +53,8 @@ private val CianDetalle = Color(0xFF0891B2)
 fun DetalleTicketScreen(
     vm: TicketDetalleViewModel,
     onTicketsClick: () -> Unit,
-    onNuevoClick: () -> Unit
+    onNuevoClick: () -> Unit,
+    onPerfilClick: () -> Unit = {}
 ) {
     val detalle by vm.ticket.collectAsState()
     val calificacion by vm.calificacion.collectAsState()
@@ -73,7 +74,7 @@ fun DetalleTicketScreen(
             NavigationBar {
                 NavigationBarItem(false, onTicketsClick, icon = { Text("▤") }, label = { Text("Tickets") })
                 NavigationBarItem(false, onNuevoClick, icon = { Text("＋") }, label = { Text("Nuevo") })
-                NavigationBarItem(false, {}, icon = { Text("♙") }, label = { Text("Perfil") })
+                NavigationBarItem(false, onPerfilClick, icon = { Text("♙") }, label = { Text("Perfil") })
             }
         }
     ) { padding ->

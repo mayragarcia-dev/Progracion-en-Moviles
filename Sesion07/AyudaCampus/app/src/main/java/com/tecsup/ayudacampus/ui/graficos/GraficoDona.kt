@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -28,14 +28,24 @@ import com.tecsup.ayudacampus.model.DatoGrafico
 @Composable
 fun GraficoDona(datos: List<DatoGrafico>, modifier: Modifier = Modifier) {
     val total = datos.sumOf { it.valor }
-    Surface(modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.surface, tonalElevation = 1.dp) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 1.dp
+    ) {
         Row(
-            modifier = Modifier.fillMaxWidth().height(158.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(Modifier.size(132.dp), contentAlignment = Alignment.Center) {
-                Canvas(Modifier.size(124.dp)) {
+            Box(
+                modifier = Modifier.size(132.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Canvas(Modifier.size(116.dp)) {
                     val grosor = 18.dp.toPx()
                     if (total == 0) {
                         drawArc(Color(0xFFE5E7EB), 0f, 360f, false, style = Stroke(grosor))
@@ -53,14 +63,31 @@ fun GraficoDona(datos: List<DatoGrafico>, modifier: Modifier = Modifier) {
                     Text("tickets", style = MaterialTheme.typography.labelSmall)
                 }
             }
-            Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+
+            Spacer(Modifier.width(24.dp))
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 datos.forEach { dato ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Box(Modifier.size(10.dp).background(Color(dato.color.toInt()), CircleShape))
-                        Spacer(Modifier.width(7.dp))
-                        Text(dato.etiqueta, modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelSmall)
-                        Spacer(Modifier.width(10.dp))
-                        Text(dato.valor.toString(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            dato.etiqueta,
+                            modifier = Modifier.weight(1f),
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            dato.valor.toString(),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }

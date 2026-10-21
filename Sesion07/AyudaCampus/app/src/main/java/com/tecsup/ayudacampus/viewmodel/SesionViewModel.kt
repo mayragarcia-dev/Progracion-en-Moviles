@@ -55,4 +55,9 @@ class SesionViewModel(
             _usuarioActual.value = usuario
         }
     }
+
+    fun cerrarSesion() {
+        _usuarioActual.value = null
+        _error.value = null
+    }
 }

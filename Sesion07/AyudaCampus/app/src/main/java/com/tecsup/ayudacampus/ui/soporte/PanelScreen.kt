@@ -66,8 +66,17 @@ fun PanelScreen(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text("Panel de soporte", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-            Text("Mesa de ayuda TI · Hoy", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Panel de soporte", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                    Text("Mesa de ayuda TI · Hoy", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Text("🔔", style = MaterialTheme.typography.titleLarge)
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 ContadorPanel("$abiertos", "Abiertos", Color(0xFFFFF1CC), Color(0xFFB45309), Modifier.weight(1f))
                 ContadorPanel("$enProceso", "En proceso", Color(0xFFDBEAFE), Color(0xFF2563EB), Modifier.weight(1f))

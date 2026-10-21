@@ -63,7 +63,7 @@ fun NavAyuda(
     val sesionViewModel: SesionViewModel = viewModel(factory = factory)
     val scope = rememberCoroutineScope()
 
-    NavHost(navController = navController, startDestination = Rutas.Splash) {
+    NavHost(navController = navController, startDestination = Rutas.Login) {
         composable(Rutas.Splash) {
             SplashScreen()
             LaunchedEffect(Unit) {
@@ -161,7 +161,8 @@ fun NavAyuda(
                     vm = nuevoTicketViewModel,
                     mesaAbierta = recibirTickets,
                     onTicketCreado = { navController.popBackStack(Rutas.MisTickets, inclusive = false) },
-                    onTicketsClick = { navController.popBackStack(Rutas.MisTickets, inclusive = false) }
+                    onTicketsClick = { navController.popBackStack(Rutas.MisTickets, inclusive = false) },
+                    onPerfilClick = { navController.navigate(Rutas.Perfil) }
                 )
             } else if (usuario == null) {
                 PantallaDestino("Preparando formulario", "Estudiante")
@@ -192,6 +193,9 @@ fun NavAyuda(
                     },
                     onNuevoClick = {
                         if (usuarioActual.rol == Rol.CLIENTE.name) navController.navigate(Rutas.NuevoTicket)
+                    },
+                    onPerfilClick = {
+                        if (usuarioActual.rol == Rol.CLIENTE.name) navController.navigate(Rutas.Perfil)
                     }
                 )
             } else {
@@ -211,7 +215,14 @@ fun NavAyuda(
         }
         composable(Rutas.Categorias) {
             val vm: CategoriasViewModel = viewModel(factory = factory)
-            CategoriasScreen(vm, onEditar = { navController.navigate(Rutas.formCategoria(it)) }, onNueva = { navController.navigate(Rutas.formCategoria()) })
+            CategoriasScreen(
+                vm = vm,
+                onEditar = { navController.navigate(Rutas.formCategoria(it)) },
+                onNueva = { navController.navigate(Rutas.formCategoria()) },
+                onPanelClick = { navController.popBackStack(Rutas.Panel, inclusive = false) },
+                onTicketsClick = { navController.navigate(Rutas.BandejaSoporte) },
+                onAjustesClick = { navController.navigate(Rutas.Ajustes) }
+            )
         }
         composable(Rutas.Perfil) {
             val usuario by produceState<Usuario?>(initialValue = null) { value = repository.buscarUsuario(preferencias.usuarioId.first()) }
@@ -224,7 +235,7 @@ fun NavAyuda(
                     onIrTickets = { navController.popBackStack(Rutas.MisTickets, false) },
                     onNuevo = { navController.navigate(Rutas.NuevoTicket) },
                     onCambiarPerfil = { scope.launch { cambiarPerfil(Rol.ADMIN, repository, preferencias, navController) } },
-                    onCerrarSesion = { scope.launch { cerrarSesion(preferencias, navController) } }
+                    onCerrarSesion = { scope.launch { cerrarSesion(sesionViewModel, preferencias, navController) } }
                 )
             }
         }
@@ -237,7 +248,7 @@ fun NavAyuda(
                     onTickets = { navController.navigate(Rutas.BandejaSoporte) },
                     onCategorias = { navController.navigate(Rutas.Categorias) },
                     onCambiarPerfil = { scope.launch { cambiarPerfil(Rol.CLIENTE, repository, preferencias, navController) } },
-                    onCerrarSesion = { scope.launch { cerrarSesion(preferencias, navController) } }
+                    onCerrarSesion = { scope.launch { cerrarSesion(sesionViewModel, preferencias, navController) } }
                 )
             }
         }
@@ -261,12 +272,20 @@ private suspend fun cambiarPerfil(
     val usuario = repository.buscarUsuarioPorRol(rol.name) ?: return
     preferencias.cambiarPerfil(rol.name, usuario.id)
     val destino = if (rol == Rol.CLIENTE) Rutas.MisTickets else Rutas.Panel
-    navController.navigate(destino) { popUpTo(Rutas.Splash) { inclusive = true }; launchSingleTop = true }
+    navController.navigate(destino) { popUpTo(0) { inclusive = true }; launchSingleTop = true }
 }
 
-private suspend fun cerrarSesion(preferencias: PreferenciasStore, navController: androidx.navigation.NavHostController) {
+private suspend fun cerrarSesion(
+    sesionViewModel: SesionViewModel,
+    preferencias: PreferenciasStore,
+    navController: androidx.navigation.NavHostController
+) {
+    sesionViewModel.cerrarSesion()
     preferencias.cerrarSesion()
-    navController.navigate(Rutas.Login) { popUpTo(Rutas.Splash) { inclusive = true }; launchSingleTop = true }
+    navController.navigate(Rutas.Login) {
+        popUpTo(0) { inclusive = true }
+        launchSingleTop = true
+    }
 }
 
 @Composable

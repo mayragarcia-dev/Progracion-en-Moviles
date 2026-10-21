@@ -22,7 +22,7 @@ object DatosIniciales {
         )
         usuarioDao.insertarTodos(
             listOf(
-                Usuario(nombre = "Juan Pérez", correo = "mayra@campus.test", clave = "1234", rol = "CLIENTE"),
+                Usuario(nombre = "Mayra", correo = "mayra@campus.test", clave = "1234", rol = "CLIENTE"),
                 Usuario(nombre = "Soporte TI", correo = "soporte@campus.test", clave = "admin", rol = "ADMIN")
             )
         )
@@ -49,10 +49,10 @@ object DatosIniciales {
         val ticketIds = tickets.map { db.ticketDao().insertarTicket(it).toInt() }
 
         listOf(
-            Comentario(ticketId = ticketIds[0], autorId = clienteId, autorNombre = "Juan Pérez", autorRol = "CLIENTE", texto = "El problema comenzó esta mañana.", fecha = ahora - 2 * hora),
+            Comentario(ticketId = ticketIds[0], autorId = clienteId, autorNombre = "Mayra", autorRol = "CLIENTE", texto = "El problema comenzó esta mañana.", fecha = ahora - 2 * hora),
             Comentario(ticketId = ticketIds[0], autorId = soporteId, autorNombre = "Soporte TI", autorRol = "ADMIN", texto = "Estamos revisando el punto de acceso de la biblioteca.", fecha = ahora - 90 * 60_000L),
             Comentario(ticketId = ticketIds[1], autorId = soporteId, autorNombre = "Soporte TI", autorRol = "ADMIN", texto = "Se solicitó una revisión del equipo en el laboratorio.", fecha = ahora - 4 * hora),
-            Comentario(ticketId = ticketIds[3], autorId = clienteId, autorNombre = "Juan Pérez", autorRol = "CLIENTE", texto = "Gracias por la ayuda, quedó instalado.", fecha = ahora - 21 * hora)
+            Comentario(ticketId = ticketIds[3], autorId = clienteId, autorNombre = "Mayra", autorRol = "CLIENTE", texto = "Gracias por la ayuda, quedó instalado.", fecha = ahora - 21 * hora)
         ).forEach { db.ticketDao().insertarComentario(it) }
     }
 }

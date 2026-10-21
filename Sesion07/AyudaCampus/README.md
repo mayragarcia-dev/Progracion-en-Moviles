@@ -16,8 +16,10 @@ Abre el proyecto en Android Studio y ejecuta la configuración `app` en un emula
 
 | Perfil | Correo | Clave |
 | --- | --- | --- |
-| Estudiante | `mayra@campus.test` | `1234` |
+| Mayra (Estudiante) | `mayra@campus.test` | `1234` |
 | Soporte TI | `soporte@campus.test` | `admin` |
+
+El inicio de sesión ignora espacios al principio o al final y no distingue mayúsculas en el correo. La base local usa migración destructiva para este proyecto de demostración: al cambiar la versión del esquema se reinician los datos Room y se cargan nuevamente los ejemplos.
 
 ## Estructura de paquetes
 

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UsuarioDao {
-    @Query("SELECT * FROM usuarios WHERE correo = :correo AND clave = :clave LIMIT 1")
+    @Query("SELECT * FROM usuarios WHERE LOWER(correo) = LOWER(TRIM(:correo)) AND clave = :clave LIMIT 1")
     suspend fun login(correo: String, clave: String): Usuario?
 
     @Query("SELECT * FROM usuarios ORDER BY nombre")
@@ -22,7 +22,7 @@ interface UsuarioDao {
     @Query("SELECT * FROM usuarios WHERE rol = :rol ORDER BY id LIMIT 1")
     suspend fun buscarPorRol(rol: String): Usuario?
 
-    @Query("SELECT * FROM usuarios WHERE correo = :correo LIMIT 1")
+    @Query("SELECT * FROM usuarios WHERE LOWER(correo) = LOWER(TRIM(:correo)) LIMIT 1")
     suspend fun buscarPorCorreo(correo: String): Usuario?
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
