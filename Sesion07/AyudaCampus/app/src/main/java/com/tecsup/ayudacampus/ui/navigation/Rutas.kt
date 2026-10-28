@@ -2,7 +2,9 @@ package com.tecsup.ayudacampus.ui.navigation
 
 object Rutas {
     const val Splash = "splash"
+    const val Welcome = "welcome"
     const val Login = "login"
+    const val Registro = "registro"
     const val Perfil = "perfil"
     const val Ajustes = "ajustes"
     const val MisTickets = "mis_tickets"

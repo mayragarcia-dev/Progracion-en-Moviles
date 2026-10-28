@@ -24,6 +24,8 @@ import com.tecsup.ayudacampus.data.repository.AyudaRepository
 import com.tecsup.ayudacampus.data.local.entity.Usuario
 import com.tecsup.ayudacampus.model.Rol
 import com.tecsup.ayudacampus.ui.cliente.LoginScreen
+import com.tecsup.ayudacampus.ui.cliente.RegistroScreen
+import com.tecsup.ayudacampus.ui.cliente.WelcomeScreen
 import com.tecsup.ayudacampus.ui.cliente.MisTicketsScreen
 import com.tecsup.ayudacampus.ui.cliente.NuevoTicketScreen
 import com.tecsup.ayudacampus.ui.cliente.DetalleTicketScreen
@@ -71,7 +73,7 @@ fun NavAyuda(
                 val destino = when (perfil) {
                     Rol.CLIENTE.name -> Rutas.MisTickets
                     Rol.ADMIN.name -> Rutas.Panel
-                    else -> Rutas.Login
+                    else -> Rutas.Welcome
                 }
                 navController.navigate(destino) {
                     popUpTo(Rutas.Splash) { inclusive = true }
@@ -79,14 +81,38 @@ fun NavAyuda(
                 }
             }
         }
+        composable(Rutas.Welcome) {
+            WelcomeScreen(
+                onComenzar = { navController.navigate(Rutas.Registro) },
+                onYaTengoCuenta = { navController.navigate(Rutas.Login) }
+            )
+        }
         composable(Rutas.Login) {
-            LoginScreen(vm = sesionViewModel) { rol ->
-                val destino = if (rol == Rol.CLIENTE) Rutas.MisTickets else Rutas.Panel
-                navController.navigate(destino) {
-                    popUpTo(Rutas.Login) { inclusive = true }
-                    launchSingleTop = true
+            LoginScreen(
+                vm = sesionViewModel,
+                onLoginSuccess = { rol ->
+                    val destino = if (rol == Rol.CLIENTE) Rutas.MisTickets else Rutas.Panel
+                    navController.navigate(destino) {
+                        popUpTo(Rutas.Login) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onRegistrarClick = {
+                    navController.navigate(Rutas.Registro)
                 }
-            }
+            )
+        }
+        composable(Rutas.Registro) {
+            RegistroScreen(
+                vm = sesionViewModel,
+                onRegistroSuccess = {
+                    navController.navigate(Rutas.MisTickets) {
+                        popUpTo(Rutas.Login) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onVolverLogin = { navController.popBackStack() }
+            )
         }
         composable(Rutas.MisTickets) {
             val usuario by produceState<Usuario?>(initialValue = null) {
@@ -230,7 +256,7 @@ fun NavAyuda(
                 val actual = requireNotNull(usuario)
                 val ticketsVm: MisTicketsViewModel = viewModel(key = "perfil-tickets-${actual.id}", factory = MisTicketsViewModelFactory(actual, repository))
                 PerfilScreen(
-                    usuario = actual, tickets = ticketsVm.todosLosTickets, preferencias = preferencias,
+                    usuario = actual, tickets = ticketsVm.tickets, preferencias = preferencias,
                     onTickets = { navController.popBackStack(Rutas.MisTickets, false) },
                     onIrTickets = { navController.popBackStack(Rutas.MisTickets, false) },
                     onNuevo = { navController.navigate(Rutas.NuevoTicket) },
@@ -269,7 +295,7 @@ private suspend fun cambiarPerfil(
     preferencias: PreferenciasStore,
     navController: androidx.navigation.NavHostController
 ) {
-    val usuario = repository.buscarUsuarioPorRol(rol.name) ?: return
+    val usuario = repository.buscarPorRol(rol.name) ?: return
     preferencias.cambiarPerfil(rol.name, usuario.id)
     val destino = if (rol == Rol.CLIENTE) Rutas.MisTickets else Rutas.Panel
     navController.navigate(destino) { popUpTo(0) { inclusive = true }; launchSingleTop = true }
