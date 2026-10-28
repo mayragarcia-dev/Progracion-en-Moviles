@@ -17,7 +17,7 @@ import com.tecsup.ayudacampus.data.local.entity.Usuario
 
 @Database(
     entities = [Categoria::class, Usuario::class, Ticket::class, Comentario::class, Notificacion::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AyudaDatabase : RoomDatabase() {
