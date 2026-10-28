@@ -85,9 +85,15 @@ fun TicketCard(
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(Modifier.height(7.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                         EtiquetaTicket(etiquetaEstado, fondoEstado, colorEstado)
                         EtiquetaTicket(ticket.prioridad.lowercase().replaceFirstChar { it.uppercase() }, colorPrioridad.copy(alpha = .12f), colorPrioridad)
+                        val tiempoAtencionEstimado = when (ticket.prioridad) {
+                            "ALTA" -> "Est: 4h"
+                            "MEDIA" -> "Est: 24h"
+                            else -> "Est: 72h"
+                        }
+                        EtiquetaTicket(tiempoAtencionEstimado, Color(0xFFF1F5F9), Color(0xFF475569))
                     }
                 }
                 Spacer(Modifier.width(5.dp))
