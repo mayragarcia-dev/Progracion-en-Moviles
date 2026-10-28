@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,6 +29,7 @@ fun RegistroScreen(
     var nombre by remember { mutableStateOf("") }
     var correo by remember { mutableStateOf("") }
     var clave by remember { mutableStateOf("") }
+    var telefono by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
 
     Column(
@@ -62,6 +64,14 @@ fun RegistroScreen(
         )
         Spacer(Modifier.height(12.dp))
         AyudaTextField(
+            value = telefono,
+            onValueChange = { if (it.length <= 9 && it.all { char -> char.isDigit() }) { telefono = it; error = null } },
+            label = "Teléfono (9 dígitos)",
+            keyboardType = KeyboardType.Phone,
+            leadingIconVector = Icons.Default.Phone
+        )
+        Spacer(Modifier.height(12.dp))
+        AyudaTextField(
             value = clave,
             onValueChange = { clave = it; error = null },
             label = "Contraseña",
@@ -79,13 +89,16 @@ fun RegistroScreen(
 
         Button(
             onClick = {
-                if (nombre.isBlank() || correo.isBlank() || clave.isBlank()) {
+                if (nombre.isBlank() || correo.isBlank() || clave.isBlank() || telefono.isBlank()) {
                     error = "Por favor completa todos los campos."
+                } else if (telefono.trim().length != 9 || !telefono.all { it.isDigit() }) {
+                    error = "El teléfono debe tener exactamente 9 dígitos."
                 } else {
                     vm.registrarEstudiante(
                         nombre = nombre,
                         correo = correo,
                         clave = clave,
+                        telefono = telefono,
                         onSuccess = onRegistroSuccess,
                         onError = { err -> error = err }
                     )

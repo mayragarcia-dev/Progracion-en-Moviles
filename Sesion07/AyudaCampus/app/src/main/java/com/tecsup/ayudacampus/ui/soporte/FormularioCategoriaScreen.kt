@@ -28,6 +28,7 @@ private val iconos = listOf(
 @Composable
 fun FormularioCategoriaScreen(categoria: Categoria? = null, onGuardar: (Categoria) -> Unit, onCancelar: () -> Unit) {
     var nombre by remember(categoria?.id) { mutableStateOf(categoria?.nombre.orEmpty()) }
+    var descripcion by remember(categoria?.id) { mutableStateOf(categoria?.descripcion.orEmpty()) }
     var icono by remember(categoria?.id) { mutableStateOf(categoria?.icono ?: "pc") }
     var activa by remember(categoria?.id) { mutableStateOf(categoria?.activa ?: true) }
     var error by remember { mutableStateOf<String?>(null) }
@@ -65,6 +66,16 @@ fun FormularioCategoriaScreen(categoria: Categoria? = null, onGuardar: (Categori
                 label = { Text("Nombre de la categoría") },
                 singleLine = true,
                 isError = error != null,
+                shape = RoundedCornerShape(14.dp)
+            )
+
+            OutlinedTextField(
+                value = descripcion,
+                onValueChange = { descripcion = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text("Descripción") },
+                singleLine = false,
+                minLines = 2,
                 shape = RoundedCornerShape(14.dp)
             )
 
@@ -140,32 +151,41 @@ fun FormularioCategoriaScreen(categoria: Categoria? = null, onGuardar: (Categori
                             )
                         }
                     }
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             nombre.ifBlank { "Nombre de categoría" },
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
-                        Text("0 tickets", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            descripcion.ifBlank { "Descripción de la categoría" },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
             }
 
-            if (error != null) {
-                Text(error.orEmpty(), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+            error?.let {
+                Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
             }
-
-            Spacer(Modifier.height(4.dp))
 
             Button(
                 onClick = {
                     if (nombre.isBlank()) {
-                        error = "El nombre es obligatorio."
-                    } else {
-                        onGuardar(Categoria(id = categoria?.id ?: 0, nombre = nombre.trim(), icono = icono, activa = activa))
+                        error = "El nombre no puede estar vacío."
+                        return@Button
                     }
+                    onGuardar(
+                        (categoria ?: Categoria(nombre = "", icono = "pc")).copy(
+                            nombre = nombre.trim(),
+                            descripcion = descripcion.trim(),
+                            icono = icono,
+                            activa = activa
+                        )
+                    )
                 },
-                modifier = Modifier.fillMaxWidth().height(52.dp),
+                modifier = Modifier.fillMaxWidth().height(50.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C3AED))
             ) {
@@ -174,11 +194,12 @@ fun FormularioCategoriaScreen(categoria: Categoria? = null, onGuardar: (Categori
 
             OutlinedButton(
                 onClick = onCancelar,
-                modifier = Modifier.fillMaxWidth().height(52.dp),
+                modifier = Modifier.fillMaxWidth().height(50.dp),
                 shape = RoundedCornerShape(14.dp)
             ) {
                 Text("Cancelar", fontWeight = FontWeight.SemiBold, color = Color(0xFF7C3AED))
             }
+            Spacer(Modifier.height(16.dp))
         }
     }
 }

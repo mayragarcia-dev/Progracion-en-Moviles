@@ -61,9 +61,13 @@ class SesionViewModel(
         _error.value = null
     }
 
-    fun registrarEstudiante(nombre: String, correo: String, clave: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun registrarEstudiante(nombre: String, correo: String, clave: String, telefono: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
+                if (telefono.trim().length != 9 || !telefono.all { it.isDigit() }) {
+                    onError("El teléfono debe tener exactamente 9 dígitos.")
+                    return@launch
+                }
                 val existente = repository.buscarPorCorreo(correo.trim())
                 if (existente != null) {
                     onError("El correo ya está registrado.")
@@ -73,7 +77,8 @@ class SesionViewModel(
                     nombre = nombre.trim(),
                     correo = correo.trim(),
                     clave = clave,
-                    rol = Rol.CLIENTE.name
+                    rol = Rol.CLIENTE.name,
+                    telefono = telefono.trim()
                 )
                 val id = repository.registrarUsuario(nuevoUsuario)
                 preferencias.guardarSesion(Rol.CLIENTE.name, id.toInt())

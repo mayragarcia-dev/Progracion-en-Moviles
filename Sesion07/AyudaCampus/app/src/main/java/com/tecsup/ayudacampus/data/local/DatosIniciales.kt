@@ -13,17 +13,17 @@ object DatosIniciales {
 
         db.categoriaDao().insertarTodas(
             listOf(
-                Categoria(nombre = "Hardware", icono = "pc"),
-                Categoria(nombre = "Software", icono = "code"),
-                Categoria(nombre = "Red / Wi-Fi", icono = "wifi"),
-                Categoria(nombre = "Cuenta", icono = "key"),
-                Categoria(nombre = "Impresión", icono = "printer")
+                Categoria(nombre = "Hardware", descripcion = "Problemas con equipos físicos y componentes", icono = "pc"),
+                Categoria(nombre = "Software", descripcion = "Instalación y errores de programas o IDEs", icono = "code"),
+                Categoria(nombre = "Red / Wi-Fi", descripcion = "Conectividad a la red y Wi-Fi del campus", icono = "wifi"),
+                Categoria(nombre = "Cuenta", descripcion = "Acceso al portal académico y credenciales", icono = "key"),
+                Categoria(nombre = "Impresión", descripcion = "Soporte para impresoras y colas de impresión", icono = "printer")
             )
         )
         usuarioDao.insertarTodos(
             listOf(
-                Usuario(nombre = "Mayra", correo = "mayra@campus.test", clave = "1234", rol = "CLIENTE"),
-                Usuario(nombre = "Soporte TI", correo = "soporte@campus.test", clave = "admin", rol = "ADMIN")
+                Usuario(nombre = "Mayra", correo = "mayra@campus.test", clave = "1234", rol = "CLIENTE", telefono = "+51 987654321"),
+                Usuario(nombre = "Soporte TI", correo = "soporte@campus.test", clave = "admin", rol = "ADMIN", telefono = "+51 912345678")
             )
         )
 
