@@ -15,7 +15,7 @@ import com.tecsup.ayudacampus.data.local.entity.Usuario
 
 @Database(
     entities = [Categoria::class, Usuario::class, Ticket::class, Comentario::class],
-    version = 3,
+    version = 1,
     exportSchema = false
 )
 abstract class AyudaDatabase : RoomDatabase() {
@@ -34,9 +34,7 @@ abstract class AyudaDatabase : RoomDatabase() {
                     context.applicationContext,
                     AyudaDatabase::class.java,
                     "ayudacampus.db"
-                )
-                .fallbackToDestructiveMigration(true)
-                .build().also { INSTANCE = it }
+                ).build().also { INSTANCE = it }
             }
     }
 }

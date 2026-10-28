@@ -60,4 +60,28 @@ class SesionViewModel(
         _usuarioActual.value = null
         _error.value = null
     }
+
+    fun registrarEstudiante(nombre: String, correo: String, clave: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val existente = repository.buscarPorCorreo(correo.trim())
+                if (existente != null) {
+                    onError("El correo ya está registrado.")
+                    return@launch
+                }
+                val nuevoUsuario = Usuario(
+                    nombre = nombre.trim(),
+                    correo = correo.trim(),
+                    clave = clave,
+                    rol = Rol.CLIENTE.name
+                )
+                val id = repository.registrarUsuario(nuevoUsuario)
+                preferencias.guardarSesion(Rol.CLIENTE.name, id.toInt())
+                _usuarioActual.value = nuevoUsuario.copy(id = id.toInt())
+                onSuccess()
+            } catch (e: Exception) {
+                onError("Error al registrar: ${e.message}")
+            }
+        }
+    }
 }
