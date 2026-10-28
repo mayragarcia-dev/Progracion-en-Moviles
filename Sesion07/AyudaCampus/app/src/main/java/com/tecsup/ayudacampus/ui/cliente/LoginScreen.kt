@@ -1,30 +1,16 @@
 package com.tecsup.ayudacampus.ui.cliente
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.tecsup.ayudacampus.model.Rol
@@ -37,7 +23,8 @@ private val VioletaSoporte = Color(0xFF7C3AED)
 @Composable
 fun LoginScreen(
     vm: SesionViewModel,
-    onLoginSuccess: (Rol) -> Unit
+    onLoginSuccess: (Rol) -> Unit,
+    onRegistrarClick: () -> Unit
 ) {
     var rolSeleccionado by remember { mutableStateOf(Rol.CLIENTE) }
     var correo by remember { mutableStateOf("") }
@@ -87,7 +74,8 @@ fun LoginScreen(
             value = correo,
             onValueChange = { correo = it; vm.limpiarError() },
             label = "Correo",
-            keyboardType = KeyboardType.Email
+            keyboardType = KeyboardType.Email,
+            leadingIconVector = Icons.Default.Email
         )
         Spacer(Modifier.height(12.dp))
         AyudaTextField(
@@ -95,18 +83,57 @@ fun LoginScreen(
             onValueChange = { clave = it; vm.limpiarError() },
             label = "Contraseña",
             keyboardType = KeyboardType.Password,
-            esContrasena = true
+            esContrasena = true,
+            leadingIconVector = Icons.Default.Lock
         )
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            TextButton(onClick = { /* TODO: Olvidaste tu contraseña */ }, contentPadding = PaddingValues(0.dp)) {
+                Text("¿Olvidaste tu contraseña?", style = MaterialTheme.typography.bodySmall, color = colorRol)
+            }
+        }
+
         if (error != null) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(4.dp))
             Text(error.orEmpty(), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
         }
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
+
         Button(
             onClick = { vm.login(correo, clave, rolSeleccionado) },
             modifier = Modifier.fillMaxWidth().height(52.dp),
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colorRol)
         ) { Text("Ingresar", fontWeight = FontWeight.SemiBold) }
+
+        Spacer(Modifier.height(16.dp))
+
+        if (rolSeleccionado == Rol.CLIENTE) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("¿No tienes cuenta? ", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                TextButton(onClick = onRegistrarClick, contentPadding = PaddingValues(0.dp)) {
+                    Text("Regístrate", fontWeight = FontWeight.Bold, color = CianEstudiante)
+                }
+            }
+        } else {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Modo práctica", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = VioletaSoporte)
+                    Spacer(Modifier.height(2.dp))
+                    Text("Puedes cambiar de perfil desde Ajustes para probar ambos roles.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        }
     }
 }
