@@ -31,6 +31,12 @@ class MisTicketsViewModel(
     private val _textoBusqueda = MutableStateFlow("")
     val textoBusqueda: StateFlow<String> = _textoBusqueda.asStateFlow()
 
+    private val _categoriaFiltroNombre = MutableStateFlow<String?>(null)
+    val categoriaFiltroNombre: StateFlow<String?> = _categoriaFiltroNombre.asStateFlow()
+
+    val categorias = repository.observarCategoriasActivas()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     val todosLosTickets: StateFlow<List<TicketResumen>> = repository.observarTicketsCliente(usuario.id)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     private val ticketsCliente = todosLosTickets
@@ -38,8 +44,9 @@ class MisTicketsViewModel(
     val tickets: StateFlow<List<TicketResumen>> = combine(
         ticketsCliente,
         filtroSeleccionado,
-        textoBusqueda
-    ) { lista, filtro, texto ->
+        textoBusqueda,
+        categoriaFiltroNombre
+    ) { lista, filtro, texto, catNombre ->
         lista.filter { ticket ->
             val coincideEstado = when (filtro) {
                 FiltroTickets.TODOS -> true
@@ -47,13 +54,14 @@ class MisTicketsViewModel(
                 FiltroTickets.EN_PROCESO -> ticket.estado == EstadoTicket.EN_PROCESO.name
                 FiltroTickets.RESUELTOS -> ticket.estado == EstadoTicket.RESUELTO.name
             }
+            val coincideCategoria = catNombre == null || ticket.categoriaNombre.equals(catNombre, ignoreCase = true)
             val consulta = texto.trim().removePrefix("#")
             val numeroTicket = ticket.id.toString().padStart(4, '0')
             val coincideBusqueda = consulta.isEmpty() ||
                 ticket.titulo.contains(consulta, ignoreCase = true) ||
                 ticket.id.toString().contains(consulta, ignoreCase = true) ||
                 numeroTicket.contains(consulta, ignoreCase = true)
-            coincideEstado && coincideBusqueda
+            coincideEstado && coincideCategoria && coincideBusqueda
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
@@ -63,6 +71,10 @@ class MisTicketsViewModel(
 
     fun seleccionarFiltro(filtro: FiltroTickets) {
         _filtroSeleccionado.value = filtro
+    }
+
+    fun seleccionarCategoriaFiltro(catNombre: String?) {
+        _categoriaFiltroNombre.value = if (_categoriaFiltroNombre.value == catNombre) null else catNombre
     }
 
     fun buscar(texto: String) {

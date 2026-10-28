@@ -46,6 +46,8 @@ fun MisTicketsScreen(
     val filtro by vm.filtroSeleccionado.collectAsState()
     val textoBusqueda by vm.textoBusqueda.collectAsState()
     val abiertos by vm.cantidadAbiertos.collectAsState()
+    val categorias by vm.categorias.collectAsState()
+    val categoriaFiltro by vm.categoriaFiltroNombre.collectAsState()
 
     Scaffold(
         floatingActionButton = {
@@ -109,6 +111,21 @@ fun MisTicketsScreen(
                         onClick = { vm.seleccionarFiltro(opcion) },
                         label = { Text(opcion.etiqueta) }
                     )
+                }
+            }
+            if (categorias.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    categorias.forEach { cat ->
+                        FilterChip(
+                            selected = categoriaFiltro == cat.nombre,
+                            onClick = { vm.seleccionarCategoriaFiltro(cat.nombre) },
+                            label = { Text(cat.nombre, style = MaterialTheme.typography.labelSmall) }
+                        )
+                    }
                 }
             }
             Spacer(Modifier.height(4.dp))
