@@ -82,10 +82,12 @@ class AyudaRepositoryRoom(
 
     override suspend fun crearTicket(ticket: Ticket): Long {
         val id = ticketDao.insertar(ticket)
+        val cliente = usuarioDao.buscarPorId(ticket.clienteId)
+        val nombreCliente = cliente?.nombre ?: "Estudiante"
         notificacionDao.insertar(
             Notificacion(
                 titulo = "Nuevo ticket #$id",
-                mensaje = ticket.titulo,
+                mensaje = "Estudiante: $nombreCliente\nTítulo: ${ticket.titulo}",
                 ticketId = id.toInt(),
                 fecha = System.currentTimeMillis(),
                 leida = false
@@ -114,10 +116,12 @@ class AyudaRepositoryRoom(
                 fecha = System.currentTimeMillis()
             )
         )
+        val cliente = usuarioDao.buscarPorId(clienteId)
+        val nombreCliente = cliente?.nombre ?: "Estudiante"
         notificacionDao.insertar(
             Notificacion(
                 titulo = "Nuevo ticket #$ticketId",
-                mensaje = titulo,
+                mensaje = "Estudiante: $nombreCliente\nTítulo: $titulo",
                 ticketId = ticketId.toInt(),
                 fecha = System.currentTimeMillis(),
                 leida = false
@@ -148,8 +152,23 @@ class AyudaRepositoryRoom(
     override suspend fun cambiarPrioridad(ticketId: Int, prioridad: Prioridad) =
         ticketDao.actualizarPrioridad(ticketId, prioridad.name)
 
-    override suspend fun cerrarConCalificacion(ticketId: Int, calificacion: Int) =
+    override suspend fun cerrarConCalificacion(ticketId: Int, calificacion: Int) {
         ticketDao.cerrar(ticketId, calificacion, System.currentTimeMillis())
+        val ticket = ticketDao.buscarPorId(ticketId)
+        if (ticket != null) {
+            val cliente = usuarioDao.buscarPorId(ticket.clienteId)
+            val nombreCliente = cliente?.nombre ?: "Estudiante"
+            notificacionDao.insertar(
+                Notificacion(
+                    titulo = "Ticket #$ticketId Calificado",
+                    mensaje = "Estudiante: $nombreCliente\nCalificación: $calificacion de 5 estrellas ★",
+                    ticketId = ticketId,
+                    fecha = System.currentTimeMillis(),
+                    leida = false
+                )
+            )
+        }
+    }
 
     override suspend fun reabrir(ticketId: Int) = ticketDao.reabrir(ticketId)
 
