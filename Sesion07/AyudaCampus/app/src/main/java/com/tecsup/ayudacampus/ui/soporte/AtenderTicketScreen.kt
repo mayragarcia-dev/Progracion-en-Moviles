@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.tecsup.ayudacampus.domain.model.EstadoTicket
 import com.tecsup.ayudacampus.domain.model.Prioridad
 import com.tecsup.ayudacampus.ui.components.BurbujaComentario
+import com.tecsup.ayudacampus.ui.components.StepperEstrellas
 import com.tecsup.ayudacampus.viewmodel.AtenderViewModel
 
 @Composable
@@ -71,6 +72,27 @@ fun AtenderTicketScreen(vm: AtenderViewModel, onVolver: () -> Unit) {
                             Text(actual.ticket.descripcion, style = MaterialTheme.typography.bodyMedium)
                             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                             Text("Cliente: ${actual.cliente.nombre} · ${actual.cliente.correo}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+                            val calificacionTicket = actual.ticket.calificacion
+                            if (calificacionTicket != null && calificacionTicket > 0) {
+                                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                                Text("Calificación de satisfacción del cliente", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    StepperEstrellas(
+                                        calificacion = calificacionTicket,
+                                        onSeleccionar = {},
+                                        habilitado = false
+                                    )
+                                    Text(
+                                        "$calificacionTicket de 5 estrellas",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                }
+                            }
                         }
                     }
                 }

@@ -2,6 +2,7 @@ package com.tecsup.ayudacampus.data.repository
 
 import com.tecsup.ayudacampus.data.local.entity.Categoria
 import com.tecsup.ayudacampus.data.local.entity.Comentario
+import com.tecsup.ayudacampus.data.local.entity.Notificacion
 import com.tecsup.ayudacampus.data.local.entity.Ticket
 import com.tecsup.ayudacampus.data.local.entity.Usuario
 import com.tecsup.ayudacampus.data.local.model.ConteoCategoria
@@ -32,6 +33,8 @@ interface AyudaRepository {
     fun observarComentarios(ticketId: Int): Flow<List<Comentario>>
     fun observarResumenPanel(): Flow<ResumenPanel>
     fun observarPromedioResolucion(): Flow<Double?>
+    fun observarNotificaciones(): Flow<List<Notificacion>>
+    suspend fun marcarNotificacionesLeidas()
 
     suspend fun buscarCategoria(categoriaId: Int): Categoria?
     suspend fun contarTicketsCategoria(categoriaId: Int): Int

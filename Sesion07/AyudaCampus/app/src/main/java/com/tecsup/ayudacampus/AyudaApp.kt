@@ -30,7 +30,8 @@ fun AyudaCampusUi() {
             usuarioDao = database.usuarioDao(),
             categoriaDao = database.categoriaDao(),
             ticketDao = database.ticketDao(),
-            comentarioDao = database.comentarioDao()
+            comentarioDao = database.comentarioDao(),
+            notificacionDao = database.notificacionDao()
         )
     }
     val preferencias = remember(context) { PreferenciasStore(context) }

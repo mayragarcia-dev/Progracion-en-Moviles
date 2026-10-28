@@ -2,10 +2,12 @@ package com.tecsup.ayudacampus.data.repository
 
 import com.tecsup.ayudacampus.data.local.dao.CategoriaDao
 import com.tecsup.ayudacampus.data.local.dao.ComentarioDao
+import com.tecsup.ayudacampus.data.local.dao.NotificacionDao
 import com.tecsup.ayudacampus.data.local.dao.TicketDao
 import com.tecsup.ayudacampus.data.local.dao.UsuarioDao
 import com.tecsup.ayudacampus.data.local.entity.Categoria
 import com.tecsup.ayudacampus.data.local.entity.Comentario
+import com.tecsup.ayudacampus.data.local.entity.Notificacion
 import com.tecsup.ayudacampus.data.local.entity.Ticket
 import com.tecsup.ayudacampus.data.local.entity.Usuario
 import com.tecsup.ayudacampus.data.local.model.ConteoCategoria
@@ -20,7 +22,8 @@ class AyudaRepositoryRoom(
     private val usuarioDao: UsuarioDao,
     private val categoriaDao: CategoriaDao,
     private val ticketDao: TicketDao,
-    private val comentarioDao: ComentarioDao
+    private val comentarioDao: ComentarioDao,
+    private val notificacionDao: NotificacionDao
 ) : AyudaRepository {
     override suspend fun login(correo: String, clave: String): Usuario? =
         usuarioDao.login(correo, clave)
@@ -65,6 +68,10 @@ class AyudaRepositoryRoom(
 
     override fun observarPromedioResolucion(): Flow<Double?> = ticketDao.observarPromedioResolucion()
 
+    override fun observarNotificaciones(): Flow<List<Notificacion>> = notificacionDao.observarTodas()
+
+    override suspend fun marcarNotificacionesLeidas() = notificacionDao.marcarTodasLeidas()
+
     override suspend fun buscarCategoria(categoriaId: Int): Categoria? =
         categoriaDao.buscarPorId(categoriaId)
 
@@ -73,7 +80,19 @@ class AyudaRepositoryRoom(
 
     override suspend fun buscarTicket(ticketId: Int): Ticket? = ticketDao.buscarPorId(ticketId)
 
-    override suspend fun crearTicket(ticket: Ticket): Long = ticketDao.insertar(ticket)
+    override suspend fun crearTicket(ticket: Ticket): Long {
+        val id = ticketDao.insertar(ticket)
+        notificacionDao.insertar(
+            Notificacion(
+                titulo = "Nuevo ticket #$id",
+                mensaje = ticket.titulo,
+                ticketId = id.toInt(),
+                fecha = System.currentTimeMillis(),
+                leida = false
+            )
+        )
+        return id
+    }
 
     override suspend fun crearTicket(
         clienteId: Int,
@@ -82,18 +101,30 @@ class AyudaRepositoryRoom(
         descripcion: String,
         ubicacion: String,
         prioridad: Prioridad
-    ): Long = ticketDao.insertarTicket(
-        Ticket(
-            clienteId = clienteId,
-            categoriaId = categoriaId,
-            titulo = titulo,
-            descripcion = descripcion,
-            ubicacion = ubicacion,
-            prioridad = prioridad.name,
-            estado = EstadoTicket.ABIERTO.name,
-            fecha = System.currentTimeMillis()
+    ): Long {
+        val ticketId = ticketDao.insertarTicket(
+            Ticket(
+                clienteId = clienteId,
+                categoriaId = categoriaId,
+                titulo = titulo,
+                descripcion = descripcion,
+                ubicacion = ubicacion,
+                prioridad = prioridad.name,
+                estado = EstadoTicket.ABIERTO.name,
+                fecha = System.currentTimeMillis()
+            )
         )
-    )
+        notificacionDao.insertar(
+            Notificacion(
+                titulo = "Nuevo ticket #$ticketId",
+                mensaje = titulo,
+                ticketId = ticketId.toInt(),
+                fecha = System.currentTimeMillis(),
+                leida = false
+            )
+        )
+        return ticketId
+    }
 
     override suspend fun actualizarTicket(ticket: Ticket) = ticketDao.actualizar(ticket)
 

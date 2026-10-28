@@ -2,6 +2,7 @@ package com.tecsup.ayudacampus.ui.soporte
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,11 +11,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -24,6 +33,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +44,9 @@ import androidx.compose.ui.unit.dp
 import com.tecsup.ayudacampus.ui.graficos.GraficoBarras
 import com.tecsup.ayudacampus.ui.graficos.GraficoDona
 import com.tecsup.ayudacampus.viewmodel.PanelViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private val VioletaPanel = Color(0xFF7C3AED)
 
@@ -50,6 +65,10 @@ fun PanelScreen(
     val porCategoria by vm.porCategoria.collectAsState()
     val altas by vm.altasSinAtender.collectAsState()
     val promedioResolucion by vm.promedioResolucion.collectAsState()
+    val notificaciones by vm.notificaciones.collectAsState()
+
+    var mostrarNotificaciones by remember { mutableStateOf(false) }
+    val formatter = remember { SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()) }
 
     Scaffold(
         bottomBar = {
@@ -75,7 +94,21 @@ fun PanelScreen(
                     Text("Panel de soporte", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                     Text("Mesa de ayuda TI · Hoy", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Text("🔔", style = MaterialTheme.typography.titleLarge)
+                Box(contentAlignment = Alignment.TopEnd) {
+                    IconButton(onClick = {
+                        mostrarNotificaciones = true
+                        vm.marcarNotificacionesLeidas()
+                    }) {
+                        Text("🔔", style = MaterialTheme.typography.titleLarge)
+                    }
+                    if (notificaciones.any { !it.leida }) {
+                        Box(
+                            modifier = Modifier
+                                .size(10.dp)
+                                .background(Color.Red, CircleShape)
+                        )
+                    }
+                }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 ContadorPanel("$abiertos", "Abiertos", Color(0xFFFFF1CC), Color(0xFFB45309), Modifier.weight(1f))
@@ -133,6 +166,48 @@ fun PanelScreen(
             Spacer(Modifier.height(4.dp))
         }
     }
+
+    if (mostrarNotificaciones) {
+        AlertDialog(
+            onDismissRequest = { mostrarNotificaciones = false },
+            title = { Text("Notificaciones de Tickets", fontWeight = FontWeight.Bold) },
+            text = {
+                if (notificaciones.isEmpty()) {
+                    Text("No hay notificaciones de tickets nuevos.")
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth().height(300.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(notificaciones, key = { it.id }) { notif ->
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = if (notif.leida) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.primaryContainer
+                                )
+                            ) {
+                                Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(notif.titulo, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
+                                    Text(notif.mensaje, style = MaterialTheme.typography.bodySmall)
+                                    Text(
+                                        formatter.format(Date(notif.fecha)),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                Button(onClick = { mostrarNotificaciones = false }) {
+                    Text("Cerrar")
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -148,6 +223,6 @@ private fun ContadorPanel(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(valor, color = color, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-        Text(etiqueta, color = color, style = MaterialTheme.typography.labelSmall)
+        Text(etiqueta, color = color.copy(alpha = 0.8f), style = MaterialTheme.typography.labelSmall)
     }
 }

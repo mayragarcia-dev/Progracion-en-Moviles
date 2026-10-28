@@ -2,6 +2,7 @@ package com.tecsup.ayudacampus.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tecsup.ayudacampus.data.local.entity.Notificacion
 import com.tecsup.ayudacampus.data.local.model.ResumenPanel
 import com.tecsup.ayudacampus.data.repository.AyudaRepository
 import com.tecsup.ayudacampus.domain.model.EstadoTicket
@@ -10,11 +11,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 private val ColoresEstado = listOf(0xFFF59E0B, 0xFF2563EB, 0xFF16A34A, 0xFF9CA3AF)
 private val ColoresCategoria = listOf(0xFF8B5CF6, 0xFF8B5CF6, 0xFF7C3AED, 0xFFC4B5FD, 0xFFA78BFA)
 
-class PanelViewModel(repository: AyudaRepository) : ViewModel() {
+class PanelViewModel(private val repository: AyudaRepository) : ViewModel() {
     private val resumen: StateFlow<ResumenPanel> = repository.observarResumenPanel()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ResumenPanel(0, 0, 0, 0, 0))
 
@@ -47,6 +49,15 @@ class PanelViewModel(repository: AyudaRepository) : ViewModel() {
     val promedioResolucion: StateFlow<String?> = repository.observarPromedioResolucion()
         .map { promedioMs -> promedioMs?.toLong()?.let(::formatearDuracion) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    val notificaciones: StateFlow<List<Notificacion>> = repository.observarNotificaciones()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    fun marcarNotificacionesLeidas() {
+        viewModelScope.launch {
+            repository.marcarNotificacionesLeidas()
+        }
+    }
 
     private fun formatearDuracion(milisegundos: Long): String {
         val minutos = (milisegundos / 60_000).coerceAtLeast(0)
