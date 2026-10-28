@@ -65,7 +65,7 @@ fun NavAyuda(
     val sesionViewModel: SesionViewModel = viewModel(factory = factory)
     val scope = rememberCoroutineScope()
 
-    NavHost(navController = navController, startDestination = Rutas.Login) {
+    NavHost(navController = navController, startDestination = Rutas.Welcome) {
         composable(Rutas.Splash) {
             SplashScreen()
             LaunchedEffect(Unit) {
