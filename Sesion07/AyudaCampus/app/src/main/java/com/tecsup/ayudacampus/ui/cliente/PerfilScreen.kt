@@ -78,6 +78,8 @@ fun PerfilScreen(
     val resueltos = lista.count {
         it.estado == EstadoTicket.RESUELTO.name || it.estado == EstadoTicket.CERRADO.name
     }
+    val calificaciones = lista.mapNotNull { it.calificacion }
+    val promedioEstrellas = if (calificaciones.isNotEmpty()) String.format(java.util.Locale.US, "%.1f★", calificaciones.average()) else "—"
 
     // Colores dinamicos segun Modo Oscuro
     val fondoPantalla = if (modoOscuro) Color(0xFF0F172A) else Color(0xFFF8FAFC)
@@ -248,7 +250,7 @@ fun PerfilScreen(
             // Fila de Tarjetas de Contadores
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 PerfilContadorCard(
                     valor = "$abiertos",
@@ -269,6 +271,13 @@ fun PerfilScreen(
                     titulo = "Total",
                     colorTexto = cianTextoAvatar,
                     colorFondo = cianFondoAvatar,
+                    modifier = Modifier.weight(1f)
+                )
+                PerfilContadorCard(
+                    valor = promedioEstrellas,
+                    titulo = "Satisfacción",
+                    colorTexto = if (modoOscuro) Color(0xFFF472B6) else Color(0xFFDB2777),
+                    colorFondo = if (modoOscuro) Color(0xFF3B1228) else Color(0xFFFCE7F3),
                     modifier = Modifier.weight(1f)
                 )
             }
